@@ -1,0 +1,2050 @@
+/* ============================================================================
+   OPTICA DESKTOP - COMPREHENSIVE CSS STYLESHEET
+   Modern, consistent styling for ALL native JavaFX controls.
+   Uses CSS variables from tokens.css.
+   ============================================================================ */
+
+/* ============================================================================
+   1. APP ROOT
+   ============================================================================ */
+
+.app-root {
+    -fx-background-color: -optica-bg-general;
+}
+
+/* ============================================================================
+   2. BASE CONTROLS - Buttons
+   ============================================================================ */
+
+.button {
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+    -fx-padding: 8px 16px 8px 16px;
+    -fx-font-size: 13px;
+    -fx-background-color: -optica-bg-surface;
+    -fx-text-fill: -optica-text-primary;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+.button:hover {
+    -fx-background-color: derive(-optica-bg-surface, -8%);
+    -fx-border-color: -optica-primary;
+}
+
+.button:default {
+    -fx-background-color: -optica-primary;
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-border-color: -optica-primary;
+    -fx-font-weight: bold;
+}
+
+.button:armed {
+    -fx-background-color: derive(-optica-primary, -15%);
+    -fx-border-color: derive(-optica-primary, -15%);
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.15), 4px, 0px, 0px, 1px);
+}
+
+.button:focused {
+    -fx-border-color: -optica-primary;
+}
+
+.button:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+/* ============================================================================
+   3. BUTTON VARIANTS
+   ============================================================================ */
+
+.btn-primary {
+    -fx-background-color: -optica-primary;
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-font-weight: bold;
+    -fx-border-color: -optica-primary;
+    -fx-border-width: 1px;
+}
+
+.btn-primary:hover {
+    -fx-background-color: -optica-primary-dark;
+    -fx-border-color: -optica-primary-dark;
+}
+
+.btn-primary:armed {
+    -fx-background-color: derive(-optica-primary, -20%);
+    -fx-border-color: derive(-optica-primary, -20%);
+}
+
+.btn-secondary {
+    -fx-background-color: -optica-bg-surface;
+    -fx-text-fill: -optica-text-primary;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+}
+
+.btn-secondary:hover {
+    -fx-border-color: -optica-primary;
+    -fx-text-fill: -optica-primary;
+}
+
+.btn-danger {
+    -fx-background-color: -optica-danger;
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-font-weight: bold;
+    -fx-border-color: -optica-danger;
+    -fx-border-width: 1px;
+}
+
+.btn-danger:hover {
+    -fx-background-color: derive(-optica-danger, -10%);
+    -fx-border-color: derive(-optica-danger, -10%);
+}
+
+.btn-danger:armed {
+    -fx-background-color: derive(-optica-danger, -20%);
+    -fx-border-color: derive(-optica-danger, -20%);
+}
+
+.btn-large {
+    -fx-padding: 12px 24px 12px 24px;
+    -fx-font-size: 14px;
+}
+
+.btn-action {
+    -fx-background-color: -optica-bg-surface;
+    -fx-text-fill: -optica-text-primary;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-font-size: 12px;
+    -fx-padding: 6px 12px 6px 12px;
+}
+
+.btn-action:hover {
+    -fx-border-color: -optica-primary;
+    -fx-text-fill: -optica-primary;
+}
+
+.btn-filter-clear {
+    -fx-background-color: -optica-bg-surface;
+    -fx-text-fill: -optica-text-secondary;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-font-size: 12px;
+    -fx-padding: 6px 12px 6px 12px;
+}
+
+.btn-filter-clear:hover {
+    -fx-background-color: derive(-optica-bg-surface, -8%);
+    -fx-text-fill: -optica-text-primary;
+    -fx-border-color: -optica-primary;
+}
+
+.btn-acceso-rapido {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 14px 16px 14px 16px;
+    -fx-text-fill: -optica-text-primary;
+    -fx-font-size: 12px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-cursor: hand;
+}
+
+.btn-acceso-rapido:hover {
+    -fx-background-color: derive(-optica-bg-surface, -5%);
+    -fx-border-color: -optica-primary;
+}
+
+.btn-acceso-rapido:armed {
+    -fx-background-color: derive(-optica-bg-surface, -10%);
+}
+
+/* ============================================================================
+   4. FORM CONTROLS
+   ============================================================================ */
+
+/* --- ComboBox --- */
+
+.combo-box {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 2px;
+}
+
+.combo-box:hover {
+    -fx-border-color: -optica-primary;
+}
+
+.combo-box:focused {
+    -fx-border-color: -optica-primary;
+    -fx-effect: dropshadow(gaussian, rgba(43, 91, 110, 0.15), 4px, 0px, 0px, 0px);
+}
+
+.combo-box .list-cell {
+    -fx-background-color: -optica-bg-surface;
+    -fx-text-fill: -optica-text-primary;
+    -fx-font-size: 13px;
+    -fx-padding: 4px 8px 4px 8px;
+}
+
+.combo-box .list-cell:hover {
+    -fx-background-color: derive(-optica-bg-surface, -8%);
+    -fx-text-fill: -optica-primary;
+}
+
+.combo-box .list-cell:selected {
+    -fx-background-color: derive(-optica-primary, 85%);
+    -fx-text-fill: -optica-primary;
+    -fx-font-weight: bold;
+}
+
+.combo-box-popup {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border-light;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.combo-box .arrow {
+    -fx-background-color: -optica-text-secondary;
+}
+
+/* --- TextField --- */
+
+.text-field {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 10px 6px 10px;
+    -fx-font-size: 13px;
+    -fx-text-fill: -optica-text-primary;
+    -fx-prompt-text-fill: -optica-text-secondary;
+}
+
+.text-field:hover {
+    -fx-border-color: -optica-primary;
+}
+
+.text-field:focused {
+    -fx-border-color: -optica-primary;
+    -fx-effect: dropshadow(gaussian, rgba(43, 91, 110, 0.15), 4px, 0px, 0px, 0px);
+}
+
+.text-field:disabled {
+    -fx-opacity: 0.5;
+    -fx-background-color: derive(-optica-bg-surface, -5%);
+}
+
+/* --- TextArea --- */
+
+.text-area {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.text-area:hover {
+    -fx-border-color: -optica-primary;
+}
+
+.text-area:focused {
+    -fx-border-color: -optica-primary;
+    -fx-effect: dropshadow(gaussian, rgba(43, 91, 110, 0.15), 4px, 0px, 0px, 0px);
+}
+
+.text-area .content {
+    -fx-background-color: -optica-bg-surface;
+    -fx-padding: 8px;
+}
+
+.text-area .viewport {
+    -fx-background-color: -optica-bg-surface;
+}
+
+/* --- PasswordField --- */
+
+.password-field {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 10px 6px 10px;
+    -fx-font-size: 13px;
+}
+
+.password-field:hover {
+    -fx-border-color: -optica-primary;
+}
+
+.password-field:focused {
+    -fx-border-color: -optica-primary;
+    -fx-effect: dropshadow(gaussian, rgba(43, 91, 110, 0.15), 4px, 0px, 0px, 0px);
+}
+
+/* --- DatePicker --- */
+
+.date-picker {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.date-picker:hover {
+    -fx-border-color: -optica-primary;
+}
+
+.date-picker:focused {
+    -fx-border-color: -optica-primary;
+    -fx-effect: dropshadow(gaussian, rgba(43, 91, 110, 0.15), 4px, 0px, 0px, 0px);
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 4px;
+    -fx-padding: 4px;
+}
+
+.date-picker .arrow-button:hover {
+    -fx-background-color: derive(-optica-bg-surface, -8%);
+}
+
+.date-picker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0px;
+    -fx-effect: null;
+}
+
+.date-picker .text-field:focused {
+    -fx-border-color: transparent;
+    -fx-effect: null;
+}
+
+/* --- CheckBox --- */
+
+.check-box {
+    -fx-text-fill: -optica-text-primary;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.check-box .box {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 3px;
+}
+
+.check-box:hover .box {
+    -fx-border-color: -optica-primary;
+}
+
+.check-box:selected .box {
+    -fx-background-color: -optica-primary;
+    -fx-border-color: -optica-primary;
+}
+
+.check-box .mark {
+    -fx-background-color: transparent;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: -optica-text-on-primary;
+}
+
+.check-box:indeterminate .box {
+    -fx-background-color: -optica-primary;
+    -fx-border-color: -optica-primary;
+}
+
+.check-box:indeterminate .mark {
+    -fx-background-color: -optica-text-on-primary;
+}
+
+.check-box:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+/* --- RadioButton --- */
+
+.radio-button {
+    -fx-text-fill: -optica-text-primary;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.radio-button .radio {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1.5px;
+    -fx-background-radius: 100px;
+}
+
+.radio-button:hover .radio {
+    -fx-border-color: -optica-primary;
+}
+
+.radio-button:selected .radio {
+    -fx-background-color: -optica-primary;
+    -fx-border-color: -optica-primary;
+}
+
+.radio-button .dot {
+    -fx-background-color: transparent;
+}
+
+.radio-button:selected .dot {
+    -fx-background-color: -optica-text-on-primary;
+    -fx-background-radius: 100px;
+    -fx-padding: 4px;
+}
+
+.radio-button:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+/* --- Spinner --- */
+
+.spinner {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.spinner:focused {
+    -fx-border-color: -optica-primary;
+    -fx-effect: dropshadow(gaussian, rgba(43, 91, 110, 0.15), 4px, 0px, 0px, 0px);
+}
+
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border-light;
+    -fx-border-width: 1px;
+}
+
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-background-color: derive(-optica-bg-surface, -8%);
+}
+
+.spinner .increment-arrow,
+.spinner .decrement-arrow {
+    -fx-background-color: -optica-text-secondary;
+}
+
+/* --- Slider --- */
+
+.slider .track {
+    -fx-background-color: -optica-border;
+    -fx-background-radius: 2px;
+    -fx-pref-height: 4px;
+}
+
+.slider .thumb {
+    -fx-background-color: -optica-primary;
+    -fx-background-radius: 100px;
+    -fx-pref-width: 16px;
+    -fx-pref-height: 16px;
+}
+
+.slider .thumb:hover {
+    -fx-background-color: -optica-primary-dark;
+}
+
+/* --- ProgressBar / ProgressIndicator --- */
+
+.progress-bar .track {
+    -fx-background-color: -optica-border;
+    -fx-background-radius: 4px;
+}
+
+.progress-bar .bar {
+    -fx-background-color: -optica-primary;
+    -fx-background-radius: 4px;
+}
+
+.progress-indicator {
+    -fx-progress-color: -optica-primary;
+}
+
+.progress-indicator .percentage {
+    -fx-fill: -optica-text-secondary;
+    -fx-font-size: 12px;
+}
+
+/* --- Label --- */
+
+.label {
+    -fx-text-fill: -optica-text-primary;
+    -fx-font-size: 13px;
+}
+
+/* ============================================================================
+   5. TOGGLE BUTTONS (Sub-view Tabs)
+   ============================================================================ */
+
+.toggle-button {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-text-fill: -optica-text-secondary;
+    -fx-font-size: 12px;
+    -fx-padding: 6px 14px 6px 14px;
+    -fx-cursor: hand;
+}
+
+.toggle-button:hover {
+    -fx-background-color: derive(-optica-bg-surface, -5%);
+    -fx-border-color: -optica-primary;
+    -fx-text-fill: -optica-text-primary;
+}
+
+.toggle-button:selected {
+    -fx-background-color: -optica-primary;
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-border-color: -optica-primary;
+    -fx-font-weight: bold;
+    -fx-border-width: 1px 1px 1px 3px;
+    -fx-border-color: -optica-primary -optica-primary -optica-primary -optica-primary;
+}
+
+/* Tab button alias */
+.tab-button {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-text-fill: -optica-text-secondary;
+    -fx-font-size: 12px;
+    -fx-padding: 6px 14px 6px 14px;
+    -fx-cursor: hand;
+}
+
+.tab-button:hover {
+    -fx-background-color: derive(-optica-bg-surface, -5%);
+    -fx-border-color: -optica-primary;
+    -fx-text-fill: -optica-text-primary;
+}
+
+.tab-button:selected {
+    -fx-background-color: -optica-primary;
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-border-color: -optica-primary;
+    -fx-font-weight: bold;
+    -fx-border-width: 1px 1px 1px 3px;
+}
+
+/* Subview toggle alias */
+.subview-toggle {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-text-fill: -optica-text-secondary;
+    -fx-font-size: 12px;
+    -fx-padding: 6px 14px 6px 14px;
+    -fx-cursor: hand;
+}
+
+.subview-toggle:hover {
+    -fx-background-color: derive(-optica-bg-surface, -5%);
+    -fx-border-color: -optica-primary;
+}
+
+.subview-toggle:selected {
+    -fx-background-color: -optica-primary;
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-border-color: -optica-primary;
+    -fx-font-weight: bold;
+}
+
+/* ============================================================================
+   6. TABLES
+   ============================================================================ */
+
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 0px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: transparent transparent -optica-border transparent;
+    -fx-border-width: 0px 0px 1px 0px;
+}
+
+.table-view .column-header-background .filler {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: transparent transparent -optica-border transparent;
+    -fx-border-width: 0px 0px 1px 0px;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-background-color: -optica-bg-surface;
+    -fx-size: 36px;
+    -fx-border-color: transparent transparent -optica-border transparent;
+    -fx-border-width: 0px 0px 1px 0px;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: -optica-text-secondary;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0px 8px 0px 8px;
+}
+
+.table-view .column-header:hover {
+    -fx-background-color: derive(-optica-bg-surface, -5%);
+}
+
+.table-row-cell {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: transparent transparent -optica-border-light transparent;
+    -fx-border-width: 0px 0px 1px 0px;
+    -fx-padding: 0px;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: derive(-optica-bg-surface, -3%);
+}
+
+.table-row-cell:selected {
+    -fx-background-color: derive(-optica-primary, 85%);
+    -fx-border-color: transparent;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: -optica-text-primary;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: derive(-optica-bg-surface, -2%);
+}
+
+.table-row-cell:even {
+    -fx-background-color: -optica-bg-surface;
+}
+
+.table-row-cell:filled:selected {
+    -fx-background-color: derive(-optica-primary, 85%);
+}
+
+.table-cell {
+    -fx-padding: 8px 8px 8px 8px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-size: 12px;
+    -fx-text-fill: -optica-text-primary;
+}
+
+.table-view .virtual-flow .corner {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border-light;
+    -fx-border-width: 1px 0px 0px 1px;
+}
+
+.table-view .scroll-bar:horizontal,
+.table-view .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+/* ============================================================================
+   7. TREE TABLE VIEW
+   ============================================================================ */
+
+.tree-table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.tree-table-view .column-header-background {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: transparent transparent -optica-border transparent;
+    -fx-border-width: 0px 0px 1px 0px;
+}
+
+.tree-table-view .column-header .label {
+    -fx-text-fill: -optica-text-secondary;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.tree-table-row-cell {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: transparent transparent -optica-border-light transparent;
+    -fx-border-width: 0px 0px 1px 0px;
+}
+
+.tree-table-row-cell:hover {
+    -fx-background-color: derive(-optica-bg-surface, -3%);
+}
+
+.tree-table-row-cell:selected {
+    -fx-background-color: derive(-optica-primary, 85%);
+}
+
+.tree-table-cell {
+    -fx-padding: 8px 8px 8px 8px;
+    -fx-font-size: 12px;
+}
+
+/* ============================================================================
+   8. LIST VIEW
+   ============================================================================ */
+
+.list-view {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 2px;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -optica-text-primary;
+    -fx-font-size: 13px;
+    -fx-padding: 6px 8px 6px 8px;
+    -fx-border-color: transparent transparent -optica-border-light transparent;
+    -fx-border-width: 0px 0px 1px 0px;
+}
+
+.list-cell:hover {
+    -fx-background-color: derive(-optica-bg-surface, -5%);
+}
+
+.list-cell:selected {
+    -fx-background-color: derive(-optica-primary, 85%);
+    -fx-text-fill: -optica-primary;
+    -fx-font-weight: bold;
+}
+
+.list-cell:empty {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+}
+
+.list-view .virtual-flow .corner {
+    -fx-background-color: -optica-bg-surface;
+}
+
+/* ============================================================================
+   9. SCROLL PANES
+   ============================================================================ */
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .corner {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Summary scroll context */
+.summary-scroll {
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+/* ============================================================================
+   10. SCROLL BARS (Global)
+   ============================================================================ */
+
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .track {
+    -fx-background-color: -optica-border-light;
+    -fx-background-radius: 4px;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: -optica-border;
+    -fx-background-radius: 4px;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: -optica-secondary;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-background-color: transparent;
+}
+
+/* ============================================================================
+   11. STATUS BADGES
+   ============================================================================ */
+
+.status-badge .label {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-padding: 2px 8px 2px 8px;
+    -fx-background-radius: 4px;
+}
+
+.badge-success {
+    -fx-background-color: -optica-success;
+}
+
+.badge-warning {
+    -fx-background-color: -optica-warning;
+}
+
+.badge-danger {
+    -fx-background-color: -optica-danger;
+}
+
+.badge-info {
+    -fx-background-color: -optica-info;
+}
+
+.badge-neutral {
+    -fx-background-color: -optica-text-secondary;
+}
+
+/* ============================================================================
+   12. LAYOUT COMPONENTS
+   ============================================================================ */
+
+/* --- Sidebar --- */
+
+.sidebar {
+    -fx-background-color: -optica-bg-sidebar;
+    -fx-border-color: transparent;
+}
+
+.sidebar .viewport {
+    -fx-background-color: -optica-bg-sidebar;
+}
+
+.sidebar-content {
+    -fx-background-color: -optica-bg-sidebar;
+}
+
+.brand-section {
+    -fx-padding: 8px 0px 12px 0px;
+}
+
+.brand-title {
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 0px 0px 2px 0px;
+}
+
+.brand-subtitle {
+    -fx-text-fill: -optica-text-on-sidebar;
+    -fx-font-size: 11px;
+    -fx-opacity: 0.7;
+}
+
+.sidebar-separator {
+    -fx-background-color: derive(-optica-bg-sidebar, 20%);
+    -fx-pref-height: 1px;
+    -fx-padding: 8px 0px 8px 0px;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -optica-text-on-sidebar;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10px 12px 10px 12px;
+    -fx-cursor: hand;
+    -fx-background-radius: 4px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0px;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: -optica-bg-sidebar-hover;
+    -fx-text-fill: -optica-text-on-sidebar;
+}
+
+.sidebar-button.active {
+    -fx-background-color: -optica-bg-sidebar-active;
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent transparent transparent -optica-primary;
+    -fx-border-width: 0px 0px 0px 3px;
+}
+
+/* --- Topbar --- */
+
+.topbar {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: transparent transparent -optica-border transparent;
+    -fx-border-width: 0px 0px 1px 0px;
+    -fx-padding: 12px 20px 12px 20px;
+    -fx-min-height: 60px;
+}
+
+.topbar-title {
+    -fx-text-fill: -optica-text-primary;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.topbar-subtitle {
+    -fx-text-fill: -optica-text-secondary;
+    -fx-font-size: 12px;
+}
+
+.topbar-label {
+    -fx-text-fill: -optica-text-secondary;
+    -fx-font-size: 12px;
+}
+
+.topbar-value {
+    -fx-text-fill: -optica-text-primary;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.topbar-combo {
+    -fx-font-size: 12px;
+}
+
+/* --- Filter Bar --- */
+
+.filter-bar {
+    -fx-padding: 12px;
+    -fx-hgap: 8px;
+    -fx-vgap: 8px;
+}
+
+/* --- Pagination Bar --- */
+
+.pagination-bar {
+    -fx-padding: 8px;
+    -fx-spacing: 16px;
+    -fx-alignment: center-left;
+}
+
+.pagination-records {
+    -fx-font-size: 12px;
+    -fx-text-fill: -optica-text-secondary;
+}
+
+.pagination-page {
+    -fx-font-size: 12px;
+    -fx-text-fill: -optica-text-secondary;
+}
+
+.pagination-btn {
+    -fx-font-size: 12px;
+    -fx-padding: 4px 12px 4px 12px;
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+    -fx-text-fill: -optica-text-primary;
+}
+
+.pagination-btn:hover {
+    -fx-background-color: derive(-optica-bg-surface, -5%);
+    -fx-border-color: -optica-primary;
+}
+
+/* --- Pagination (JavaFX native) --- */
+
+.pagination {
+    -fx-background-color: transparent;
+}
+
+.pagination .control-box {
+    -fx-spacing: 4px;
+}
+
+.pagination .bullet-button {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-text-fill: -optica-text-secondary;
+    -fx-font-size: 12px;
+    -fx-padding: 4px 10px 4px 10px;
+    -fx-cursor: hand;
+}
+
+.pagination .bullet-button:hover {
+    -fx-border-color: -optica-primary;
+    -fx-text-fill: -optica-primary;
+}
+
+.pagination .bullet-button:selected {
+    -fx-background-color: -optica-primary;
+    -fx-border-color: -optica-primary;
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-font-weight: bold;
+}
+
+.pagination .left-arrow-button,
+.pagination .right-arrow-button {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.pagination .left-arrow-button:hover,
+.pagination .right-arrow-button:hover {
+    -fx-border-color: -optica-primary;
+}
+
+.pagination .arrow {
+    -fx-background-color: -optica-text-secondary;
+}
+
+/* --- Separator --- */
+
+.separator .line {
+    -fx-border-color: -optica-border-light;
+    -fx-border-width: 1px 0px 0px 0px;
+}
+
+.separator:horizontal .line {
+    -fx-border-color: -optica-border-light;
+    -fx-border-width: 1px 0px 0px 0px;
+}
+
+.separator:vertical .line {
+    -fx-border-color: transparent transparent transparent -optica-border-light;
+    -fx-border-width: 0px 0px 0px 1px;
+}
+
+/* --- TitledPane --- */
+
+.titled-pane {
+    -fx-text-fill: -optica-text-primary;
+    -fx-font-size: 13px;
+}
+
+.titled-pane > .title {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 0px 0px 1px 0px;
+    -fx-padding: 10px 12px 10px 12px;
+}
+
+.titled-pane > .title > .arrow-button .arrow {
+    -fx-background-color: -optica-text-secondary;
+}
+
+.titled-pane > .content {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: transparent;
+    -fx-padding: 12px;
+}
+
+/* --- Accordion --- */
+
+.accordion {
+    -fx-background-color: transparent;
+}
+
+.accordion .titled-pane > .title {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 0px 0px 1px 0px;
+}
+
+/* --- ToolBar --- */
+
+.tool-bar {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: transparent transparent -optica-border transparent;
+    -fx-border-width: 0px 0px 1px 0px;
+    -fx-padding: 8px 12px 8px 12px;
+}
+
+.tool-bar .separator {
+    -fx-padding: 0px 8px 0px 8px;
+}
+
+/* --- TabPane / Tabs --- */
+
+.tab-pane {
+    -fx-background-color: transparent;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent -optica-border transparent;
+    -fx-border-width: 0px 0px 1px 0px;
+}
+
+.tab-pane .tab {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px 1px 0px 1px;
+    -fx-background-radius: 4px 4px 0px 0px;
+    -fx-padding: 6px 16px 6px 16px;
+    -fx-cursor: hand;
+}
+
+.tab-pane .tab .tab-label {
+    -fx-text-fill: -optica-text-secondary;
+    -fx-font-size: 12px;
+}
+
+.tab-pane .tab:hover {
+    -fx-background-color: derive(-optica-bg-surface, -5%);
+    -fx-border-color: -optica-primary;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: -optica-primary;
+    -fx-border-color: -optica-primary;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-font-weight: bold;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-color: transparent;
+}
+
+.tab-pane .tab .tab-label {
+    -fx-text-fill: -optica-text-secondary;
+}
+
+.tab-pane .tab:hover .tab-label {
+    -fx-text-fill: -optica-text-primary;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-font-weight: bold;
+}
+
+.tab-pane .tab-content-area {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 0px 1px 1px 1px;
+    -fx-border-radius: 0px 0px 4px 4px;
+    -fx-background-radius: 0px 0px 4px 4px;
+    -fx-padding: 12px;
+}
+
+/* --- Tab Bar (custom component) --- */
+
+.tab-bar {
+    -fx-spacing: 6px;
+    -fx-alignment: center-left;
+}
+
+/* ============================================================================
+   13. CONTENT HOST
+   ============================================================================ */
+
+.content-host {
+    -fx-background-color: -optica-bg-general;
+    -fx-padding: 16px;
+}
+
+.content-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.content-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.module-placeholder {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-alignment: center;
+}
+
+/* ============================================================================
+   14. SUMMARY PANEL
+   ============================================================================ */
+
+.summary-panel {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 12px;
+}
+
+.summary-panel-content {
+    -fx-spacing: 8px;
+}
+
+.summary-panel-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-text-primary;
+    -fx-padding: 0px 0px 4px 0px;
+}
+
+.summary-field-row {
+    -fx-alignment: center-left;
+}
+
+.summary-field-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: -optica-text-secondary;
+    -fx-min-width: 80px;
+}
+
+.summary-field-value {
+    -fx-font-size: 12px;
+    -fx-text-fill: -optica-text-primary;
+}
+
+.summary-field-highlighted {
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-primary;
+}
+
+.summary-header {
+    -fx-spacing: 4px;
+}
+
+.summary-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-text-primary;
+}
+
+.summary-code {
+    -fx-font-size: 12px;
+    -fx-text-fill: -optica-text-secondary;
+}
+
+.summary-badge {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-padding: 2px 8px 2px 8px;
+    -fx-background-radius: 4px;
+}
+
+.summary-actions {
+    -fx-padding: 8px 0px 0px 0px;
+    -fx-spacing: 8px;
+}
+
+/* ============================================================================
+   15. KPI CARD
+   ============================================================================ */
+
+.kpi-card {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 16px;
+    -fx-min-width: 180px;
+    -fx-spacing: 4px;
+}
+
+.kpi-icon {
+    -fx-font-size: 24px;
+    -fx-text-fill: -optica-primary;
+}
+
+.kpi-title {
+    -fx-font-size: 12px;
+    -fx-text-fill: -optica-text-secondary;
+}
+
+.kpi-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-text-primary;
+}
+
+.kpi-subtitle {
+    -fx-font-size: 11px;
+    -fx-text-fill: -optica-text-secondary;
+}
+
+/* ============================================================================
+   16. EMPTY STATE
+   ============================================================================ */
+
+.empty-state {
+    -fx-alignment: center;
+    -fx-padding: 32px;
+}
+
+.empty-state .vbox {
+    -fx-alignment: center;
+    -fx-spacing: 8px;
+}
+
+.empty-state-message {
+    -fx-font-size: 16px;
+    -fx-text-fill: -optica-text-secondary;
+    -fx-opacity: 0.7;
+}
+
+.empty-state-submessage {
+    -fx-font-size: 13px;
+    -fx-text-fill: -optica-text-secondary;
+    -fx-opacity: 0.5;
+}
+
+.empty-state-actions {
+    -fx-alignment: center;
+    -fx-padding: 16px 0px 0px 0px;
+}
+
+/* ============================================================================
+   17. INICIO MODULE
+   ============================================================================ */
+
+.section-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-text-primary;
+    -fx-padding: 8px 0px 4px 0px;
+}
+
+.section-separator {
+    -fx-background-color: -optica-border-light;
+    -fx-pref-height: 1px;
+}
+
+.inicio-content-vbox {
+    -fx-spacing: 16px;
+    -fx-padding: 16px;
+}
+
+.inicio-left-column {
+    -fx-spacing: 12px;
+}
+
+.inicio-right-column {
+    -fx-spacing: 12px;
+}
+
+/* Alert rows */
+.alerta-row {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border-light;
+    -fx-border-width: 0px 0px 1px 0px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 10px 6px 10px;
+    -fx-spacing: 6px;
+}
+
+.alerta-row:hover {
+    -fx-background-color: derive(-optica-bg-surface, -3%);
+}
+
+.alerta-tipo {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-padding: 2px 8px 2px 8px;
+    -fx-background-radius: 4px;
+    -fx-min-width: 70px;
+    -fx-alignment: center;
+}
+
+.alerta-tipo.laboratorio {
+    -fx-background-color: -optica-danger;
+}
+
+.alerta-tipo.entrega {
+    -fx-background-color: -optica-success;
+}
+
+.alerta-tipo.caja {
+    -fx-background-color: -optica-warning;
+}
+
+.alerta-tipo.inventario {
+    -fx-background-color: -optica-danger;
+}
+
+.alerta-tipo.agenda {
+    -fx-background-color: -optica-info;
+}
+
+.alerta-texto {
+    -fx-font-size: 12px;
+    -fx-text-fill: -optica-text-primary;
+    -fx-wrap-text: true;
+}
+
+.alerta-estado {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-padding: 2px 8px 2px 8px;
+    -fx-background-radius: 4px;
+    -fx-alignment: center;
+}
+
+.alerta-estado.vencido {
+    -fx-background-color: -optica-danger;
+}
+
+.alerta-estado.listo {
+    -fx-background-color: -optica-success;
+}
+
+.alerta-estado.pendiente {
+    -fx-background-color: -optica-warning;
+}
+
+.alerta-estado.info {
+    -fx-background-color: -optica-info;
+}
+
+.alerta-estado.neutral {
+    -fx-background-color: -optica-text-secondary;
+}
+
+.actividad-item {
+    -fx-font-size: 12px;
+    -fx-text-fill: -optica-text-secondary;
+    -fx-wrap-text: true;
+    -fx-padding: 4px 0px 4px 8px;
+}
+
+/* ============================================================================
+   18. AGENDA MODULE
+   ============================================================================ */
+
+.agenda-timeline {
+    -fx-background-color: -optica-bg-surface;
+    -fx-padding: 8px;
+}
+
+.agenda-hour-column {
+    -fx-background-color: -optica-bg-surface;
+}
+
+.agenda-appointments-area {
+    -fx-background-color: -optica-bg-surface;
+    -fx-padding: 4px;
+}
+
+.agenda-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.agenda-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.agenda-hour-slot {
+    -fx-border-color: -optica-border-light;
+    -fx-border-width: 0px 0px 1px 0px;
+    -fx-background-color: -optica-bg-surface;
+    -fx-min-height: 60px;
+}
+
+.agenda-time-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-text-secondary;
+    -fx-padding: 0px 0px 4px 0px;
+}
+
+.agenda-cita-block {
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-border-width: 1px;
+    -fx-padding: 8px;
+    -fx-cursor: hand;
+    -fx-spacing: 4px;
+}
+
+.agenda-cita-block:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4px, 0px, 0px, 2px);
+}
+
+.agenda-cita-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-text-secondary;
+}
+
+.agenda-cita-value {
+    -fx-font-size: 12px;
+    -fx-text-fill: -optica-text-primary;
+}
+
+.agenda-cita-estado-badge {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 2px 6px 2px 6px;
+    -fx-background-radius: 4px;
+}
+
+.agenda-cita-title {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-text-primary;
+}
+
+.agenda-cita-detail {
+    -fx-font-size: 11px;
+    -fx-text-fill: -optica-text-secondary;
+}
+
+.agenda-cita-estado {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 2px 6px 2px 6px;
+    -fx-background-radius: 4px;
+}
+
+/* Agenda estado colors */
+.agenda-estado-confirmada {
+    -fx-background-color: derive(-optica-success, 85%);
+    -fx-border-color: -optica-success;
+}
+
+.agenda-estado-confirmada .agenda-cita-estado,
+.agenda-estado-confirmada .agenda-cita-estado-badge {
+    -fx-background-color: -optica-success;
+    -fx-text-fill: -optica-text-on-primary;
+}
+
+.agenda-estado-pendiente {
+    -fx-background-color: derive(-optica-warning, 85%);
+    -fx-border-color: -optica-warning;
+}
+
+.agenda-estado-pendiente .agenda-cita-estado,
+.agenda-estado-pendiente .agenda-cita-estado-badge {
+    -fx-background-color: -optica-warning;
+    -fx-text-fill: -optica-text-on-primary;
+}
+
+.agenda-estado-reprogramada {
+    -fx-background-color: derive(-optica-info, 85%);
+    -fx-border-color: -optica-info;
+}
+
+.agenda-estado-reprogramada .agenda-cita-estado,
+.agenda-estado-reprogramada .agenda-cita-estado-badge {
+    -fx-background-color: -optica-info;
+    -fx-text-fill: -optica-text-on-primary;
+}
+
+.agenda-estado-cancelada {
+    -fx-background-color: derive(-optica-danger, 85%);
+    -fx-border-color: -optica-danger;
+}
+
+.agenda-estado-cancelada .agenda-cita-estado,
+.agenda-estado-cancelada .agenda-cita-estado-badge {
+    -fx-background-color: -optica-danger;
+    -fx-text-fill: -optica-text-on-primary;
+}
+
+.agenda-estado-revision {
+    -fx-background-color: derive(-optica-primary, 85%);
+    -fx-border-color: -optica-primary;
+}
+
+.agenda-estado-revision .agenda-cita-estado,
+.agenda-estado-revision .agenda-cita-estado-badge {
+    -fx-background-color: -optica-primary;
+    -fx-text-fill: -optica-text-on-primary;
+}
+
+.agenda-estado-bloqueo {
+    -fx-background-color: derive(-optica-text-secondary, 85%);
+    -fx-border-color: -optica-text-secondary;
+}
+
+.agenda-estado-bloqueo .agenda-cita-estado,
+.agenda-estado-bloqueo .agenda-cita-estado-badge {
+    -fx-background-color: -optica-text-secondary;
+    -fx-text-fill: -optica-text-on-primary;
+}
+
+.agenda-estado-neutral {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+}
+
+.agenda-estado-neutral .agenda-cita-estado,
+.agenda-estado-neutral .agenda-cita-estado-badge {
+    -fx-background-color: -optica-text-secondary;
+    -fx-text-fill: -optica-text-on-primary;
+}
+
+/* Agenda week view */
+.agenda-weekday-column {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.agenda-weekday-name {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-text-primary;
+}
+
+.agenda-weekday-total {
+    -fx-font-size: 12px;
+    -fx-text-fill: -optica-text-secondary;
+}
+
+.agenda-summary-card {
+    -fx-background-color: -optica-bg-general;
+    -fx-border-color: -optica-border-light;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.agenda-summary-item {
+    -fx-font-size: 11px;
+    -fx-text-fill: -optica-text-secondary;
+}
+
+/* Agenda horario general */
+.agenda-horario-general-container {
+    -fx-padding: 8px;
+}
+
+.agenda-horario-general-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-text-primary;
+}
+
+.agenda-horario-general {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.agenda-horario-row {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border-light;
+    -fx-border-width: 0px 0px 1px 0px;
+}
+
+.agenda-bloqueo-row {
+    -fx-background-color: derive(-optica-text-secondary, 90%);
+    -fx-border-color: -optica-border;
+    -fx-border-width: 0px 0px 1px 0px;
+}
+
+.agenda-horario-franja {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-text-primary;
+    -fx-min-width: 100px;
+}
+
+.agenda-horario-tipo {
+    -fx-font-size: 11px;
+    -fx-text-fill: -optica-text-secondary;
+    -fx-min-width: 100px;
+}
+
+.agenda-horario-estado {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-primary;
+}
+
+/* ============================================================================
+   19. CONFIGURACION MODULE
+   ============================================================================ */
+
+.config-category-list {
+    -fx-spacing: 2px;
+}
+
+.config-category-item {
+    -fx-font-size: 12px;
+    -fx-padding: 8px 12px 8px 12px;
+    -fx-cursor: hand;
+}
+
+.config-category-item:hover {
+    -fx-background-color: derive(-optica-bg-surface, -5%);
+}
+
+.config-category-item:selected {
+    -fx-background-color: -optica-primary;
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-font-weight: bold;
+}
+
+.config-section-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -optica-text-primary;
+    -fx-padding: 0px 0px 12px 0px;
+}
+
+.config-form-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: -optica-text-secondary;
+}
+
+.config-form-value {
+    -fx-font-size: 12px;
+    -fx-text-fill: -optica-text-primary;
+}
+
+/* ============================================================================
+   20. HYPERLINK
+   ============================================================================ */
+
+.hyperlink {
+    -fx-text-fill: -optica-primary;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-padding: 2px 4px 2px 4px;
+}
+
+.hyperlink:hover {
+    -fx-text-fill: -optica-primary-dark;
+    -fx-underline: true;
+}
+
+.hyperlink:visited {
+    -fx-text-fill: -optica-secondary;
+}
+
+.hyperlink:focus {
+    -fx-border-color: -optica-primary;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+/* ============================================================================
+   21. TOOLTIP
+   ============================================================================ */
+
+.tooltip {
+    -fx-background-color: -optica-bg-sidebar;
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-font-size: 11px;
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 10px 6px 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6px, 0px, 0px, 2px);
+}
+
+/* ============================================================================
+   22. CONTEXT MENU
+   ============================================================================ */
+
+.context-menu {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 4px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8px, 0px, 0px, 2px);
+}
+
+.context-menu .menu-item {
+    -fx-padding: 6px 12px 6px 12px;
+    -fx-cursor: hand;
+}
+
+.context-menu .menu-item:hover {
+    -fx-background-color: derive(-optica-bg-surface, -5%);
+    -fx-background-radius: 4px;
+}
+
+.context-menu .menu-item .label {
+    -fx-text-fill: -optica-text-primary;
+    -fx-font-size: 12px;
+}
+
+.context-menu .separator .line {
+    -fx-border-color: -optica-border-light;
+    -fx-border-width: 1px 0px 0px 0px;
+}
+
+/* ============================================================================
+   23. MENU BAR
+   ============================================================================ */
+
+.menu-bar {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: transparent transparent -optica-border transparent;
+    -fx-border-width: 0px 0px 1px 0px;
+}
+
+.menu-bar .menu {
+    -fx-padding: 8px 12px 8px 12px;
+    -fx-cursor: hand;
+}
+
+.menu-bar .menu:hover {
+    -fx-background-color: derive(-optica-bg-surface, -5%);
+    -fx-background-radius: 4px;
+}
+
+.menu-bar .menu .label {
+    -fx-text-fill: -optica-text-primary;
+    -fx-font-size: 12px;
+}
+
+/* ============================================================================
+   24. DIALOG / ALERT
+   ============================================================================ */
+
+.dialog-pane {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: -optica-bg-surface;
+    -fx-padding: 16px 20px 16px 20px;
+}
+
+.dialog-pane .header-panel .label {
+    -fx-text-fill: -optica-text-primary;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.dialog-pane .content {
+    -fx-padding: 0px 20px 16px 20px;
+}
+
+.dialog-pane .content .label {
+    -fx-text-fill: -optica-text-secondary;
+    -fx-font-size: 13px;
+}
+
+.dialog-pane .button-bar {
+    -fx-padding: 0px 20px 16px 20px;
+}
+
+/* ============================================================================
+   25. COLOR PICKER
+   ============================================================================ */
+
+.color-picker {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.color-picker:hover {
+    -fx-border-color: -optica-primary;
+}
+
+.color-picker:focused {
+    -fx-border-color: -optica-primary;
+    -fx-effect: dropshadow(gaussian, rgba(43, 91, 110, 0.15), 4px, 0px, 0px, 0px);
+}
+
+.color-picker .color-label {
+    -fx-text-fill: -optica-text-primary;
+    -fx-font-size: 12px;
+}
+
+/* ============================================================================
+   26. HTMLEditor (if used)
+   ============================================================================ */
+
+.html-editor {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.html-editor:focused {
+    -fx-border-color: -optica-primary;
+    -fx-effect: dropshadow(gaussian, rgba(43, 91, 110, 0.15), 4px, 0px, 0px, 0px);
+}
+
+.html-editor .top-toolbar,
+.html-editor .bottom-toolbar {
+    -fx-background-color: -optica-bg-general;
+    -fx-border-color: -optica-border-light;
+    -fx-padding: 4px;
+}
+
+/* ============================================================================
+   27. CHOICE BOX
+   ============================================================================ */
+
+.choice-box {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 4px 8px 4px 8px;
+}
+
+.choice-box:hover {
+    -fx-border-color: -optica-primary;
+}
+
+.choice-box:focused {
+    -fx-border-color: -optica-primary;
+    -fx-effect: dropshadow(gaussian, rgba(43, 91, 110, 0.15), 4px, 0px, 0px, 0px);
+}
+
+.choice-box .label {
+    -fx-text-fill: -optica-text-primary;
+    -fx-font-size: 13px;
+}
+
+.choice-box .context-menu {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+/* ============================================================================
+   28. MENUBUTTON & SPLITMENUBUTTON
+   ============================================================================ */
+
+.menu-button {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 12px 6px 12px;
+    -fx-cursor: hand;
+}
+
+.menu-button:hover {
+    -fx-background-color: derive(-optica-bg-surface, -5%);
+    -fx-border-color: -optica-primary;
+}
+
+.menu-button .label {
+    -fx-text-fill: -optica-text-primary;
+    -fx-font-size: 13px;
+}
+
+.menu-button .arrow {
+    -fx-background-color: -optica-text-secondary;
+}
+
+.split-menu-button {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.split-menu-button .label {
+    -fx-text-fill: -optica-text-primary;
+    -fx-font-size: 13px;
+}
+
+.split-menu-button .arrow-button {
+    -fx-background-color: derive(-optica-bg-surface, -3%);
+    -fx-border-color: -optica-border-light transparent -optica-border-light -optica-border-light;
+    -fx-border-width: 0px 0px 0px 1px;
+}
+
+.split-menu-button .arrow {
+    -fx-background-color: -optica-text-secondary;
+}

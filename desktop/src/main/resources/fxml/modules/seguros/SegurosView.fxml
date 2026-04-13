@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.modules.seguros.SegurosController"
+            styleClass="app-root">
+
+    <!-- ===== TOP ===== -->
+    <top>
+        <VBox spacing="12" BorderPane.alignment="CENTER">
+
+            <!-- Title bar -->
+            <HBox spacing="16" alignment="CENTER_LEFT" styleClass="topbar">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Seguros" styleClass="topbar-title"/>
+                    <Label text="Gestion de coberturas, planes, autorizaciones, reclamos, respuestas, cobertura aplicada e historico" styleClass="topbar-subtitle"/>
+                </VBox>
+                <HBox spacing="8" alignment="CENTER_RIGHT">
+                    <Button fx:id="nuevaVerificacionBtn" text="Nueva verificacion" styleClass="btn-primary"/>
+                    <Button fx:id="actualizarSegurosBtn" text="Actualizar seguros" styleClass="btn-secondary"/>
+                    <Button fx:id="exportarSegurosBtn" text="Exportar seguros" styleClass="btn-secondary"/>
+                </HBox>
+            </HBox>
+
+            <!-- Filter bar -->
+            <FlowPane hgap="10" vgap="8" styleClass="filter-bar" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Referencia, cliente o plan" prefWidth="260" styleClass="filter-field"/>
+                <ComboBox fx:id="estadoCombo" promptText="Estado" prefWidth="170" styleClass="filter-combo"/>
+                <ComboBox fx:id="planConvenioCombo" promptText="Plan convenio" prefWidth="180" styleClass="filter-combo"/>
+                <ComboBox fx:id="tipoCasoCombo" promptText="Tipo caso" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="sucursalCombo" promptText="Sucursal" prefWidth="150" styleClass="filter-combo"/>
+                <DatePicker fx:id="desdePicker" promptText="Desde" prefWidth="130"/>
+                <DatePicker fx:id="hastaPicker" promptText="Hasta" prefWidth="130"/>
+                <CheckBox fx:id="soloCasosPendientesCheck" text="Solo casos pendientes"/>
+                <Button fx:id="limpiarFiltrosBtn" text="Limpiar filtros" styleClass="btn-filter-clear"/>
+            </FlowPane>
+
+            <!-- Sub-view toggle buttons -->
+            <HBox spacing="6" alignment="CENTER_LEFT" style="-fx-padding: 0 0 4 0;">
+                <ToggleButton fx:id="btnVerificacion" text="Verificacion cobertura" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnPlanes" text="Planes y convenios" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnAutorizaciones" text="Autorizaciones" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnReclamos" text="Reclamos" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnRespuestas" text="Respuestas" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnCoberturaVenta" text="Cobertura en venta" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnHistorico" text="Historico" styleClass="subview-toggle"/>
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <!-- ===== CENTER ===== -->
+    <center>
+        <VBox spacing="12" style="-fx-padding: 8;">
+
+            <!-- Sub-views -->
+            <VBox VBox.vgrow="ALWAYS" style="-fx-padding: 0 0 0 0;">
+
+                <!-- Sub-view 1: Verificacion de cobertura -->
+                <VBox fx:id="sectionVerificacion" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="summary-header">
+                        <Label text="Verificacion de cobertura" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblVerificacionCount" text="0 verificaciones visibles" styleClass="topbar-subtitle"/>
+                    </HBox>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="verificacionTable">
+                            <columns>
+                                <TableColumn fx:id="colVReferencia" text="Referencia" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colVCliente" text="Cliente" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colVPlan" text="Plan convenio" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colVEstado" text="Estado" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colVVigencia" text="Vigencia" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colVMonto" text="Monto disp." prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colVSucursal" text="Sucursal" prefWidth="110" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <fx:include fx:id="paginationBar" source="/fxml/shared/components/PaginationBar.fxml"/>
+
+                    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="pagination-bar">
+                        <Label fx:id="footerVerificacion" text="Mostrando 0 de 0 verificaciones" styleClass="pagination-label"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 2: Planes convenios y beneficios -->
+                <VBox fx:id="sectionPlanes" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Planes convenios y beneficios" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="planesTable">
+                            <columns>
+                                <TableColumn fx:id="colPNombre" text="Nombre" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colPVigencia" text="Vigencia general" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colPCobertura" text="Cobertura maxima" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colPCopago" text="Copago" prefWidth="80" resizable="true"/>
+                                <TableColumn fx:id="colPCategorias" text="Categorias cubiertas" prefWidth="200" resizable="true"/>
+                                <TableColumn fx:id="colPRestricciones" text="Restricciones" prefWidth="200" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 3: Autorizaciones y validaciones -->
+                <VBox fx:id="sectionAutorizaciones" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Autorizaciones y validaciones" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="autorizacionesTable">
+                            <columns>
+                                <TableColumn fx:id="colAAutorizacion" text="Autorizacion" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colACliente" text="Cliente" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colAPlan" text="Plan" prefWidth="150" resizable="true"/>
+                                <TableColumn fx:id="colAFecha" text="Fecha" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colAEstado" text="Estado" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colAObservacion" text="Observacion" prefWidth="250" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 4: Reclamos/claims -->
+                <VBox fx:id="sectionReclamos" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Reclamos / Claims" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="reclamosTable">
+                            <columns>
+                                <TableColumn fx:id="colRReclamo" text="Reclamo" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colRCliente" text="Cliente" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colROrden" text="Orden relacionada" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colRMonto" text="Monto reclamado" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colREstado" text="Estado" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colRFechaEnvio" text="Fecha envio" prefWidth="110" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 5: Respuestas observaciones y rechazos -->
+                <VBox fx:id="sectionRespuestas" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Respuestas, observaciones y rechazos" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="respuestasTable">
+                            <columns>
+                                <TableColumn fx:id="colRSFecha" text="Fecha" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colRSReferencia" text="Referencia" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colRSTipo" text="Tipo respuesta" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colRSEstado" text="Estado" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colRSResultado" text="Resultado" prefWidth="300" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 6: Cobertura aplicada a venta -->
+                <VBox fx:id="sectionCoberturaVenta" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Cobertura aplicada a venta" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="coberturaVentaTable">
+                            <columns>
+                                <TableColumn fx:id="colCVVenta" text="Venta" prefWidth="80" resizable="true"/>
+                                <TableColumn fx:id="colCVCliente" text="Cliente" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colCVPlan" text="Plan aplicado" prefWidth="150" resizable="true"/>
+                                <TableColumn fx:id="colCVMonto" text="Monto cubierto" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colCVCopago" text="Copago" prefWidth="80" resizable="true"/>
+                                <TableColumn fx:id="colCVSaldo" text="Saldo cliente" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colCVEstado" text="Estado" prefWidth="120" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 7: Historico -->
+                <VBox fx:id="sectionHistorico" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Historico de casos de seguros" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="historicoTable">
+                            <columns>
+                                <TableColumn fx:id="colHFecha" text="Fecha" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colHReferencia" text="Referencia" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colHCliente" text="Cliente" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colHTipoCaso" text="Tipo caso" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colHEstadoFinal" text="Estado final" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colHObservacion" text="Observacion" prefWidth="250" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="pagination-bar">
+                        <Label fx:id="footerHistorico" text="Total registros: 0" styleClass="pagination-label"/>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+
+            <Separator/>
+
+            <!-- RIGHT: Persistent coverage case summary panel -->
+            <VBox spacing="12" style="-fx-padding: 0;">
+
+                <!-- Header -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label text="Resumen del caso" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <Label text="Identidad del caso de cobertura" styleClass="topbar-subtitle"/>
+                </VBox>
+
+                <!-- Identity fields -->
+                <VBox spacing="6" styleClass="summary-fields-container">
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Referencia:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryReferencia" text="CB-001" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Tipo caso:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryTipoCaso" text="Verificacion de cobertura" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Plan convenio:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryPlanConvenio" text="Convenio Visual Plus" styleClass="summary-field-value"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Contexto del cliente -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label text="Contexto del cliente" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                </VBox>
+
+                <VBox spacing="6" styleClass="summary-fields-container">
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Cliente:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryCliente" text="Sofia Ramirez" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Sucursal:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summarySucursal" text="Matriz Centro" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Vigencia:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryVigencia" text="31/12/2026" styleClass="summary-field-value"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Estado del caso -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label text="Estado del caso" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                </VBox>
+
+                <VBox spacing="6" styleClass="summary-fields-container">
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Estado actual:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryEstadoActual" text="Cobertura activa" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Autorizacion:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryAutorizacion" text="AU-014 - Autorizada" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Reclamo asociado:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryReclamoAsociado" text="RC-022 - Reclamo enviado" styleClass="summary-field-value"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Datos economicos -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label text="Datos economicos" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                </VBox>
+
+                <VBox spacing="6" styleClass="summary-fields-container">
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Monto cubierto:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryMontoCubierto" text="80.00" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Copago:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryCopago" text="10.00" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Saldo cliente:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summarySaldoCliente" text="0.00" styleClass="summary-field-value"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Action buttons -->
+                <VBox spacing="6" style="-fx-padding: 8 0 0 0;">
+                    <Button fx:id="summaryBtnVerificar" text="Verificar cobertura" styleClass="btn-primary" maxWidth="Infinity"/>
+                    <Button fx:id="summaryBtnAutorizar" text="Solicitar autorizacion" styleClass="btn-secondary" maxWidth="Infinity"/>
+                    <Button fx:id="summaryBtnReclamar" text="Enviar reclamo" styleClass="btn-secondary" maxWidth="Infinity"/>
+                </VBox>
+
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

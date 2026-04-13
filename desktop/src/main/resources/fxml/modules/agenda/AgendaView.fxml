@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.modules.agenda.AgendaController"
+            styleClass="app-root">
+
+    <!-- ===== TOP ===== -->
+    <top>
+        <VBox spacing="10" BorderPane.alignment="CENTER">
+
+            <!-- Title bar -->
+            <HBox spacing="16" alignment="CENTER_LEFT" styleClass="topbar">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Agenda" styleClass="topbar-title"/>
+                    <Label text="Gestion de citas, horarios y bloqueos del dia a dia" styleClass="topbar-subtitle"/>
+                </VBox>
+                <HBox spacing="8" alignment="CENTER_RIGHT">
+                    <ComboBox fx:id="sucursalCombo" promptText="Sucursal" prefWidth="150" styleClass="topbar-combo"/>
+                    <Button fx:id="nuevaCitaBtn" text="Nueva cita" styleClass="btn-primary"/>
+                    <Button fx:id="actualizarAgendaBtn" text="Actualizar agenda" styleClass="btn-secondary"/>
+                </HBox>
+            </HBox>
+
+            <!-- Filter bar -->
+            <FlowPane hgap="10" vgap="8" styleClass="filter-bar" alignment="CENTER_LEFT">
+                <DatePicker fx:id="fechaPicker" promptText="Fecha" prefWidth="140"/>
+                <ComboBox fx:id="profesionalCombo" promptText="Profesional" prefWidth="160" styleClass="filter-combo"/>
+                <ComboBox fx:id="estadoCombo" promptText="Estado" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="atencionCombo" promptText="Atencion" prefWidth="150" styleClass="filter-combo"/>
+                <TextField fx:id="searchField" promptText="Buscar cliente o cita" prefWidth="220" styleClass="filter-field"/>
+                <Button fx:id="limpiarFiltrosBtn" text="Limpiar filtros" styleClass="btn-filter-clear"/>
+            </FlowPane>
+
+            <!-- Sub-view toggle buttons -->
+            <HBox spacing="6" alignment="CENTER_LEFT" style="-fx-padding: 0 0 4 0;">
+                <ToggleButton fx:id="btnDia" text="Dia" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnSemana" text="Semana" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnListaDia" text="Lista del dia" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnListaEspera" text="Lista de espera" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnConfirmaciones" text="Confirmaciones" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnHorarios" text="Horarios y bloqueos" styleClass="subview-toggle"/>
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <!-- ===== CENTER ===== -->
+    <center>
+        <VBox spacing="12" style="-fx-padding: 8;">
+
+            <!-- Sub-views -->
+            <VBox VBox.vgrow="ALWAYS" style="-fx-padding: 0 0 0 0;">
+
+                <!-- Sub-view 1: Dia - Visual day timeline -->
+                <VBox fx:id="sectionDia" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="summary-header">
+                        <Label text="Vista del dia" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+                    </HBox>
+
+                    <!-- HBox: left time column + right scrollable appointments area -->
+                    <HBox spacing="0" VBox.vgrow="ALWAYS">
+                        <!-- Left: Time labels column (80px min width) -->
+                        <VBox fx:id="diaHourColumn" minWidth="80" maxWidth="80" spacing="0"
+                              styleClass="agenda-hour-column" style="-fx-padding: 0 8 0 0;"/>
+
+                        <!-- Right: Scrollable appointments area -->
+                        <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED" HBox.hgrow="ALWAYS"
+                                    styleClass="agenda-scroll-pane">
+                            <VBox fx:id="diaAppointmentsArea" spacing="4" styleClass="agenda-appointments-area"
+                                  style="-fx-padding: 0 8 0 0;"/>
+                        </ScrollPane>
+                    </HBox>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
+                        <Button fx:id="btnNuevaCitaDia" text="Nueva cita" styleClass="btn-primary"/>
+                        <Button fx:id="btnActualizarAgendaDia" text="Actualizar agenda" styleClass="btn-secondary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 2: Semana -->
+                <VBox fx:id="sectionSemana" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Vista semanal" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <GridPane fx:id="semanaGrid" hgap="8" vgap="8" style="-fx-padding: 8;">
+                            <!-- Week columns populated by controller -->
+                        </GridPane>
+                    </ScrollPane>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
+                        <Button fx:id="btnIrAlDia" text="Ir al dia seleccionado" styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 3: Lista del dia -->
+                <VBox fx:id="sectionListaDia" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="summary-header">
+                        <Label text="Lista de citas del dia" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblListaDiaCount" text="0 citas para el dia" styleClass="topbar-subtitle"/>
+                    </HBox>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="listaDiaTable">
+                            <columns>
+                                <TableColumn fx:id="colLDHora" text="Hora" prefWidth="70" resizable="true"/>
+                                <TableColumn fx:id="colLDCliente" text="Cliente" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colLDAtencion" text="Atencion" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colLDEstado" text="Estado" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colLDProfesional" text="Profesional" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colLDSucursal" text="Sucursal" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colLDObservacion" text="Observacion" prefWidth="180" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
+                        <Button fx:id="btnVerDia" text="Ver dia" styleClass="btn-secondary"/>
+                        <Button fx:id="btnNuevaCitaLista" text="Nueva cita" styleClass="btn-primary"/>
+                        <Button fx:id="btnExportarAgenda" text="Exportar agenda" styleClass="btn-secondary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 4: Lista de espera -->
+                <VBox fx:id="sectionListaEspera" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="summary-header">
+                        <Label text="Lista de espera" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblEsperaCount" text="0 en lista de espera" styleClass="topbar-subtitle"/>
+                    </HBox>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="esperaTable">
+                            <columns>
+                                <TableColumn fx:id="colECliente" text="Cliente" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colEAtencion" text="Atencion solicitada" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colEFranja" text="Franja preferida" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colESucursal" text="Sucursal" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colEPrioridad" text="Prioridad" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colEEstadoContacto" text="Estado contacto" prefWidth="180" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
+                        <Button fx:id="btnAsignarCupo" text="Asignar cupo" styleClass="btn-primary"/>
+                        <Button fx:id="btnContactarCliente" text="Contactar cliente" styleClass="btn-secondary"/>
+                        <Button fx:id="btnEliminarEspera" text="Eliminar de espera" styleClass="btn-secondary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 5: Confirmaciones -->
+                <VBox fx:id="sectionConfirmaciones" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="summary-header">
+                        <Label text="Confirmaciones pendientes" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblConfirmacionesCount" text="0 citas pendientes de confirmacion" styleClass="topbar-subtitle"/>
+                    </HBox>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="confirmacionesTable">
+                            <columns>
+                                <TableColumn fx:id="colCFecha" text="Fecha" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colCHora" text="Hora" prefWidth="70" resizable="true"/>
+                                <TableColumn fx:id="colCCliente" text="Cliente" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colCAtencion" text="Atencion" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colCEstado" text="Estado confirmacion" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colCRecordatorio" text="Ultimo recordatorio" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colCSucursal" text="Sucursal" prefWidth="110" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
+                        <Button fx:id="btnMarcarConfirmada" text="Marcar confirmada" styleClass="btn-primary"/>
+                        <Button fx:id="btnEnviarRecordatorio" text="Enviar recordatorio" styleClass="btn-secondary"/>
+                        <Button fx:id="btnReprogramarCita" text="Reprogramar cita" styleClass="btn-secondary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 6: Horarios y bloqueos -->
+                <VBox fx:id="sectionHorarios" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Horarios y bloqueos" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <!-- Horario general block -->
+                    <VBox fx:id="horarioGeneralContainer" spacing="4" styleClass="agenda-horario-general-container">
+                        <!-- Populated by controller -->
+                    </VBox>
+
+                    <!-- Bloqueos table -->
+                    <Label text="Bloqueos registrados" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 8 0 0 0;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="bloqueosTable">
+                            <columns>
+                                <TableColumn fx:id="colBFranja" text="Franja" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colBTipo" text="Tipo" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colBEstado" text="Estado" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colBResponsable" text="Responsable" prefWidth="180" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
+                        <Button fx:id="btnRegistrarBloqueo" text="Registrar bloqueo" styleClass="btn-primary"/>
+                        <Button fx:id="btnEditarHorario" text="Editar horario" styleClass="btn-secondary"/>
+                        <Button fx:id="btnQuitarBloqueo" text="Quitar bloqueo" styleClass="btn-secondary"/>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+
+            <Separator/>
+
+            <!-- RIGHT: Persistent appointment detail panel -->
+            <VBox spacing="12" style="-fx-padding: 0;">
+
+                <!-- Header -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label text="Detalle de cita" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <Label text="Informacion de la cita seleccionada" styleClass="topbar-subtitle"/>
+                </VBox>
+
+                <!-- Identity fields -->
+                <VBox spacing="6" styleClass="summary-fields-container">
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Cliente:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryCliente" text="Sofia Ramirez" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Hora:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryHora" text="09:00" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Fecha:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryFechaCita" text="12/04/2026" styleClass="summary-field-value"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Atencion details -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label text="Atencion" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                </VBox>
+
+                <VBox spacing="6" styleClass="summary-fields-container">
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Atencion:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryAtencion" text="Examen visual" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Estado:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryEstado" text="Confirmada" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Profesional:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryProfesional" text="Dra. Salazar" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Sucursal:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summarySucursal" text="Matriz Centro" styleClass="summary-field-value"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Contacto y observaciones -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label text="Contacto y observaciones" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                </VBox>
+
+                <VBox spacing="6" styleClass="summary-fields-container">
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Contacto:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryContacto" text="099-123-4567" styleClass="summary-field-value"/>
+                    </HBox>
+                    <VBox spacing="4" style="-fx-padding: 4 0 0 0;">
+                        <Label text="Observaciones:" styleClass="summary-field-label"/>
+                        <Label fx:id="summaryObservaciones" text="Paciente refiere leve molestia en ojo izquierdo"
+                               styleClass="summary-field-value" wrapText="true"/>
+                    </VBox>
+                </VBox>
+
+                <!-- Action buttons -->
+                <VBox spacing="6" styleClass="summary-fields-container" style="-fx-padding: 8 0 0 0;">
+                    <Button fx:id="summaryBtnEditar" text="Editar cita" styleClass="btn-primary" maxWidth="Infinity"/>
+                    <Button fx:id="summaryBtnConfirmar" text="Confirmar cita" styleClass="btn-secondary" maxWidth="Infinity"/>
+                    <Button fx:id="summaryBtnReprogramar" text="Reprogramar" styleClass="btn-secondary" maxWidth="Infinity"/>
+                    <Button fx:id="summaryBtnCancelar" text="Cancelar cita" styleClass="btn-secondary" maxWidth="Infinity"/>
+                    <Button fx:id="summaryBtnAtendida" text="Marcar como atendida" styleClass="btn-secondary" maxWidth="Infinity"/>
+                    <Button fx:id="summaryBtnAbrirCliente" text="Abrir cliente" styleClass="btn-secondary" maxWidth="Infinity"/>
+                </VBox>
+
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

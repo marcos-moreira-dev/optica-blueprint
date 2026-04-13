@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.modules.ventaoptica.VentaOpticaController"
+            styleClass="app-root">
+
+    <!-- ===== TOP ===== -->
+    <top>
+        <VBox spacing="0" BorderPane.alignment="CENTER">
+
+            <!-- Title bar -->
+            <HBox spacing="16" alignment="CENTER_LEFT" styleClass="topbar">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label fx:id="topbarTitle" text="Venta Optica" styleClass="topbar-title"/>
+                    <Label fx:id="topbarSubtitle" text="Wizard de 7 etapas: Cliente, Receta, Montura, Lentes, Medidas, Cobro y Confirmacion"
+                           styleClass="topbar-subtitle"/>
+                </VBox>
+                <HBox spacing="8" alignment="CENTER_RIGHT">
+                    <Button fx:id="nuevaOrdenBtn" text="Nueva orden" styleClass="btn-primary"/>
+                    <Button fx:id="guardarBorradorBtn" text="Guardar borrador" styleClass="btn-secondary"/>
+                    <Button fx:id="cancelarOrdenBtn" text="Cancelar orden" styleClass="btn-danger"/>
+                </HBox>
+            </HBox>
+
+            <!-- Order context bar -->
+            <HBox spacing="24" alignment="CENTER_LEFT" style="-fx-padding: 10 20 10 20; -fx-background-color: -optica-bg-surface; -fx-border-color: transparent transparent -optica-border transparent; -fx-border-width: 0 0 1 0;">
+                <VBox spacing="2">
+                    <Label text="Cliente" style="-fx-font-size: 10px; -fx-text-fill: -optica-text-secondary;"/>
+                    <Label fx:id="ctxCliente" text="-" style="-fx-font-size: 12px; -fx-font-weight: bold;"/>
+                </VBox>
+                <Separator orientation="VERTICAL" prefHeight="30"/>
+                <VBox spacing="2">
+                    <Label text="Codigo de orden" style="-fx-font-size: 10px; -fx-text-fill: -optica-text-secondary;"/>
+                    <Label fx:id="ctxCodigoOrden" text="-" style="-fx-font-size: 12px; -fx-font-weight: bold;"/>
+                </VBox>
+                <Separator orientation="VERTICAL" prefHeight="30"/>
+                <VBox spacing="2">
+                    <Label text="Sucursal" style="-fx-font-size: 10px; -fx-text-fill: -optica-text-secondary;"/>
+                    <Label fx:id="ctxSucursal" text="-" style="-fx-font-size: 12px;"/>
+                </VBox>
+                <Separator orientation="VERTICAL" prefHeight="30"/>
+                <VBox spacing="2">
+                    <Label text="Estado" style="-fx-font-size: 10px; -fx-text-fill: -optica-text-secondary;"/>
+                    <Label fx:id="ctxEstado" text="BORRADOR" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: -optica-warning;"/>
+                </VBox>
+                <Separator orientation="VERTICAL" prefHeight="30"/>
+                <VBox spacing="2">
+                    <Label text="Receta aplicada" style="-fx-font-size: 10px; -fx-text-fill: -optica-text-secondary;"/>
+                    <Label fx:id="ctxReceta" text="-" style="-fx-font-size: 12px;"/>
+                </VBox>
+                <Separator orientation="VERTICAL" prefHeight="30"/>
+                <VBox spacing="2">
+                    <Label text="Responsable" style="-fx-font-size: 10px; -fx-text-fill: -optica-text-secondary;"/>
+                    <Label fx:id="ctxResponsable" text="-" style="-fx-font-size: 12px;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Stage navigation buttons -->
+            <HBox spacing="6" alignment="CENTER_LEFT" style="-fx-padding: 10 20 10 20; -fx-background-color: -optica-bg-surface; -fx-border-color: transparent transparent -optica-border transparent; -fx-border-width: 0 0 1 0;">
+                <ToggleButton fx:id="stageClienteBtn" text="1. Cliente" styleClass="btn-stage" prefWidth="110"/>
+                <ToggleButton fx:id="stageRecetaBtn" text="2. Receta" styleClass="btn-stage" prefWidth="110"/>
+                <ToggleButton fx:id="stageMonturaBtn" text="3. Montura" styleClass="btn-stage" prefWidth="110"/>
+                <ToggleButton fx:id="stageLentesBtn" text="4. Lentes" styleClass="btn-stage" prefWidth="110"/>
+                <ToggleButton fx:id="stageMedidasBtn" text="5. Medidas" styleClass="btn-stage" prefWidth="110"/>
+                <ToggleButton fx:id="stageCobroBtn" text="6. Cobro" styleClass="btn-stage" prefWidth="110"/>
+                <ToggleButton fx:id="stageConfirmacionBtn" text="7. Confirmacion" styleClass="btn-stage" prefWidth="130"/>
+                <Region HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <!-- ===== CENTER ===== -->
+    <center>
+        <HBox spacing="0" styleClass="content-host">
+
+            <!-- LEFT: Stage content host (VBox with show/hide sections) -->
+            <VBox fx:id="ventaContentHostPane" spacing="0" HBox.hgrow="ALWAYS" style="-fx-padding: 0 8 0 0;">
+
+                <!-- ==================== STAGE 1: CLIENTE ==================== -->
+                <VBox fx:id="stage1Content" spacing="12" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <Label text="Buscar cliente" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8 0 0 0;"/>
+                    <FlowPane hgap="10" vgap="8" styleClass="filter-bar" alignment="CENTER_LEFT">
+                        <TextField fx:id="clienteSearchField" promptText="Buscar por nombre, codigo o telefono..." prefWidth="320" styleClass="filter-field"/>
+                    </FlowPane>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="clientesTable">
+                            <columns>
+                                <TableColumn fx:id="colClienteNombre" text="Cliente" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colClienteCodigo" text="Codigo" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colClienteTelefono" text="Telefono" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colClienteUltimaVisita" text="Ultima visita" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colClienteEstado" text="Estado" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colClienteSucursal" text="Sucursal" prefWidth="120" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                    <HBox spacing="8" alignment="CENTER_RIGHT" style="-fx-padding: 8 0 0 0;">
+                        <Button fx:id="btnSeleccionarCliente" text="Seleccionar cliente y continuar" styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- ==================== STAGE 2: RECETA ==================== -->
+                <VBox fx:id="stage2Content" spacing="12" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <Label text="Seleccionar receta" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8 0 0 0;"/>
+                    <Label text="Recetas disponibles para el cliente seleccionado" style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="recetasTable">
+                            <columns>
+                                <TableColumn fx:id="colRecetaFecha" text="Fecha" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colRecetaEstado" text="Estado" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colRecetaProfesional" text="Profesional" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colRecetaOD" text="OD Resumen" prefWidth="200" resizable="true"/>
+                                <TableColumn fx:id="colRecetaOI" text="OI Resumen" prefWidth="200" resizable="true"/>
+                                <TableColumn fx:id="colRecetaPD" text="DP" prefWidth="60" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                    <HBox spacing="8" alignment="CENTER_RIGHT" style="-fx-padding: 8 0 0 0;">
+                        <Button fx:id="btnSeleccionarReceta" text="Seleccionar receta y continuar" styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- ==================== STAGE 3: MONTURA ==================== -->
+                <VBox fx:id="stage3Content" spacing="12" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <Label text="Catalogo de monturas" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8 0 0 0;"/>
+                    <FlowPane hgap="10" vgap="8" styleClass="filter-bar" alignment="CENTER_LEFT">
+                        <ComboBox fx:id="monturaMarcaCombo" promptText="Marca" prefWidth="150" styleClass="filter-combo"/>
+                        <ComboBox fx:id="monturaMaterialCombo" promptText="Material" prefWidth="150" styleClass="filter-combo"/>
+                    </FlowPane>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="monturasTable">
+                            <columns>
+                                <TableColumn fx:id="colMonturaRef" text="Referencia" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colMonturaNombre" text="Nombre" prefWidth="180" resizable="true"/>
+                                <TableColumn fx:id="colMonturaMarca" text="Marca" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colMonturaColor" text="Color" prefWidth="80" resizable="true"/>
+                                <TableColumn fx:id="colMonturaPrecio" text="Precio" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colMonturaStock" text="Stock" prefWidth="60" resizable="true"/>
+                                <TableColumn fx:id="colMonturaSucursal" text="Sucursal" prefWidth="120" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                    <HBox spacing="8" alignment="CENTER_RIGHT" style="-fx-padding: 8 0 0 0;">
+                        <Button fx:id="btnSeleccionarMontura" text="Seleccionar montura y continuar" styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- ==================== STAGE 4: LENTES ==================== -->
+                <VBox fx:id="stage4Content" spacing="16" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <Label text="Configuracion de lentes" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8 0 0 0;"/>
+
+                    <VBox spacing="12" styleClass="summary-panel">
+                        <Label text="Tipo de lente" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <VBox spacing="4">
+                                <Label text="Tipo:" style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                                <ComboBox fx:id="lenteTipoCombo" promptText="Seleccionar tipo" prefWidth="200"/>
+                            </VBox>
+                            <VBox spacing="4">
+                                <Label text="Indice de refraccion:" style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                                <ComboBox fx:id="lenteIndiceCombo" promptText="Indice" prefWidth="120"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <VBox spacing="12" styleClass="summary-panel">
+                        <Label text="Tratamientos adicionales" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                        <VBox spacing="8">
+                            <CheckBox fx:id="chkAntirreflejo" text="Antirreflejo"/>
+                            <CheckBox fx:id="chkFotocromatico" text="Fotocromatico"/>
+                            <CheckBox fx:id="chkBlueCut" text="Blue Cut (filtro luz azul)"/>
+                            <CheckBox fx:id="chkPolarizado" text="Polarizado"/>
+                        </VBox>
+                    </VBox>
+
+                    <HBox spacing="8" alignment="CENTER_RIGHT" style="-fx-padding: 8 0 0 0;">
+                        <Button fx:id="btnConfirmarLente" text="Confirmar lente y continuar" styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- ==================== STAGE 5: MEDIDAS ==================== -->
+                <VBox fx:id="stage5Content" spacing="16" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <Label text="Medidas opticas" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8 0 0 0;"/>
+
+                    <VBox spacing="12" styleClass="summary-panel">
+                        <Label text="Parametros de montaje" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                        <GridPane hgap="16" vgap="12">
+                            <Label text="Distancia pupilar (PD):" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <TextField fx:id="pdField" promptText="Ej: 62" prefWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                            <Label text="Altura de montaje:" GridPane.columnIndex="0" GridPane.rowIndex="1"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <TextField fx:id="alturaMontajeField" promptText="Ej: 30" prefWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                            <Label text="Distancia vertex:" GridPane.columnIndex="0" GridPane.rowIndex="2"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <TextField fx:id="distanciaVertexField" promptText="Ej: 12" prefWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                            <Label text="Angulo pantoscopico:" GridPane.columnIndex="0" GridPane.rowIndex="3"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <TextField fx:id="anguloPantoscopicoField" promptText="Ej: 8" prefWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                        </GridPane>
+                    </VBox>
+
+                    <HBox spacing="8" alignment="CENTER_RIGHT" style="-fx-padding: 8 0 0 0;">
+                        <Button fx:id="btnConfirmarMedidas" text="Confirmar medidas y continuar" styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- ==================== STAGE 6: COBRO ==================== -->
+                <VBox fx:id="stage6Content" spacing="16" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <Label text="Cobro y pago" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8 0 0 0;"/>
+
+                    <VBox spacing="12" styleClass="summary-panel">
+                        <Label text="Resumen de precios" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                        <GridPane hgap="16" vgap="10">
+                            <Label text="Subtotal:" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <Label fx:id="lblSubtotal" text="110.00" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                                   style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+
+                            <Label text="Descuento:" GridPane.columnIndex="0" GridPane.rowIndex="1"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <Label fx:id="lblDescuento" text="5.00" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                                   style="-fx-font-size: 13px; -fx-text-fill: -optica-success;"/>
+
+                            <Separator GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2"
+                                       prefWidth="300" style="-fx-background-color: -optica-border;"/>
+
+                            <Label text="Total:" GridPane.columnIndex="0" GridPane.rowIndex="3"
+                                   style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                            <Label fx:id="lblTotal" text="105.00" GridPane.columnIndex="1" GridPane.rowIndex="3"
+                                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: -optica-primary;"/>
+
+                            <Label text="Abono:" GridPane.columnIndex="0" GridPane.rowIndex="4"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <TextField fx:id="abonoField" text="50.00" prefWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+                            <Separator GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2"
+                                       prefWidth="300" style="-fx-background-color: -optica-border;"/>
+
+                            <Label text="Saldo pendiente:" GridPane.columnIndex="0" GridPane.rowIndex="6"
+                                   style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                            <Label fx:id="lblSaldo" text="55.00" GridPane.columnIndex="1" GridPane.rowIndex="6"
+                                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: -optica-danger;"/>
+                        </GridPane>
+                    </VBox>
+
+                    <VBox spacing="12" styleClass="summary-panel">
+                        <Label text="Metodo de pago" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                        <ComboBox fx:id="metodoPagoCombo" promptText="Seleccionar metodo" prefWidth="220"/>
+                    </VBox>
+
+                    <HBox spacing="8" alignment="CENTER_RIGHT" style="-fx-padding: 8 0 0 0;">
+                        <Button fx:id="btnConfirmarCobro" text="Confirmar cobro y continuar" styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- ==================== STAGE 7: CONFIRMACION ==================== -->
+                <VBox fx:id="stage7Content" spacing="16" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <Label text="Confirmacion de orden" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8 0 0 0;"/>
+
+                    <VBox spacing="10" styleClass="summary-panel">
+                        <Label text="Detalle completo de la orden" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                        <GridPane hgap="16" vgap="8">
+                            <Label text="Cliente:" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <Label fx:id="confCliente" text="Sin seleccionar" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                                   style="-fx-font-size: 12px; -fx-font-weight: bold;"/>
+
+                            <Label text="Codigo:" GridPane.columnIndex="0" GridPane.rowIndex="1"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <Label fx:id="confCodigo" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                                   style="-fx-font-size: 12px;"/>
+
+                            <Label text="Receta:" GridPane.columnIndex="0" GridPane.rowIndex="2"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <Label fx:id="confReceta" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2"
+                                   style="-fx-font-size: 12px;"/>
+
+                            <Label text="Montura:" GridPane.columnIndex="0" GridPane.rowIndex="3"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <Label fx:id="confMontura" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3"
+                                   style="-fx-font-size: 12px;"/>
+
+                            <Label text="Lente:" GridPane.columnIndex="0" GridPane.rowIndex="4"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <Label fx:id="confLente" text="-" GridPane.columnIndex="1" GridPane.rowIndex="4"
+                                   style="-fx-font-size: 12px;"/>
+
+                            <Label text="PD:" GridPane.columnIndex="0" GridPane.rowIndex="5"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <Label fx:id="confPD" text="-" GridPane.columnIndex="1" GridPane.rowIndex="5"
+                                   style="-fx-font-size: 12px;"/>
+
+                            <Separator GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.columnSpan="2"
+                                       prefWidth="350" style="-fx-background-color: -optica-border;"/>
+
+                            <Label text="Subtotal:" GridPane.columnIndex="0" GridPane.rowIndex="7"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <Label fx:id="confSubtotal" text="110.00" GridPane.columnIndex="1" GridPane.rowIndex="7"
+                                   style="-fx-font-size: 12px; -fx-font-weight: bold;"/>
+
+                            <Label text="Descuento:" GridPane.columnIndex="0" GridPane.rowIndex="8"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <Label fx:id="confDescuento" text="5.00" GridPane.columnIndex="1" GridPane.rowIndex="8"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-success;"/>
+
+                            <Label text="Abono:" GridPane.columnIndex="0" GridPane.rowIndex="9"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <Label fx:id="confAbono" text="50.00" GridPane.columnIndex="1" GridPane.rowIndex="9"
+                                   style="-fx-font-size: 12px;"/>
+
+                            <Label text="Saldo:" GridPane.columnIndex="0" GridPane.rowIndex="10"
+                                   style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                            <Label fx:id="confSaldo" text="55.00" GridPane.columnIndex="1" GridPane.rowIndex="10"
+                                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: -optica-danger;"/>
+
+                            <Separator GridPane.columnIndex="0" GridPane.rowIndex="11" GridPane.columnSpan="2"
+                                       prefWidth="350" style="-fx-background-color: -optica-border;"/>
+
+                            <Label text="Entrega estimada:" GridPane.columnIndex="0" GridPane.rowIndex="12"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <Label fx:id="confEntrega" text="-" GridPane.columnIndex="1" GridPane.rowIndex="12"
+                                   style="-fx-font-size: 12px; -fx-font-weight: bold;"/>
+
+                            <Label text="Laboratorio:" GridPane.columnIndex="0" GridPane.rowIndex="13"
+                                   style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                            <Label fx:id="confLaboratorio" text="-" GridPane.columnIndex="1" GridPane.rowIndex="13"
+                                   style="-fx-font-size: 12px;"/>
+                        </GridPane>
+                    </VBox>
+
+                    <!-- Historical sales table -->
+                    <VBox spacing="8">
+                        <Label text="Ventas historicas del cliente" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                        <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                            <TableView fx:id="historialTable" prefHeight="140">
+                                <columns>
+                                    <TableColumn fx:id="colHistFecha" text="Fecha" prefWidth="90" resizable="true"/>
+                                    <TableColumn fx:id="colHistOrden" text="Orden" prefWidth="90" resizable="true"/>
+                                    <TableColumn fx:id="colHistCliente" text="Cliente" prefWidth="120" resizable="true"/>
+                                    <TableColumn fx:id="colHistMonto" text="Monto" prefWidth="80" resizable="true"/>
+                                    <TableColumn fx:id="colHistMetodo" text="Metodo" prefWidth="100" resizable="true"/>
+                                    <TableColumn fx:id="colHistEstado" text="Estado" prefWidth="90" resizable="true"/>
+                                    <TableColumn fx:id="colHistComprobante" text="Comprobante" prefWidth="110" resizable="true"/>
+                                </columns>
+                            </TableView>
+                        </ScrollPane>
+                    </VBox>
+
+                    <HBox spacing="8" alignment="CENTER_RIGHT" style="-fx-padding: 8 0 0 0;">
+                        <Button fx:id="btnConfirmarOrden" text="Confirmar y registrar orden" styleClass="btn-primary" prefWidth="220"/>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+
+            <!-- RIGHT: Persistent order summary panel -->
+            <VBox spacing="12" prefWidth="260" minWidth="240" style="-fx-padding: 0 0 0 8; -fx-background-color: -optica-bg-surface; -fx-border-color: -optica-border; -fx-border-width: 0 0 0 1;">
+
+                <Label text="Resumen de orden" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 12 12 4 12;"/>
+                <Separator prefWidth="240"/>
+
+                <!-- Resumen del cliente -->
+                <VBox spacing="6" style="-fx-padding: 0 12 0 12;">
+                    <Label text="Resumen del cliente" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: -optica-text-secondary;"/>
+                    <HBox spacing="4">
+                        <Label text="Cliente:" style="-fx-font-size: 11px; -fx-text-fill: -optica-text-secondary; -fx-min-width: 55;"/>
+                        <Label fx:id="sumCliente" text="Sin seleccionar" style="-fx-font-size: 11px; -fx-font-weight: bold;"/>
+                    </HBox>
+                    <HBox spacing="4">
+                        <Label text="Codigo:" style="-fx-font-size: 11px; -fx-text-fill: -optica-text-secondary; -fx-min-width: 55;"/>
+                        <Label fx:id="sumCodigo" text="" style="-fx-font-size: 11px;"/>
+                    </HBox>
+                </VBox>
+
+                <Separator prefWidth="240"/>
+
+                <!-- Resumen tecnico -->
+                <VBox spacing="6" style="-fx-padding: 0 12 0 12;">
+                    <Label text="Resumen tecnico" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: -optica-text-secondary;"/>
+                    <HBox spacing="4">
+                        <Label text="Receta:" style="-fx-font-size: 11px; -fx-text-fill: -optica-text-secondary; -fx-min-width: 55;"/>
+                        <Label fx:id="sumReceta" text="Sin seleccionar" style="-fx-font-size: 11px;"/>
+                    </HBox>
+                    <HBox spacing="4">
+                        <Label text="Montura:" style="-fx-font-size: 11px; -fx-text-fill: -optica-text-secondary; -fx-min-width: 55;"/>
+                        <Label fx:id="sumMontura" text="Sin seleccionar" style="-fx-font-size: 11px;"/>
+                    </HBox>
+                    <HBox spacing="4">
+                        <Label text="Lente:" style="-fx-font-size: 11px; -fx-text-fill: -optica-text-secondary; -fx-min-width: 55;"/>
+                        <Label fx:id="sumLente" text="Sin seleccionar" style="-fx-font-size: 11px;"/>
+                    </HBox>
+                    <HBox spacing="4">
+                        <Label text="PD:" style="-fx-font-size: 11px; -fx-text-fill: -optica-text-secondary; -fx-min-width: 55;"/>
+                        <Label fx:id="sumPD" text="" style="-fx-font-size: 11px;"/>
+                    </HBox>
+                </VBox>
+
+                <Separator prefWidth="240"/>
+
+                <!-- Resumen comercial -->
+                <VBox spacing="6" style="-fx-padding: 0 12 0 12;">
+                    <Label text="Resumen comercial" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: -optica-text-secondary;"/>
+                    <HBox spacing="4">
+                        <Label text="Subtotal:" style="-fx-font-size: 11px; -fx-text-fill: -optica-text-secondary; -fx-min-width: 55;"/>
+                        <Label fx:id="sumSubtotal" text="0.00" style="-fx-font-size: 11px;"/>
+                    </HBox>
+                    <HBox spacing="4">
+                        <Label text="Dto.:" style="-fx-font-size: 11px; -fx-text-fill: -optica-text-secondary; -fx-min-width: 55;"/>
+                        <Label fx:id="sumDescuento" text="0.00" style="-fx-font-size: 11px; -fx-text-fill: -optica-success;"/>
+                    </HBox>
+                    <HBox spacing="4">
+                        <Label text="Abono:" style="-fx-font-size: 11px; -fx-text-fill: -optica-text-secondary; -fx-min-width: 55;"/>
+                        <Label fx:id="sumAbono" text="0.00" style="-fx-font-size: 11px;"/>
+                    </HBox>
+                    <HBox spacing="4">
+                        <Label text="Saldo:" style="-fx-font-size: 11px; -fx-text-fill: -optica-text-secondary; -fx-min-width: 55;"/>
+                        <Label fx:id="sumSaldo" text="0.00" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: -optica-danger;"/>
+                    </HBox>
+                </VBox>
+
+                <Separator prefWidth="240"/>
+
+                <!-- Estado de orden -->
+                <VBox spacing="6" style="-fx-padding: 0 12 0 12;">
+                    <Label text="Estado de orden" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: -optica-text-secondary;"/>
+                    <HBox spacing="4">
+                        <Label text="Estado:" style="-fx-font-size: 11px; -fx-text-fill: -optica-text-secondary; -fx-min-width: 55;"/>
+                        <Label fx:id="sumEstado" text="BORRADOR" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: -optica-warning;"/>
+                    </HBox>
+                    <HBox spacing="4">
+                        <Label text="Entrega:" style="-fx-font-size: 11px; -fx-text-fill: -optica-text-secondary; -fx-min-width: 55;"/>
+                        <Label fx:id="sumEntrega" text="" style="-fx-font-size: 11px;"/>
+                    </HBox>
+                    <HBox spacing="4">
+                        <Label text="Lab.:" style="-fx-font-size: 11px; -fx-text-fill: -optica-text-secondary; -fx-min-width: 55;"/>
+                        <Label fx:id="sumLaboratorio" text="" style="-fx-font-size: 11px;"/>
+                    </HBox>
+                </VBox>
+
+                <Separator prefWidth="240"/>
+
+                <!-- Acciones rapidas -->
+                <VBox spacing="6" style="-fx-padding: 0 12 12 12;">
+                    <Label text="Acciones rapidas" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: -optica-text-secondary;"/>
+                    <Button text="Imprimir borrador" styleClass="btn-action" maxWidth="Infinity"/>
+                    <Button text="Enviar por email" styleClass="btn-action" maxWidth="Infinity"/>
+                </VBox>
+
+            </VBox>
+
+        </HBox>
+    </center>
+
+</BorderPane>

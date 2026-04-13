@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.modules.configuracion.ConfiguracionController"
+            styleClass="app-root">
+
+    <!-- ===== TOP ===== -->
+    <top>
+        <VBox spacing="10" BorderPane.alignment="CENTER">
+
+            <!-- Title bar -->
+            <HBox spacing="16" alignment="CENTER_LEFT" styleClass="topbar">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Configuracion" styleClass="topbar-title"/>
+                    <Label text="Parametros generales, operacion de la optica, catalogos y experiencia del sistema" styleClass="topbar-subtitle"/>
+                </VBox>
+                <HBox spacing="8" alignment="CENTER_RIGHT">
+                    <Button fx:id="restablecerVistaBtn" text="Restablecer vista" styleClass="btn-secondary"/>
+                    <Button fx:id="exportarParametrosBtn" text="Exportar parametros" styleClass="btn-secondary"/>
+                    <Button fx:id="guardarCambiosBtn" text="Guardar cambios" styleClass="btn-primary"/>
+                </HBox>
+            </HBox>
+
+            <!-- Search bar -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="filter-bar">
+                <Label text="Buscar ajuste:" styleClass="filter-label"/>
+                <TextField fx:id="searchField" promptText="Sucursal, comprobante, WhatsApp, stock minimo, colores..." prefWidth="320" styleClass="filter-field"/>
+                <Button fx:id="limpiarBusquedaBtn" text="Limpiar busqueda" styleClass="btn-filter-clear"/>
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <!-- ===== CENTER ===== -->
+    <center>
+        <SplitPane dividerPositions="0.22, 0.72" styleClass="content-host">
+
+            <!-- LEFT: Category navigation -->
+            <VBox spacing="8" style="-fx-padding: 0 8 0 0;" minWidth="180" prefWidth="220">
+                <Label text="Categorias de configuracion" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                <ListView fx:id="categoriasListView" VBox.vgrow="ALWAYS" styleClass="config-category-list"/>
+            </VBox>
+
+            <!-- CENTER: Category content host - wrapped in ScrollPane -->
+            <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER" HBox.hgrow="ALWAYS">
+                <StackPane fx:id="configuracionContentHostPane" style="-fx-padding: 0 8 0 8;">
+
+                <!-- Category 1: General del negocio -->
+                <VBox fx:id="categoriaGeneralSection" spacing="14" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="General del negocio" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+                    <!-- Identidad institucional -->
+                    <Label text="Identidad institucional" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="30"/>
+                            <ColumnConstraints percentWidth="70"/>
+                        </columnConstraints>
+                        <Label text="Nombre comercial" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <TextField fx:id="generalNombreComercial" promptText="Optica Manager Demo" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <Label text="Razon social" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="generalRazonSocial" promptText="Optica Visual Centro S.A." GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <Label text="RUC o identificacion" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <TextField fx:id="generalRuc" promptText="0999999999001" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                    <!-- Contacto principal -->
+                    <Label text="Contacto principal" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="30"/>
+                            <ColumnConstraints percentWidth="70"/>
+                        </columnConstraints>
+                        <Label text="Telefono general" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <TextField fx:id="generalTelefono" promptText="04 600 0000" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <Label text="Correo general" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="generalCorreo" promptText="contacto@opticamanager.local" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <Label text="Direccion principal" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <TextField fx:id="generalDireccion" promptText="Av. Principal y calle comercial" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                        <Label text="Ciudad" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                        <TextField fx:id="generalCiudad" promptText="Guayaquil" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                    <!-- Parametros generales de operacion -->
+                    <Label text="Parametros generales de operacion" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="30"/>
+                            <ColumnConstraints percentWidth="70"/>
+                        </columnConstraints>
+                        <Label text="Sucursal predeterminada" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <ComboBox fx:id="generalSucursalPredeterminada" promptText="Seleccionar sucursal" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <Label text="Moneda" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <ComboBox fx:id="generalMoneda" promptText="Seleccionar moneda" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <Label text="Zona horaria" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <ComboBox fx:id="generalZonaHoraria" promptText="Seleccionar zona horaria" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Button fx:id="generalGuardarBtn" text="Guardar datos del negocio" styleClass="btn-primary"/>
+                        <Button fx:id="generalRestablecerBtn" text="Restablecer valores" styleClass="btn-secondary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Category 2: Sucursales y operacion -->
+                <VBox fx:id="categoriaSucursalesSection" spacing="14" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Sucursales y operacion" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+                    <SplitPane dividerPositions="0.55">
+                        <items>
+                            <!-- Sucursales table -->
+                            <VBox spacing="8">
+                                <Label text="Listado de sucursales" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                                <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                                    <TableView fx:id="sucursalesTable">
+                                        <columns>
+                                            <TableColumn fx:id="colSucursalNombre" text="Sucursal" prefWidth="120" resizable="true"/>
+                                            <TableColumn fx:id="colSucursalDireccion" text="Direccion" prefWidth="160" resizable="true"/>
+                                            <TableColumn fx:id="colSucursalHorario" text="Horario" prefWidth="100" resizable="true"/>
+                                            <TableColumn fx:id="colSucursalResponsable" text="Responsable" prefWidth="120" resizable="true"/>
+                                            <TableColumn fx:id="colSucursalEstado" text="Estado" prefWidth="80" resizable="true"/>
+                                        </columns>
+                                    </TableView>
+                                </ScrollPane>
+                            </VBox>
+
+                            <!-- Sucursal detail -->
+                            <VBox spacing="10">
+                                <Label text="Detalle operativo de sucursal" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                                <GridPane hgap="12" vgap="8">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="35"/>
+                                        <ColumnConstraints percentWidth="65"/>
+                                    </columnConstraints>
+                                    <Label text="Nombre de sucursal" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                    <TextField fx:id="sucursalDetailNombre" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                                    <Label text="Telefono" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                                    <TextField fx:id="sucursalDetailTelefono" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                                    <Label text="Horario operativo" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                                    <TextField fx:id="sucursalDetailHorario" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                                    <Label text="Responsable" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                                    <TextField fx:id="sucursalDetailResponsable" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                                </GridPane>
+
+                                <VBox spacing="6">
+                                    <CheckBox fx:id="sucursalDetailInventarioPropio" text="Maneja inventario propio"/>
+                                    <CheckBox fx:id="sucursalDetailRetiroTrabajos" text="Permite retiro de trabajos"/>
+                                    <CheckBox fx:id="sucursalDetailCajaHabilitada" text="Caja habilitada"/>
+                                </VBox>
+
+                                <HBox spacing="8" alignment="CENTER_LEFT">
+                                    <Button fx:id="sucursalGuardarBtn" text="Guardar sucursal" styleClass="btn-primary"/>
+                                    <Button fx:id="sucursalNuevaBtn" text="Nueva sucursal" styleClass="btn-secondary"/>
+                                    <Button fx:id="sucursalDesactivarBtn" text="Desactivar sucursal" styleClass="btn-secondary"/>
+                                </HBox>
+                            </VBox>
+                        </items>
+                    </SplitPane>
+                </VBox>
+
+                <!-- Category 3: Usuarios, roles y permisos -->
+                <VBox fx:id="categoriaUsuariosSection" spacing="14" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Usuarios, roles y permisos" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+                    <SplitPane dividerPositions="0.55">
+                        <items>
+                            <!-- Usuarios table -->
+                            <VBox spacing="8">
+                                <Label text="Listado de usuarios" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                                <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                                    <TableView fx:id="usuariosTable">
+                                        <columns>
+                                            <TableColumn fx:id="colUsuarioNombre" text="Usuario" prefWidth="180" resizable="true"/>
+                                            <TableColumn fx:id="colUsuarioRol" text="Rol" prefWidth="130" resizable="true"/>
+                                            <TableColumn fx:id="colUsuarioSucursal" text="Sucursal" prefWidth="120" resizable="true"/>
+                                            <TableColumn fx:id="colUsuarioEstado" text="Estado" prefWidth="90" resizable="true"/>
+                                        </columns>
+                                    </TableView>
+                                </ScrollPane>
+                            </VBox>
+
+                            <!-- Usuario detail -->
+                            <VBox spacing="10">
+                                <Label text="Detalle de permisos" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                                <GridPane hgap="12" vgap="8">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="35"/>
+                                        <ColumnConstraints percentWidth="65"/>
+                                    </columnConstraints>
+                                    <Label text="Nombre de usuario" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                    <TextField fx:id="usuarioDetailNombre" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                                    <Label text="Rol" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                                    <ComboBox fx:id="usuarioDetailRol" promptText="Seleccionar rol" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                                    <Label text="Sucursal asociada" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                                    <ComboBox fx:id="usuarioDetailSucursal" promptText="Seleccionar sucursal" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                                </GridPane>
+
+                                <VBox spacing="6">
+                                    <CheckBox fx:id="usuarioDetailAccesoCaja" text="Acceso a caja"/>
+                                    <CheckBox fx:id="usuarioDetailAccesoInventario" text="Acceso a inventario"/>
+                                    <CheckBox fx:id="usuarioDetailAccesoReportes" text="Acceso a reportes"/>
+                                    <CheckBox fx:id="usuarioDetailAccesoConfiguracion" text="Acceso a configuracion"/>
+                                </VBox>
+
+                                <HBox spacing="8" alignment="CENTER_LEFT">
+                                    <Button fx:id="usuarioGuardarBtn" text="Guardar permisos" styleClass="btn-primary"/>
+                                    <Button fx:id="usuarioNuevoBtn" text="Nuevo usuario" styleClass="btn-secondary"/>
+                                    <Button fx:id="usuarioDesactivarBtn" text="Desactivar usuario" styleClass="btn-secondary"/>
+                                </HBox>
+                            </VBox>
+                        </items>
+                    </SplitPane>
+                </VBox>
+
+                <!-- Category 4: Catalogos maestros -->
+                <VBox fx:id="categoriaCatalogosSection" spacing="14" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Catalogos maestros" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+                    <SplitPane dividerPositions="0.35">
+                        <items>
+                            <!-- Catalogos list -->
+                            <VBox spacing="8">
+                                <Label text="Tipos de catalogo" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                                <ListView fx:id="catalogosListView" VBox.vgrow="ALWAYS"/>
+                            </VBox>
+
+                            <!-- Catalog values -->
+                            <VBox spacing="8">
+                                <Label text="Valores del catalogo" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                                <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                                    <TableView fx:id="catalogoValoresTable">
+                                        <columns>
+                                            <TableColumn fx:id="colCatalogoValor" text="Valor" prefWidth="160" resizable="true"/>
+                                            <TableColumn fx:id="colCatalogoEstado" text="Estado" prefWidth="90" resizable="true"/>
+                                            <TableColumn fx:id="colCatalogoCategoria" text="Categoria" prefWidth="140" resizable="true"/>
+                                        </columns>
+                                    </TableView>
+                                </ScrollPane>
+
+                                <HBox spacing="8" alignment="CENTER_LEFT">
+                                    <Button fx:id="catalogoGuardarBtn" text="Guardar catalogo" styleClass="btn-primary"/>
+                                    <Button fx:id="catalogoNuevoValorBtn" text="Nuevo valor" styleClass="btn-secondary"/>
+                                    <Button fx:id="catalogoDesactivarBtn" text="Desactivar valor" styleClass="btn-secondary"/>
+                                </HBox>
+                            </VBox>
+                        </items>
+                    </SplitPane>
+                </VBox>
+
+                <!-- Category 5: Inventario y abastecimiento -->
+                <VBox fx:id="categoriaInventarioSection" spacing="14" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Inventario y abastecimiento" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+                    <!-- Stock base -->
+                    <Label text="Stock base" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="35"/>
+                            <ColumnConstraints percentWidth="65"/>
+                        </columnConstraints>
+                        <Label text="Stock minimo por defecto" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <TextField fx:id="inventarioStockMinimo" promptText="5" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <Label text="Ubicacion por defecto" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="inventarioUbicacionDefault" promptText="Bodega general" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <CheckBox fx:id="inventarioAlertasCriticas" text="Mostrar alertas criticas" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                    </GridPane>
+
+                    <!-- Reposicion -->
+                    <Label text="Reposicion" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="35"/>
+                            <ColumnConstraints percentWidth="65"/>
+                        </columnConstraints>
+                        <CheckBox fx:id="inventarioGeneracionAviso" text="Generar aviso por bajo stock" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                        <CheckBox fx:id="inventarioPermitirPedido" text="Permitir marcar pedido" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                        <Label text="Proveedor preferido por categoria" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <ComboBox fx:id="inventarioProveedorPreferido" promptText="Seleccionar proveedor" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                    <!-- Recepcion -->
+                    <Label text="Recepcion" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="35"/>
+                            <ColumnConstraints percentWidth="65"/>
+                        </columnConstraints>
+                        <CheckBox fx:id="inventarioRecepcionParcial" text="Permitir recepcion parcial" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                        <CheckBox fx:id="inventarioRequiereResponsable" text="Requerir responsable de recepcion" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                        <CheckBox fx:id="inventarioActualizaInventario" text="Actualizar inventario al confirmar recepcion" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                    </GridPane>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Button fx:id="inventarioGuardarBtn" text="Guardar reglas de inventario" styleClass="btn-primary"/>
+                        <Button fx:id="inventarioRestablecerBtn" text="Restablecer reglas" styleClass="btn-secondary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Category 6: Venta, caja y comprobantes -->
+                <VBox fx:id="categoriaVentaSection" spacing="14" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Venta, caja y comprobantes" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+                    <!-- Numeracion -->
+                    <Label text="Numeracion" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="35"/>
+                            <ColumnConstraints percentWidth="65"/>
+                        </columnConstraints>
+                        <Label text="Prefijo de orden optica" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <TextField fx:id="ventaPrefijoOrden" promptText="OV" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <Label text="Prefijo de comprobante" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="ventaPrefijoComprobante" promptText="FAC" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <Label text="Secuencia inicial" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <TextField fx:id="ventaSecuenciaInicial" promptText="1000" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                    <!-- Pago y abonos -->
+                    <Label text="Pago y abonos" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="35"/>
+                            <ColumnConstraints percentWidth="65"/>
+                        </columnConstraints>
+                        <CheckBox fx:id="ventaPermiteAbonos" text="Permitir abonos" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                        <Label text="Descuento maximo permitido" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="ventaDescuentoMaximo" promptText="15%" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <CheckBox fx:id="ventaPermiteSaldoPendiente" text="Permitir saldo pendiente" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                    </GridPane>
+
+                    <!-- Comprobantes -->
+                    <Label text="Comprobantes" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="35"/>
+                            <ColumnConstraints percentWidth="65"/>
+                        </columnConstraints>
+                        <CheckBox fx:id="ventaMostrarDireccion" text="Mostrar direccion en comprobante" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                        <CheckBox fx:id="ventaMostrarMensaje" text="Mostrar mensaje institucional" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                        <Label text="Texto final del comprobante" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <TextField fx:id="ventaTextoFinal" promptText="Gracias por confiar en nuestra optica" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Button fx:id="ventaGuardarBtn" text="Guardar reglas comerciales" styleClass="btn-primary"/>
+                        <Button fx:id="vistaPreviaBtn" text="Vista previa de comprobante" styleClass="btn-secondary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Category 7: Agenda, seguimiento y comunicacion -->
+                <VBox fx:id="categoriaAgendaSection" spacing="14" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Agenda, seguimiento y comunicacion" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+                    <!-- Agenda -->
+                    <Label text="Agenda" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="35"/>
+                            <ColumnConstraints percentWidth="65"/>
+                        </columnConstraints>
+                        <Label text="Duracion estandar de cita" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <ComboBox fx:id="agendaDuracionCita" promptText="Seleccionar duracion" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <CheckBox fx:id="agendaReprogramacionRapida" text="Permitir reprogramacion rapida" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                    </GridPane>
+
+                    <!-- Recall -->
+                    <Label text="Recall" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="35"/>
+                            <ColumnConstraints percentWidth="65"/>
+                        </columnConstraints>
+                        <CheckBox fx:id="agendaRecallActivo" text="Activar recall anual" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                        <Label text="Dias de anticipacion" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="agendaDiasAnticipacion" promptText="30" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <CheckBox fx:id="agendaSeguimientoAutomatico" text="Crear seguimiento automatico" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                    </GridPane>
+
+                    <!-- Comunicacion -->
+                    <Label text="Comunicacion" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="35"/>
+                            <ColumnConstraints percentWidth="65"/>
+                        </columnConstraints>
+                        <Label text="Canal preferido por defecto" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <ComboBox fx:id="agendaCanalPreferido" promptText="Seleccionar canal" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <Label text="Plantilla de trabajo listo" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="agendaPlantillaTrabajoListo" promptText="Su trabajo esta listo para retirar" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <Label text="Plantilla de saldo pendiente" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <TextField fx:id="agendaPlantillaSaldoPendiente" promptText="Su orden mantiene un saldo pendiente" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Button fx:id="agendaGuardarBtn" text="Guardar comunicacion" styleClass="btn-primary"/>
+                        <Button fx:id="agendaProbarPlantillaBtn" text="Probar plantilla" styleClass="btn-secondary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Category 8: Laboratorio y entregas -->
+                <VBox fx:id="categoriaLaboratorioSection" spacing="14" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Laboratorio y entregas" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+                    <!-- Laboratorios -->
+                    <Label text="Laboratorios" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="35"/>
+                            <ColumnConstraints percentWidth="65"/>
+                        </columnConstraints>
+                        <Label text="Laboratorios habilitados" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <TextField fx:id="laboratorioHabilitados" promptText="Optica Interna, LabVision Externo" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <Label text="Tiempo promesa estandar" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="laboratorioTiempoPromesa" promptText="3 dias" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <CheckBox fx:id="laboratorioExterno" text="Permitir laboratorio externo" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                    </GridPane>
+
+                    <!-- Entrega -->
+                    <Label text="Entrega" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="35"/>
+                            <ColumnConstraints percentWidth="65"/>
+                        </columnConstraints>
+                        <CheckBox fx:id="laboratorioRequiereValidacion" text="Requerir validacion previa" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                        <CheckBox fx:id="laboratorioBloqueaConSaldo" text="Bloquear entrega con saldo" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                        <CheckBox fx:id="laboratorioRecordarNoRetirados" text="Recordar trabajos no retirados" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                    </GridPane>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Button fx:id="laboratorioGuardarBtn" text="Guardar flujo de trabajos" styleClass="btn-primary"/>
+                        <Button fx:id="laboratorioRestablecerBtn" text="Restablecer tiempos promesa" styleClass="btn-secondary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Category 9: Apariencia y experiencia de uso -->
+                <VBox fx:id="categoriaAparienciaSection" spacing="14" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Apariencia y experiencia de uso" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+                    <!-- Apariencia general -->
+                    <Label text="Apariencia general" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="35"/>
+                            <ColumnConstraints percentWidth="65"/>
+                        </columnConstraints>
+                        <Label text="Modo de apariencia" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <ComboBox fx:id="aparienciaModo" promptText="Seleccionar modo" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <CheckBox fx:id="aparienciaSeguirSistema" text="Seguir tema del sistema" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                        <Label text="Densidad visual" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <ComboBox fx:id="aparienciaDensidad" promptText="Seleccionar densidad" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                    <!-- Colores base -->
+                    <Label text="Colores base" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <HBox spacing="16" alignment="CENTER_LEFT">
+                        <VBox spacing="4" alignment="CENTER">
+                            <Region prefWidth="40" prefHeight="40" style="-fx-background-color: #2d5f7c;"/>
+                            <Label text="Azul petroleo" style="-fx-font-size: 11px;"/>
+                        </VBox>
+                        <VBox spacing="4" alignment="CENTER">
+                            <Region prefWidth="40" prefHeight="40" style="-fx-background-color: #6b7d8e;"/>
+                            <Label text="Azul grisaceo" style="-fx-font-size: 11px;"/>
+                        </VBox>
+                        <VBox spacing="4" alignment="CENTER">
+                            <Region prefWidth="40" prefHeight="40" style="-fx-background-color: #c49a3c;"/>
+                            <Label text="Ambar sobrio" style="-fx-font-size: 11px;"/>
+                        </VBox>
+                        <VBox spacing="4" alignment="CENTER">
+                            <Region prefWidth="40" prefHeight="40" style="-fx-background-color: #5a8a6a;"/>
+                            <Label text="Verde moderado" style="-fx-font-size: 11px;"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- Experiencia visual -->
+                    <Label text="Experiencia visual" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                    <VBox spacing="6">
+                        <CheckBox fx:id="aparienciaMostrarIconos" text="Mostrar iconos en navegacion"/>
+                        <CheckBox fx:id="aparienciaMostrarTooltips" text="Mostrar tooltips contextuales"/>
+                        <CheckBox fx:id="aparienciaConfirmarAcciones" text="Confirmar acciones criticas"/>
+                    </VBox>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Button fx:id="aparienciaGuardarBtn" text="Guardar apariencia" styleClass="btn-primary"/>
+                        <Button fx:id="aparienciaRestablecerBtn" text="Restablecer tema sugerido" styleClass="btn-secondary"/>
+                        <Button fx:id="aparienciaVistaPreviaBtn" text="Vista previa visual" styleClass="btn-secondary"/>
+                    </HBox>
+                </VBox>
+
+            </StackPane>
+            </ScrollPane>
+
+            <!-- RIGHT: Summary panel -->
+            <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" minWidth="240" prefWidth="280">
+                <VBox spacing="14" style="-fx-padding: 12;">
+                    <!-- Categoria activa -->
+                    <VBox spacing="4">
+                        <Label text="Categoria activa" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                        <Label fx:id="summaryCategoria" text="General del negocio" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+                        <Label fx:id="summaryEstadoCambios" text="Sin cambios pendientes" style="-fx-font-size: 12px; -fx-text-fill: #718096;"/>
+                    </VBox>
+
+                    <Separator/>
+
+                    <!-- Alcance -->
+                    <VBox spacing="4">
+                        <Label text="Alcance" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                        <Label fx:id="summaryAlcanceLabel" wrapText="true" text="Esta categoria define los datos institucionales que identifican a la optica dentro del sistema, comprobantes y modulos de uso diario." style="-fx-font-size: 12px;"/>
+                    </VBox>
+
+                    <Separator/>
+
+                    <!-- Impacto operativo -->
+                    <VBox spacing="4">
+                        <Label text="Impacto operativo" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                        <Label fx:id="summaryImpactoLabel" wrapText="true" text="Los cambios aqui pueden afectar encabezados, comprobantes, sucursal predeterminada y datos visibles en modulos administrativos." style="-fx-font-size: 12px;"/>
+                    </VBox>
+
+                    <Separator/>
+
+                    <!-- Recomendacion -->
+                    <VBox spacing="4">
+                        <Label text="Recomendacion de uso" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                        <Label fx:id="summaryRecomendacionLabel" wrapText="true" text="Revise cuidadosamente los datos institucionales antes de modificar numeraciones, sucursales o datos de contacto visibles." style="-fx-font-size: 12px;"/>
+                    </VBox>
+
+                    <Separator/>
+
+                    <!-- Acciones rapidas -->
+                    <VBox spacing="6">
+                        <Label text="Acciones rapidas" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #4a5568;"/>
+                        <Button fx:id="summaryGuardarBtn" text="Guardar categoria" maxWidth="Infinity" styleClass="btn-primary"/>
+                        <Button fx:id="summaryRestablecerBtn" text="Restablecer cambios" maxWidth="Infinity" styleClass="btn-secondary"/>
+                        <Button fx:id="summaryIrModuloBtn" text="Ir a modulo relacionado" maxWidth="Infinity" styleClass="btn-secondary"/>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+
+        </SplitPane>
+    </center>
+
+</BorderPane>

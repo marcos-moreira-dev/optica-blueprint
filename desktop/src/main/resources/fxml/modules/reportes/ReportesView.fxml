@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.modules.reportes.ReportesController"
+            styleClass="app-root">
+
+    <!-- ===== TOP ===== -->
+    <top>
+        <VBox spacing="12" BorderPane.alignment="CENTER">
+
+            <!-- Title bar -->
+            <HBox spacing="16" alignment="CENTER_LEFT" styleClass="topbar">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Reportes" styleClass="topbar-title"/>
+                    <Label text="Resumen ejecutivo, ventas, inventario, agenda, laboratorio, cobros y retencion" styleClass="topbar-subtitle"/>
+                </VBox>
+                <HBox spacing="8" alignment="CENTER_RIGHT">
+                    <Button fx:id="generarResumenBtn" text="Generar resumen" styleClass="btn-primary"/>
+                    <Button fx:id="actualizarReportesBtn" text="Actualizar reportes" styleClass="btn-secondary"/>
+                    <Button fx:id="exportarReporteBtn" text="Exportar reporte" styleClass="btn-secondary"/>
+                </HBox>
+            </HBox>
+
+            <!-- Filter bar -->
+            <FlowPane hgap="10" vgap="8" styleClass="filter-bar" alignment="CENTER_LEFT">
+                <ComboBox fx:id="periodoCombo" promptText="Periodo" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="sucursalCombo" promptText="Sucursal" prefWidth="150" styleClass="filter-combo"/>
+                <DatePicker fx:id="desdePicker" promptText="Desde" prefWidth="130"/>
+                <DatePicker fx:id="hastaPicker" promptText="Hasta" prefWidth="130"/>
+                <ComboBox fx:id="categoriaCombo" promptText="Categoria" prefWidth="170" styleClass="filter-combo"/>
+                <CheckBox fx:id="soloDatosCriticosCheck" text="Solo datos criticos"/>
+                <Button fx:id="limpiarFiltrosBtn" text="Limpiar filtros" styleClass="btn-filter-clear"/>
+            </FlowPane>
+
+            <!-- Sub-view toggle buttons -->
+            <HBox spacing="6" alignment="CENTER_LEFT" style="-fx-padding: 0 0 4 0;">
+                <ToggleButton fx:id="btnResumen" text="Resumen ejecutivo" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnVentas" text="Ventas y desempeno" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnInventario" text="Inventario y rotacion" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnAgenda" text="Agenda y atencion" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnLaboratorio" text="Laboratorio y cumplimiento" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnCobros" text="Cobros y cartera" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnRetencion" text="Seguimiento y retencion" styleClass="subview-toggle"/>
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <!-- ===== CENTER ===== -->
+    <center>
+        <VBox spacing="12" style="-fx-padding: 8;">
+
+            <!-- Sub-views -->
+            <VBox VBox.vgrow="ALWAYS" style="-fx-padding: 0 0 0 0;">
+
+                <!-- Sub-view 1: Resumen ejecutivo -->
+                <VBox fx:id="sectionResumen" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Resumen ejecutivo" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <!-- KPI cards 2x4 grid -->
+                    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="summary-fields-container" style="-fx-padding: 12; -fx-border-color: -optica-border; -fx-border-radius: 6; -fx-background-color: -optica-bg-surface;">
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Ventas del periodo" styleClass="summary-field-label"/>
+                            <Label fx:id="lblVentasPeriodo" text="8,420" styleClass="summary-field-value highlighted"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Ticket promedio" styleClass="summary-field-label"/>
+                            <Label fx:id="lblTicketPromedio" text="96.30" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Ordenes activas" styleClass="summary-field-label"/>
+                            <Label fx:id="lblOrdenesActivas" text="24" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Trabajos retrasados" styleClass="summary-field-label"/>
+                            <Label fx:id="lblTrabajosRetrasados" text="4" styleClass="summary-field-value highlighted"/>
+                        </VBox>
+                    </HBox>
+                    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="summary-fields-container" style="-fx-padding: 12; -fx-border-color: -optica-border; -fx-border-radius: 6; -fx-background-color: -optica-bg-surface;">
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Stock critico" styleClass="summary-field-label"/>
+                            <Label fx:id="lblStockCritico" text="11" styleClass="summary-field-value highlighted"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Recalls pendientes" styleClass="summary-field-label"/>
+                            <Label fx:id="lblRecallsPendientes" text="18" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Cobros pendientes" styleClass="summary-field-label"/>
+                            <Label fx:id="lblCobrosPendientes" text="412" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Utilizacion agenda" styleClass="summary-field-label"/>
+                            <Label fx:id="lblUtilizacionAgenda" text="78%" styleClass="summary-field-value"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- TableView operativa -->
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="resumenTable">
+                            <columns>
+                                <TableColumn fx:id="colRArea" text="Area" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colRIndicador" text="Indicador" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colRValor" text="Valor" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colREstado" text="Estado" prefWidth="120" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <fx:include fx:id="paginationBar" source="/fxml/shared/components/PaginationBar.fxml"/>
+
+                    <!-- Alertas gerenciales -->
+                    <VBox fx:id="alertasGerencialesBox" spacing="4" style="-fx-padding: 8; -fx-border-color: -optica-border; -fx-border-radius: 6; -fx-background-color: -optica-bg-surface;"/>
+                </VBox>
+
+                <!-- Sub-view 2: Ventas y desempeno comercial -->
+                <VBox fx:id="sectionVentas" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Ventas y desempeno comercial" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <!-- KPI cards -->
+                    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="summary-fields-container" style="-fx-padding: 12; -fx-border-color: -optica-border; -fx-border-radius: 6; -fx-background-color: -optica-bg-surface;">
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Ventas totales" styleClass="summary-field-label"/>
+                            <Label fx:id="lblVentasTotales" text="8,420" styleClass="summary-field-value highlighted"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Ticket promedio" styleClass="summary-field-label"/>
+                            <Label fx:id="lblTicketPromedioVentas" text="96.30" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Revenue por cliente" styleClass="summary-field-label"/>
+                            <Label fx:id="lblRevenuePorCliente" text="156.00" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Capture rate" styleClass="summary-field-label"/>
+                            <Label fx:id="lblCaptureRate" text="62%" styleClass="summary-field-value"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- TableView comercial -->
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="comercialTable">
+                            <columns>
+                                <TableColumn fx:id="colCCategoria" text="Categoria" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colCVentas" text="Ventas" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colCUnidades" text="Unidades" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colCParticipacion" text="Participacion" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colCObservacion" text="Observacion" prefWidth="200" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <!-- Action buttons -->
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
+                        <Button fx:id="btnVentasPorAsesor" text="Ver ventas por asesor" styleClass="btn-secondary"/>
+                        <Button fx:id="btnExportarVentas" text="Exportar ventas" styleClass="btn-secondary"/>
+                        <Button fx:id="btnAbrirCaja" text="Abrir caja" styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 3: Inventario y rotacion -->
+                <VBox fx:id="sectionInventario" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Inventario y rotacion" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <!-- KPI indicators -->
+                    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="summary-fields-container" style="-fx-padding: 12; -fx-border-color: -optica-border; -fx-border-radius: 6; -fx-background-color: -optica-bg-surface;">
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Best sellers" styleClass="summary-field-label"/>
+                            <Label fx:id="lblBestSellers" text="0" styleClass="summary-field-value highlighted"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Lentos" styleClass="summary-field-label"/>
+                            <Label fx:id="lblLentos" text="0" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Envejecido" styleClass="summary-field-label"/>
+                            <Label fx:id="lblEnvejecido" text="0" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Critico" styleClass="summary-field-label"/>
+                            <Label fx:id="lblCritico" text="0" styleClass="summary-field-value highlighted"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- TableView rotacion -->
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="rotacionTable">
+                            <columns>
+                                <TableColumn fx:id="colRotReferencia" text="Referencia" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colRotNombre" text="Nombre" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colRotCategoria" text="Categoria" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colRotRotacion" text="Rotacion" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colRotUltimaSalida" text="Ultima salida" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colRotEstado" text="Estado" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colRotObservacion" text="Observacion" prefWidth="180" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <!-- Action buttons -->
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
+                        <Button fx:id="btnAbrirInventario" text="Abrir inventario" styleClass="btn-secondary"/>
+                        <Button fx:id="btnExportarRotacion" text="Exportar rotacion" styleClass="btn-secondary"/>
+                        <Button fx:id="btnMarcarRevision" text="Marcar revision" styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 4: Agenda y atencion -->
+                <VBox fx:id="sectionAgenda" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Agenda y atencion" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <!-- KPIs -->
+                    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="summary-fields-container" style="-fx-padding: 12; -fx-border-color: -optica-border; -fx-border-radius: 6; -fx-background-color: -optica-bg-surface;">
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Citas registradas" styleClass="summary-field-label"/>
+                            <Label fx:id="lblCitasRegistradas" text="124" styleClass="summary-field-value highlighted"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Utilizacion" styleClass="summary-field-label"/>
+                            <Label fx:id="lblUtilizacion" text="78%" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="No-shows" styleClass="summary-field-label"/>
+                            <Label fx:id="lblNoShows" text="8" styleClass="summary-field-value highlighted"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Conversion" styleClass="summary-field-label"/>
+                            <Label fx:id="lblConversion" text="62%" styleClass="summary-field-value"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- TableView desempeno -->
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="agendaTable">
+                            <columns>
+                                <TableColumn fx:id="colAIndicador" text="Indicador" prefWidth="150" resizable="true"/>
+                                <TableColumn fx:id="colAValor" text="Valor" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colAMeta" text="Meta" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colAEstado" text="Estado" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colAObservacion" text="Observacion" prefWidth="200" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <!-- Action buttons -->
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
+                        <Button fx:id="btnAbrirAgenda" text="Abrir agenda" styleClass="btn-secondary"/>
+                        <Button fx:id="btnExportarAtencion" text="Exportar atencion" styleClass="btn-secondary"/>
+                        <Button fx:id="btnVerRecalls" text="Ver recalls" styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 5: Laboratorio y cumplimiento -->
+                <VBox fx:id="sectionLaboratorio" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Laboratorio y cumplimiento" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <!-- KPIs -->
+                    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="summary-fields-container" style="-fx-padding: 12; -fx-border-color: -optica-border; -fx-border-radius: 6; -fx-background-color: -optica-bg-surface;">
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Ordenes creadas" styleClass="summary-field-label"/>
+                            <Label fx:id="lblOrdenesCreadas" text="48" styleClass="summary-field-value highlighted"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="A tiempo" styleClass="summary-field-label"/>
+                            <Label fx:id="lblATiempo" text="92%" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Retrasos" styleClass="summary-field-label"/>
+                            <Label fx:id="lblRetrasos" text="4" styleClass="summary-field-value highlighted"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Retrabajos" styleClass="summary-field-label"/>
+                            <Label fx:id="lblRetrabajos" text="3" styleClass="summary-field-value"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- TableView cumplimiento -->
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="laboratorioTable">
+                            <columns>
+                                <TableColumn fx:id="colLIndicador" text="Indicador" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colLValor" text="Valor" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colLEstado" text="Estado" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colLObservacion" text="Observacion" prefWidth="260" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <!-- Action buttons -->
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
+                        <Button fx:id="btnAbrirLaboratorio" text="Abrir laboratorio" styleClass="btn-secondary"/>
+                        <Button fx:id="btnExportarCumplimiento" text="Exportar cumplimiento" styleClass="btn-secondary"/>
+                        <Button fx:id="btnVerIncidencias" text="Ver incidencias" styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 6: Cobros y cartera -->
+                <VBox fx:id="sectionCobros" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Cobros y cartera" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <!-- KPIs -->
+                    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="summary-fields-container" style="-fx-padding: 12; -fx-border-color: -optica-border; -fx-border-radius: 6; -fx-background-color: -optica-bg-surface;">
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Cobrado" styleClass="summary-field-label"/>
+                            <Label fx:id="lblCobrado" text="0.00" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Pendiente" styleClass="summary-field-label"/>
+                            <Label fx:id="lblPendiente" text="0.00" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Abono parcial" styleClass="summary-field-label"/>
+                            <Label fx:id="lblAbonoParcial" text="0.00" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Vencidos" styleClass="summary-field-label"/>
+                            <Label fx:id="lblVencidos" text="0.00" styleClass="summary-field-value highlighted"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- TableView cartera -->
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="carteraTable">
+                            <columns>
+                                <TableColumn fx:id="colCPOrden" text="Orden" prefWidth="80" resizable="true"/>
+                                <TableColumn fx:id="colCPCliente" text="Cliente" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colCPSaldo" text="Saldo" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colCPUltimoPago" text="Ultimo pago" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colCPEstado" text="Estado" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colCPSucursal" text="Sucursal" prefWidth="110" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <!-- Action buttons -->
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
+                        <Button fx:id="btnAbrirCajaCobros" text="Abrir caja" styleClass="btn-secondary"/>
+                        <Button fx:id="btnExportarCartera" text="Exportar cartera" styleClass="btn-secondary"/>
+                        <Button fx:id="btnVerSeguimiento" text="Ver seguimiento" styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 7: Seguimiento y retencion -->
+                <VBox fx:id="sectionRetencion" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Seguimiento y retencion" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <!-- KPIs -->
+                    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="summary-fields-container" style="-fx-padding: 12; -fx-border-color: -optica-border; -fx-border-radius: 6; -fx-background-color: -optica-bg-surface;">
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Recalls pendientes" styleClass="summary-field-label"/>
+                            <Label fx:id="lblRecallsPendientesRet" text="0" styleClass="summary-field-value highlighted"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Recordatorios enviados" styleClass="summary-field-label"/>
+                            <Label fx:id="lblRecordatoriosEnviados" text="0" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="No retirados" styleClass="summary-field-label"/>
+                            <Label fx:id="lblNoRetirados" text="0" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label text="Resueltos" styleClass="summary-field-label"/>
+                            <Label fx:id="lblResueltos" text="0" styleClass="summary-field-value"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- TableView casos -->
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="retencionTable">
+                            <columns>
+                                <TableColumn fx:id="colRetCliente" text="Cliente" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colRetTipo" text="Tipo" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colRetEstado" text="Estado" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colRetFechaObjetivo" text="Fecha objetivo" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colRetResultado" text="Resultado" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colRetSucursal" text="Sucursal" prefWidth="110" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <!-- Action buttons -->
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
+                        <Button fx:id="btnAbrirSeguimiento" text="Abrir seguimiento" styleClass="btn-secondary"/>
+                        <Button fx:id="btnExportarRetencion" text="Exportar retencion" styleClass="btn-secondary"/>
+                        <Button fx:id="btnAbrirCliente" text="Abrir cliente" styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+
+            <Separator/>
+
+            <!-- RIGHT: KPI Summary Panel -->
+            <VBox style="-fx-padding: 0;">
+                <Label text="Detalle seleccionado" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-text-secondary;"/>
+                <ScrollPane fitToWidth="true" styleClass="summary-panel" style="-fx-padding: 8;" VBox.vgrow="ALWAYS">
+                <VBox spacing="16" style="-fx-padding: 12;">
+
+                    <!-- Identidad del indicador -->
+                    <VBox spacing="4" styleClass="summary-section">
+                        <Label text="Identidad del indicador" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-text-secondary;"/>
+                        <Label fx:id="summaryIndicador" text="Ventas del periodo" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Label fx:id="summaryCategoria" text="General" styleClass="summary-field-label"/>
+                            <Label text="|" style="-fx-text-fill: -optica-border;"/>
+                            <Label fx:id="summarySucursal" text="Todas" styleClass="summary-field-label"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Valor actual -->
+                    <VBox spacing="4" styleClass="summary-section">
+                        <Label text="Valor actual" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-text-secondary;"/>
+                        <Label fx:id="summaryValorPrincipal" text="8,420" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: -optica-primary;"/>
+                        <Label fx:id="summaryVariacionBreve" text="+12% vs periodo anterior" styleClass="summary-field-label"/>
+                    </VBox>
+
+                    <!-- Contexto temporal -->
+                    <VBox spacing="4" styleClass="summary-section">
+                        <Label text="Contexto temporal" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-text-secondary;"/>
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <VBox spacing="2">
+                                <Label text="Periodo" styleClass="summary-field-label"/>
+                                <Label fx:id="summaryPeriodo" text="Abril 2026" style="-fx-font-size: 13px;"/>
+                            </VBox>
+                            <VBox spacing="2">
+                                <Label text="Ultima actualizacion" styleClass="summary-field-label"/>
+                                <Label fx:id="summaryUltimaActualizacion" text="16/04/2026 14:30" style="-fx-font-size: 13px;"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Lectura rapida -->
+                    <VBox spacing="4" styleClass="summary-section">
+                        <Label text="Lectura rapida" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-text-secondary;"/>
+                        <Label fx:id="summaryObservacionGerencial" text="Ventas por encima de la meta mensual" wrapText="true" style="-fx-font-size: 13px; -fx-text-fill: -optica-text-secondary;"/>
+                    </VBox>
+
+                    <!-- Acciones rapidas -->
+                    <VBox spacing="4" styleClass="summary-section">
+                        <Label text="Accion sugerida" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-text-secondary;"/>
+                        <Label fx:id="summaryAccionSugerida" text="Mantener promocion de monturas hasta fin de mes" wrapText="true" style="-fx-font-size: 13px;"/>
+                        <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 8 0 0 0;">
+                            <Button fx:id="summaryBtnGenerar" text="Generar" styleClass="btn-primary"/>
+                            <Button fx:id="summaryBtnExportar" text="Exportar" styleClass="btn-secondary"/>
+                        </HBox>
+                    </VBox>
+
+                </VBox>
+            </ScrollPane>
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

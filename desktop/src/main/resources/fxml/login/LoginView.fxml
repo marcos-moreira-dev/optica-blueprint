@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.modules.login.LoginController"
+            styleClass="login-root"
+            prefWidth="900" prefHeight="560">
+
+    <center>
+        <HBox styleClass="login-container">
+
+            <!-- Left: Brand panel -->
+            <VBox styleClass="login-brand" alignment="CENTER" spacing="16" prefWidth="405" minWidth="300">
+                <padding>
+                    <Insets top="40" right="40" bottom="40" left="40"/>
+                </padding>
+                <Label text="Optica Manager" styleClass="login-brand-title"/>
+                <Label text="Sistema integral para atencion, ventas y control optico" styleClass="login-brand-subtitle"/>
+                <Region prefHeight="20"/>
+                <Label text="Gestione clientes, recetas, ordenes, inventario y entregas desde una sola plataforma" styleClass="login-brand-desc"/>
+            </VBox>
+
+            <!-- Right: Form panel -->
+            <StackPane styleClass="login-form-panel" HBox.hgrow="ALWAYS">
+                <VBox alignment="CENTER" spacing="20" maxWidth="380">
+                    <padding>
+                        <Insets top="40" right="40" bottom="40" left="40"/>
+                    </padding>
+
+                    <VBox spacing="8">
+                        <Label text="Iniciar sesion" styleClass="login-form-title"/>
+                        <Label text="Acceda al panel operativo de la optica" styleClass="login-form-subtitle"/>
+                    </VBox>
+
+                    <VBox spacing="14">
+                        <VBox spacing="4">
+                            <Label text="Usuario" styleClass="form-label"/>
+                            <TextField fx:id="txtUsuario" text="admin@opticamanager.local" promptText="Usuario" styleClass="form-field"/>
+                        </VBox>
+                        <VBox spacing="4">
+                            <Label text="Contrasena" styleClass="form-label"/>
+                            <PasswordField fx:id="txtPassword" text="Optica2026" promptText="Contrasena" styleClass="form-field"/>
+                        </VBox>
+                    </VBox>
+
+                    <Label fx:id="lblHelp" text="Perfil cargado para demostracion. Puede ingresar directamente al sistema." styleClass="login-help"/>
+
+                    <Button fx:id="btnLogin" text="Ingresar al sistema" onAction="#handleLogin" styleClass="btn-primary btn-large" maxWidth="Infinity"/>
+
+                    <HBox spacing="8" alignment="CENTER">
+                        <Label text="Perfil activo: Administrador general" styleClass="login-profile-info"/>
+                    </HBox>
+                    <HBox spacing="8" alignment="CENTER">
+                        <Label text="Sucursal inicial: Matriz Centro" styleClass="login-sucursal-info"/>
+                    </HBox>
+                    <Label text="Version demostrativa 1.0" styleClass="login-version"/>
+                </VBox>
+            </StackPane>
+
+        </HBox>
+    </center>
+
+</BorderPane>

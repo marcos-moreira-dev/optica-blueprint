@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.modules.sucursales.SucursalesController"
+            styleClass="app-root">
+
+    <!-- ===== TOP ===== -->
+    <top>
+        <VBox spacing="10" BorderPane.alignment="CENTER">
+
+            <!-- Title bar -->
+            <HBox spacing="16" alignment="CENTER_LEFT" styleClass="topbar">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Sucursales" styleClass="topbar-title"/>
+                    <Label text="Gestion integral de sedes, operaciones y comparativos" styleClass="topbar-subtitle"/>
+                </VBox>
+                <HBox spacing="8" alignment="CENTER_RIGHT">
+                    <Button fx:id="actualizarBtn" text="Actualizar" styleClass="btn-secondary"/>
+                </HBox>
+            </HBox>
+
+            <!-- Filter bar -->
+            <FlowPane hgap="10" vgap="8" styleClass="filter-bar" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Buscar por sucursal, responsable o ciudad..." prefWidth="280" styleClass="filter-field"/>
+                <ComboBox fx:id="estadoCombo" promptText="Estado" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="servicioCombo" promptText="Servicio" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="ciudadCombo" promptText="Ciudad" prefWidth="150" styleClass="filter-combo"/>
+                <CheckBox fx:id="soloAlertasCheck" text="Solo con alertas" styleClass="filter-check"/>
+                <Button fx:id="limpiarFiltrosBtn" text="Limpiar filtros" styleClass="btn-filter-clear"/>
+            </FlowPane>
+
+            <!-- Sub-view toggle buttons -->
+            <HBox spacing="6" alignment="CENTER_LEFT" style="-fx-padding: 0 0 4 0;">
+                <ToggleButton fx:id="btnDirectorio" text="Directorio" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnPerfil" text="Perfil operativo" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnPersonal" text="Personal y permisos" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnInventario" text="Inventario local" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnAgenda" text="Agenda local" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnCaja" text="Caja y desempeno" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnComparativo" text="Comparativo" styleClass="subview-toggle"/>
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <!-- ===== CENTER ===== -->
+    <center>
+        <SplitPane dividerPositions="0.58" styleClass="content-host">
+
+            <!-- LEFT: Sub-views -->
+            <StackPane style="-fx-padding: 0 8 0 0;">
+
+                <!-- Sub-view 1: Directorio de sucursales -->
+                <VBox fx:id="sectionDirectorio" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="summary-header">
+                        <Label text="Directorio de sucursales" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+                    </HBox>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="directorioTable">
+                            <columns>
+                                <TableColumn fx:id="colDirSucursal" text="Sucursal" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colDirCiudad" text="Ciudad" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colDirResponsable" text="Responsable" prefWidth="150" resizable="true"/>
+                                <TableColumn fx:id="colDirHorario" text="Horario" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colDirEstado" text="Estado" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colDirServicios" text="Servicios" prefWidth="180" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 2: Perfil operativo de sucursal -->
+                <VBox fx:id="sectionPerfil" spacing="10" visible="false" managed="false" style="-fx-padding: 8;">
+                    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="summary-header">
+                        <Label text="Perfil operativo de sucursal" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+                    </HBox>
+
+                    <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="summary-scroll">
+                        <VBox spacing="12" style="-fx-padding: 4;">
+                            <!-- Identidad block -->
+                            <VBox fx:id="perfilIdentidadContainer" spacing="6" styleClass="profile-block"/>
+
+                            <!-- Contacto block -->
+                            <VBox fx:id="perfilContactoContainer" spacing="6" styleClass="profile-block"/>
+
+                            <!-- Horario block -->
+                            <VBox fx:id="perfilHorarioContainer" spacing="6" styleClass="profile-block"/>
+
+                            <!-- Servicios block -->
+                            <VBox fx:id="perfilServiciosContainer" spacing="6" styleClass="profile-block"/>
+
+                            <!-- Observaciones block -->
+                            <VBox fx:id="perfilObservacionesContainer" spacing="6" styleClass="profile-block"/>
+                        </VBox>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 3: Personal y permisos por sede -->
+                <VBox fx:id="sectionPersonal" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="summary-header">
+                        <Label text="Personal y permisos por sede" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+                    </HBox>
+
+                    <SplitPane orientation="VERTICAL" dividerPositions="0.65" VBox.vgrow="ALWAYS">
+                        <!-- Personal table -->
+                        <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                            <TableView fx:id="personalTable">
+                                <columns>
+                                    <TableColumn fx:id="colPerUsuario" text="Usuario" prefWidth="160" resizable="true"/>
+                                    <TableColumn fx:id="colPerRol" text="Rol" prefWidth="150" resizable="true"/>
+                                    <TableColumn fx:id="colPerEstado" text="Estado" prefWidth="120" resizable="true"/>
+                                    <TableColumn fx:id="colPerAcceso" text="Acceso principal" prefWidth="180" resizable="true"/>
+                                </columns>
+                            </TableView>
+                        </ScrollPane>
+
+                        <!-- Detail permissions -->
+                        <VBox fx:id="personalDetailContainer" spacing="8" style="-fx-padding: 8;"/>
+                    </SplitPane>
+                </VBox>
+
+                <!-- Sub-view 4: Inventario y stock por sucursal -->
+                <VBox fx:id="sectionInventario" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="summary-header">
+                        <Label text="Inventario y stock por sucursal" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+                    </HBox>
+
+                    <!-- KPI indicators -->
+                    <VBox fx:id="inventarioKpiContainer" spacing="8" styleClass="kpi-container"/>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="inventarioTable">
+                            <columns>
+                                <TableColumn fx:id="colInvRef" text="Referencia" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colInvNombre" text="Nombre" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colInvCategoria" text="Categoria" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colInvStock" text="Stock" prefWidth="70" resizable="true"/>
+                                <TableColumn fx:id="colInvEstado" text="Estado" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colInvObservacion" text="Observacion" prefWidth="200" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 5: Agenda atencion y flujo local -->
+                <VBox fx:id="sectionAgenda" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="summary-header">
+                        <Label text="Agenda atencion y flujo local" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+                    </HBox>
+
+                    <!-- KPIs agenda -->
+                    <VBox fx:id="agendaKpiContainer" spacing="8" styleClass="kpi-container"/>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="agendaTable">
+                            <columns>
+                                <TableColumn fx:id="colAgeIndicador" text="Indicador" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colAgeValor" text="Valor" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colAgeEstado" text="Estado" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colAgeObservacion" text="Observacion" prefWidth="300" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 6: Caja y desempeno por sucursal -->
+                <VBox fx:id="sectionCaja" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="summary-header">
+                        <Label text="Caja y desempeno por sucursal" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+                    </HBox>
+
+                    <!-- KPIs economicos -->
+                    <VBox fx:id="cajaKpiContainer" spacing="8" styleClass="kpi-container"/>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="cajaTable">
+                            <columns>
+                                <TableColumn fx:id="colCajIndicador" text="Indicador" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colCajValor" text="Valor" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colCajEstado" text="Estado" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colCajObservacion" text="Observacion" prefWidth="280" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 7: Comparativo entre sucursales -->
+                <VBox fx:id="sectionComparativo" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="summary-header">
+                        <Label text="Comparativo entre sucursales" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+                    </HBox>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="comparativoTable">
+                            <columns>
+                                <TableColumn fx:id="colCompSucursal" text="Sucursal" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colCompVentas" text="Ventas" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colCompTicket" text="Ticket promedio" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colCompStock" text="Stock critico" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colCompRecalls" text="Recalls pendientes" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colCompRetrasos" text="Retrasos" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colCompEstado" text="Estado general" prefWidth="140" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+            </StackPane>
+
+            <!-- RIGHT: Persistent branch summary panel -->
+            <VBox spacing="12" style="-fx-padding: 0 0 0 8;">
+
+                <!-- Header -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label text="Resumen de sucursal" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <Label text="Informacion operativa de la sede seleccionada" styleClass="topbar-subtitle"/>
+                </VBox>
+
+                <!-- Identity fields -->
+                <VBox spacing="4" styleClass="summary-fields-container">
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Sucursal:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summarySucursal" text="Sin seleccion" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Ciudad:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryCiudad" text="" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Estado:" styleClass="summary-field-label" minWidth="90"/>
+                        <Label fx:id="summaryEstado" text="" styleClass="summary-badge"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Scrollable summary fields -->
+                <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="summary-scroll">
+                    <VBox fx:id="summaryFieldsContainer" spacing="8" style="-fx-padding: 8;">
+                    </VBox>
+                </ScrollPane>
+
+            </VBox>
+
+        </SplitPane>
+    </center>
+
+</BorderPane>

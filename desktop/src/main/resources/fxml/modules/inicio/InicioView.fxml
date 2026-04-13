@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.modules.inicio.InicioController"
+            styleClass="app-root">
+
+    <!-- ===== TOP ===== -->
+    <top>
+        <HBox spacing="16" alignment="CENTER_LEFT" styleClass="topbar" BorderPane.alignment="CENTER">
+            <VBox spacing="2" HBox.hgrow="ALWAYS">
+                <Label text="Inicio" styleClass="topbar-title"/>
+                <Label text="Resumen general de la operacion diaria" styleClass="topbar-subtitle"/>
+            </VBox>
+            <HBox spacing="8" alignment="CENTER_RIGHT">
+                <Label text="Sucursal:" styleClass="topbar-label"/>
+                <ComboBox fx:id="sucursalCombo" promptText="Seleccionar sucursal" styleClass="topbar-combo" prefWidth="200"/>
+            </HBox>
+        </HBox>
+    </top>
+
+    <!-- ===== CENTER ===== -->
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+            <VBox spacing="16" styleClass="inicio-content-vbox">
+
+                <!-- KPI Cards -->
+                <VBox spacing="8">
+                    <Label text="Indicadores del dia" styleClass="section-title"/>
+                    <GridPane fx:id="kpiGrid" hgap="12" vgap="12">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" minWidth="180"/>
+                            <ColumnConstraints hgrow="ALWAYS" minWidth="180"/>
+                            <ColumnConstraints hgrow="ALWAYS" minWidth="180"/>
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints vgrow="SOMETIMES"/>
+                            <RowConstraints vgrow="SOMETIMES"/>
+                        </rowConstraints>
+                    </GridPane>
+                </VBox>
+
+                <!-- Main two-column layout: Citas+Alertas (left) | Actividad+Accesos (right) -->
+                <HBox spacing="16">
+
+                    <!-- LEFT COLUMN (65%) -->
+                    <VBox spacing="12" HBox.hgrow="ALWAYS" styleClass="inicio-left-column">
+
+                        <!-- Proximas citas -->
+                        <VBox spacing="8">
+                            <Label text="Proximas citas" styleClass="section-title"/>
+                            <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="citasTable" style="-fx-min-height: 200;">
+                                    <columns>
+                                        <TableColumn fx:id="colHora" text="Hora" prefWidth="65" resizable="true"/>
+                                        <TableColumn fx:id="colCliente" text="Cliente" prefWidth="140" resizable="true"/>
+                                        <TableColumn fx:id="colAtencion" text="Atencion" prefWidth="120" resizable="true"/>
+                                        <TableColumn fx:id="colEstado" text="Estado" prefWidth="100" resizable="true"/>
+                                        <TableColumn fx:id="colProfesional" text="Profesional" prefWidth="120" resizable="true"/>
+                                    </columns>
+                                </TableView>
+                            </ScrollPane>
+                        </VBox>
+
+                        <!-- Pendientes y alertas -->
+                        <VBox spacing="8">
+                            <Label text="Pendientes y alertas" styleClass="section-title"/>
+                            <VBox fx:id="alertasContainer" spacing="6"/>
+                        </VBox>
+
+                    </VBox>
+
+                    <!-- RIGHT COLUMN (35%) -->
+                    <VBox spacing="12" HBox.hgrow="ALWAYS" styleClass="inicio-right-column" maxWidth="400">
+
+                        <!-- Actividad reciente -->
+                        <VBox spacing="8">
+                            <Label text="Actividad reciente" styleClass="section-title"/>
+                            <VBox fx:id="actividadContainer" spacing="4"/>
+                        </VBox>
+
+                        <!-- Accesos rapidos -->
+                        <VBox spacing="8">
+                            <Label text="Accesos rapidos" styleClass="section-title"/>
+                            <GridPane fx:id="accesosGrid" hgap="10" vgap="8">
+                                <columnConstraints>
+                                    <ColumnConstraints hgrow="ALWAYS" minWidth="140"/>
+                                    <ColumnConstraints hgrow="ALWAYS" minWidth="140"/>
+                                </columnConstraints>
+                            </GridPane>
+                        </VBox>
+
+                    </VBox>
+                </HBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

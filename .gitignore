@@ -1,0 +1,24 @@
+# Build output
+desktop/target/
+desktop/installer/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.class
+.settings/
+.project
+.classpath
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Temp
+*.tmp
+*.bak

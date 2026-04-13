@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.app.MainLayoutController"
+            styleClass="app-root">
+
+    <!-- LEFT: Sidebar -->
+    <left>
+        <ScrollPane fitToWidth="true" vbarPolicy="ALWAYS" hbarPolicy="NEVER" fitToHeight="false" styleClass="sidebar" minWidth="240" prefWidth="240">
+            <VBox fx:id="sidebarItems" styleClass="sidebar-content" spacing="4">
+                <padding>
+                    <Insets top="16" right="12" bottom="16" left="12"/>
+                </padding>
+
+                <!-- Brand -->
+                <VBox spacing="4" styleClass="brand-section">
+                    <Label text="Optica Manager" styleClass="brand-title"/>
+                    <Label text="Sistema integral" styleClass="brand-subtitle"/>
+                    <Region prefHeight="1" styleClass="sidebar-separator"/>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </left>
+
+    <!-- TOP: Topbar -->
+    <top>
+        <HBox styleClass="topbar" alignment="CENTER_LEFT" spacing="16">
+            <VBox>
+                <Label fx:id="lblModuleName" styleClass="topbar-title"/>
+                <Label fx:id="lblModuleDescription" styleClass="topbar-subtitle" text="Sistema de optica"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="Usuario:" styleClass="topbar-label"/>
+            <Label fx:id="lblUser" styleClass="topbar-value"/>
+            <Label text="Sucursal:" styleClass="topbar-label"/>
+            <ComboBox fx:id="cmbSucursal" styleClass="topbar-combo"/>
+        </HBox>
+    </top>
+
+    <!-- CENTER: Content host -->
+    <center>
+        <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER" styleClass="content-scroll">
+            <StackPane fx:id="contentHost" styleClass="content-host"/>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

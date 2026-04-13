@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.modules.notificaciones.NotificacionesController"
+            styleClass="app-root">
+
+    <!-- ===== TOP ===== -->
+    <top>
+        <VBox spacing="12" BorderPane.alignment="CENTER">
+
+            <!-- Title bar -->
+            <HBox spacing="16" alignment="CENTER_LEFT" styleClass="topbar">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Notificaciones" styleClass="topbar-title"/>
+                    <Label text="Bandeja unica de alertas, avisos al cliente y comunicacion interna" styleClass="topbar-subtitle"/>
+                </VBox>
+                <HBox spacing="8" alignment="CENTER_RIGHT">
+                    <Button fx:id="enviarNotificacionBtn" text="Enviar notificacion" styleClass="btn-primary"/>
+                    <Button fx:id="actualizarListadoBtn" text="Actualizar listado" styleClass="btn-secondary"/>
+                </HBox>
+            </HBox>
+
+            <!-- Filter bar -->
+            <FlowPane hgap="10" vgap="8" styleClass="filter-bar" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Buscar por referencia, tipo, cliente o canal..." prefWidth="280" styleClass="filter-field"/>
+                <ComboBox fx:id="tipoCombo" promptText="Tipo" prefWidth="140" styleClass="filter-combo"/>
+                <ComboBox fx:id="canalCombo" promptText="Canal" prefWidth="130" styleClass="filter-combo"/>
+                <ComboBox fx:id="estadoCombo" promptText="Estado" prefWidth="130" styleClass="filter-combo"/>
+                <ComboBox fx:id="prioridadCombo" promptText="Prioridad" prefWidth="120" styleClass="filter-combo"/>
+                <ComboBox fx:id="sucursalCombo" promptText="Sucursal" prefWidth="130" styleClass="filter-combo"/>
+                <DatePicker fx:id="desdePicker" promptText="Desde" prefWidth="120" styleClass="filter-combo"/>
+                <DatePicker fx:id="hastaPicker" promptText="Hasta" prefWidth="120" styleClass="filter-combo"/>
+                <CheckBox fx:id="soloPendientesYCriticasCheck" text="Solo pendientes/criticas"/>
+                <Button fx:id="limpiarFiltrosBtn" text="Limpiar filtros" styleClass="btn-filter-clear"/>
+            </FlowPane>
+
+            <!-- Sub-view toggle buttons -->
+            <HBox spacing="8" alignment="CENTER_LEFT" styleClass="subview-toggle-bar">
+                <ToggleButton fx:id="btnBandeja" text="Bandeja general" styleClass="toggle-subview"/>
+                <ToggleButton fx:id="btnNotifCliente" text="Notificaciones al cliente" styleClass="toggle-subview"/>
+                <ToggleButton fx:id="btnNotifInterna" text="Notif. operativas internas" styleClass="toggle-subview"/>
+                <ToggleButton fx:id="btnPlantillas" text="Campanas y plantillas" styleClass="toggle-subview"/>
+                <ToggleButton fx:id="btnHistorial" text="Historial de envios" styleClass="toggle-subview"/>
+                <ToggleButton fx:id="btnAlertas" text="Alertas criticas" styleClass="toggle-subview"/>
+                <ToggleButton fx:id="btnPreferencias" text="Preferencias" styleClass="toggle-subview"/>
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <!-- ===== CENTER ===== -->
+    <center>
+        <VBox spacing="12" style="-fx-padding: 8;">
+
+            <!-- Sub-views -->
+            <VBox VBox.vgrow="ALWAYS" style="-fx-padding: 0 0 0 0;">
+
+                <!-- Sub-view 1: Bandeja general -->
+                <VBox fx:id="sectionBandeja" spacing="8" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label fx:id="lblBandejaCount" text="0 notificaciones visibles" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    </HBox>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="bandejaTable">
+                            <columns>
+                                <TableColumn fx:id="colBReferencia" text="Referencia" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colBTipo" text="Tipo" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colBClienteOCaso" text="Cliente / Caso" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colBCanal" text="Canal" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colBEstado" text="Estado" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colBPrioridad" text="Prioridad" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colBFecha" text="Fecha" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colBModuloOrigen" text="Modulo origen" prefWidth="120" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <fx:include fx:id="paginationBar" source="/fxml/shared/components/PaginationBar.fxml"/>
+
+                    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="pagination-bar">
+                        <Label fx:id="footerBandeja" text="Mostrando 0 de 0 notificaciones" styleClass="pagination-label"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 2: Notificaciones al cliente -->
+                <VBox fx:id="sectionNotifCliente" spacing="8" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <Label text="Notificaciones al cliente" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="notifClienteTable">
+                            <columns>
+                                <TableColumn fx:id="colNCCliente" text="Cliente" prefWidth="150" resizable="true"/>
+                                <TableColumn fx:id="colNCTipo" text="Tipo" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colNCCanal" text="Canal" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colNCEstado" text="Estado" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colNCFecha" text="Fecha" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colNCResultado" text="Resultado" prefWidth="140" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 3: Notificaciones operativas internas -->
+                <VBox fx:id="sectionNotifInterna" spacing="8" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <Label text="Notificaciones operativas internas" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="notifInternaTable">
+                            <columns>
+                                <TableColumn fx:id="colNIReferencia" text="Referencia" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colNITipo" text="Tipo" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colNIArea" text="Area" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colNIEstado" text="Estado" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colNIPrioridad" text="Prioridad" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colNIFecha" text="Fecha" prefWidth="120" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 4: Campanas y plantillas -->
+                <VBox fx:id="sectionPlantillas" spacing="8" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="Campanas y plantillas" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                        <HBox HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="btnNuevaPlantilla" text="Nueva plantilla" styleClass="btn-primary"/>
+                    </HBox>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="plantillasTable">
+                            <columns>
+                                <TableColumn fx:id="colPPlantilla" text="Plantilla" prefWidth="180" resizable="true"/>
+                                <TableColumn fx:id="colPTipo" text="Tipo" prefWidth="170" resizable="true"/>
+                                <TableColumn fx:id="colPCanalSugerido" text="Canal sugerido" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colPEstado" text="Estado" prefWidth="120" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 5: Historial de envios y respuestas -->
+                <VBox fx:id="sectionHistorial" spacing="8" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <Label text="Historial de envios y respuestas" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="historialTable">
+                            <columns>
+                                <TableColumn fx:id="colHFecha" text="Fecha" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colHReferencia" text="Referencia" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colHClienteOCaso" text="Cliente / Caso" prefWidth="150" resizable="true"/>
+                                <TableColumn fx:id="colHCanal" text="Canal" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colHEstado" text="Estado" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colHResultado" text="Resultado" prefWidth="140" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 6: Alertas criticas -->
+                <VBox fx:id="sectionAlertas" spacing="8" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label fx:id="lblAlertasCount" text="0 alertas activas" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #dc2626;"/>
+                        <HBox HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="btnAtenderAlerta" text="Atender alerta" styleClass="btn-primary"/>
+                    </HBox>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="alertasTable">
+                            <columns>
+                                <TableColumn fx:id="colAReferencia" text="Referencia" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colATipo" text="Tipo" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colACasoAfectado" text="Caso afectado" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colAPrioridad" text="Prioridad" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colAEstado" text="Estado" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colAAccionSugerida" text="Accion sugerida" prefWidth="180" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 7: Preferencias de notificacion -->
+                <VBox fx:id="sectionPreferencias" spacing="16" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <Label text="Preferencias de notificacion" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <VBox spacing="10" style="-fx-padding: 16;">
+                        <CheckBox fx:id="chkWhatsApp" text="Notificaciones por WhatsApp"/>
+                        <CheckBox fx:id="chkSMS" text="Notificaciones por SMS"/>
+                        <CheckBox fx:id="chkEmail" text="Notificaciones por Email"/>
+                        <CheckBox fx:id="chkLlamada" text="Notificaciones por Llamada"/>
+                        <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 16 0 0 0;">
+                            <Button fx:id="btnGuardarPreferencias" text="Guardar preferencias" styleClass="btn-primary"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+            </VBox>
+
+            <Separator/>
+
+            <!-- RIGHT: Summary panel -->
+            <VBox spacing="12" style="-fx-padding: 0;">
+
+                <!-- Notification header -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label fx:id="summaryReferencia" text="Sin seleccion" styleClass="summary-title"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label fx:id="summaryTipo" text="" styleClass="summary-code"/>
+                        <Label text="|" styleClass="summary-separator"/>
+                        <Label fx:id="summaryCanal" text="" styleClass="summary-sucursal"/>
+                    </HBox>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label fx:id="summaryEstadoActual" text="" styleClass="summary-badge"/>
+                        <Label text="|" styleClass="summary-separator"/>
+                        <Label fx:id="summaryFechaHora" text="" styleClass="summary-sucursal"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Client / Order info -->
+                <VBox spacing="4">
+                    <Label fx:id="summaryCliente" text="" style="-fx-font-size: 12px; -fx-font-weight: bold;"/>
+                    <Label fx:id="summaryOrdenRelacionada" text="" style="-fx-font-size: 11px; -fx-text-fill: #6b7280;"/>
+                    <Label fx:id="summarySucursal" text="" style="-fx-font-size: 11px; -fx-text-fill: #6b7280;"/>
+                </VBox>
+
+                <!-- Action buttons -->
+                <HBox spacing="8" alignment="CENTER_LEFT" styleClass="summary-actions">
+                    <Button fx:id="summaryBtnReenviar" text="Reenviar" styleClass="btn-action" maxWidth="100"/>
+                    <Button fx:id="summaryBtnMarcarLeida" text="Marcar leida" styleClass="btn-action" maxWidth="120"/>
+                    <Button fx:id="summaryBtnVerDetalle" text="Ver detalle" styleClass="btn-action" maxWidth="110"/>
+                </HBox>
+
+                <!-- Scrollable summary fields -->
+                <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="summary-scroll">
+                    <VBox fx:id="summaryFieldsContainer" spacing="10" style="-fx-padding: 8;">
+                    </VBox>
+                </ScrollPane>
+
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.marcosmoreira.opticademo.shared.ui.components.KpiCardController"
+      spacing="4">
+    <Label fx:id="iconLabel" text="" styleClass="kpi-icon"/>
+    <Label fx:id="titleLabel" text="Titulo" styleClass="kpi-title"/>
+    <Label fx:id="valueLabel" text="0" styleClass="kpi-value"/>
+    <Label fx:id="subtitleLabel" text="" styleClass="kpi-subtitle"/>
+</VBox>

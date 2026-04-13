@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.marcosmoreira.opticademo.shared.ui.components.StatusBadgeController"
+      alignment="CENTER">
+    <Label fx:id="badgeLabel" text="Estado"/>
+</VBox>

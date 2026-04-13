@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.modules.inventario.InventarioController"
+            styleClass="app-root">
+
+    <!-- ===== TOP ===== -->
+    <top>
+        <VBox spacing="12" BorderPane.alignment="CENTER">
+
+            <!-- Title bar -->
+            <HBox spacing="16" alignment="CENTER_LEFT" styleClass="topbar">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Inventario" styleClass="topbar-title"/>
+                    <Label text="Catalogo de productos, monturas, lentes y control de stock" styleClass="topbar-subtitle"/>
+                </VBox>
+                <HBox spacing="8" alignment="CENTER_RIGHT">
+                    <Button fx:id="nuevoProductoBtn" text="Nuevo producto" styleClass="btn-primary"/>
+                    <Button fx:id="actualizarInventarioBtn" text="Actualizar inventario" styleClass="btn-secondary"/>
+                    <Button fx:id="exportarInventarioBtn" text="Exportar inventario" styleClass="btn-secondary"/>
+                </HBox>
+            </HBox>
+
+            <!-- Filter bar -->
+            <FlowPane hgap="10" vgap="8" styleClass="filter-bar" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Buscar por referencia, nombre, categoria..." prefWidth="280" styleClass="filter-field"/>
+                <ComboBox fx:id="categoriaCombo" promptText="Categoria" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="stockCombo" promptText="Estado stock" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="marcaCombo" promptText="Marca" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="sucursalCombo" promptText="Sucursal" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="proveedorCombo" promptText="Proveedor" prefWidth="150" styleClass="filter-combo"/>
+                <CheckBox fx:id="soloStockCriticoCheck" text="Solo stock critico" styleClass="filter-checkbox"/>
+                <Button fx:id="limpiarFiltrosBtn" text="Limpiar filtros" styleClass="btn-filter-clear"/>
+            </FlowPane>
+
+            <!-- Sub-view toggle buttons -->
+            <ToolBar styleClass="subview-toolbar">
+                <ToggleButton fx:id="subViewCatalogoBtn" text="Catalogo general" selected="true" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="subViewMonturasBtn" text="Monturas" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="subViewLentesBtn" text="Lentes y variantes" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="subViewMovimientosBtn" text="Movimientos" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="subViewReposicionBtn" text="Reposicion" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="subViewRecepcionBtn" text="Recepcion" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="subViewAnalisisBtn" text="Analisis" styleClass="subview-toggle"/>
+            </ToolBar>
+
+        </VBox>
+    </top>
+
+    <!-- ===== CENTER ===== -->
+    <center>
+        <VBox spacing="12" style="-fx-padding: 8;">
+            <!-- Table area -->
+            <StackPane VBox.vgrow="ALWAYS">
+
+                <!-- Sub-view 1: Catalogo general -->
+                <VBox fx:id="catalogoSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Catalogo general de productos" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="catalogoTable">
+                            <columns>
+                                <TableColumn fx:id="colCatReferencia" text="Referencia" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colCatNombre" text="Nombre" prefWidth="180" resizable="true"/>
+                                <TableColumn fx:id="colCatCategoria" text="Categoria" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colCatMarca" text="Marca" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colCatSucursal" text="Sucursal" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colCatStock" text="Stock" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colCatPrecio" text="Precio" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colCatEstado" text="Estado" prefWidth="110" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                    <fx:include fx:id="paginationBar" source="/fxml/shared/components/PaginationBar.fxml"/>
+                    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="pagination-bar">
+                        <Label fx:id="catalogoFooterLabel" text="Mostrando 0 de 0 productos" styleClass="pagination-label"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 2: Monturas -->
+                <VBox fx:id="monturasSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Monturas" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="monturasTable">
+                            <columns>
+                                <TableColumn fx:id="colMonReferencia" text="Referencia" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colMonNombre" text="Nombre" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colMonMarca" text="Marca" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colMonMaterial" text="Material" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colMonColor" text="Color" prefWidth="80" resizable="true"/>
+                                <TableColumn fx:id="colMonPrecio" text="Precio" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colMonStock" text="Stock" prefWidth="80" resizable="true"/>
+                                <TableColumn fx:id="colMonSucursal" text="Sucursal" prefWidth="110" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Button fx:id="verMonturaBtn" text="Ver montura" styleClass="btn-action"/>
+                        <Button fx:id="ajustarStockMonturaBtn" text="Ajustar stock" styleClass="btn-action"/>
+                        <Button fx:id="verSucursalesBtn" text="Ver sucursales" styleClass="btn-action"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 3: Lentes y variantes -->
+                <VBox fx:id="lentesSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Lentes y variantes" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="lentesTable">
+                            <columns>
+                                <TableColumn fx:id="colLenReferencia" text="Referencia" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colLenNombre" text="Nombre" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colLenTipo" text="Tipo" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colLenIndice" text="Indice" prefWidth="70" resizable="true"/>
+                                <TableColumn fx:id="colLenTratamiento" text="Tratamiento" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colLenStock" text="Stock" prefWidth="70" resizable="true"/>
+                                <TableColumn fx:id="colLenPrecio" text="Precio base" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colLenEstado" text="Estado" prefWidth="100" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Button fx:id="verLenteBtn" text="Ver lente" styleClass="btn-action"/>
+                        <Button fx:id="ajustarStockLenteBtn" text="Ajustar stock" styleClass="btn-action"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 4: Movimientos de inventario -->
+                <VBox fx:id="movimientosSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Movimientos de inventario" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="movimientosTable">
+                            <columns>
+                                <TableColumn fx:id="colMovFecha" text="Fecha" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colMovTipo" text="Tipo" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colMovReferencia" text="Referencia" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colMovProducto" text="Producto" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colMovCantidad" text="Cantidad" prefWidth="80" resizable="true"/>
+                                <TableColumn fx:id="colMovSucursal" text="Sucursal" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colMovResponsable" text="Responsable" prefWidth="140" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Button fx:id="registrarAjusteBtn" text="Registrar ajuste" styleClass="btn-action"/>
+                        <Button fx:id="registrarTransferenciaBtn" text="Registrar transferencia" styleClass="btn-action"/>
+                        <Button fx:id="exportarMovimientosBtn" text="Exportar movimientos" styleClass="btn-action"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 5: Reposicion y stock critico -->
+                <VBox fx:id="reposicionSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Reposicion y stock critico" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <!-- KPI indicators -->
+                    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="kpi-bar">
+                        <VBox spacing="2" styleClass="kpi-card">
+                            <Label text="Agotados" style="-fx-font-size: 11px; -fx-text-fill: #888;"/>
+                            <Label fx:id="agotadosCountLabel" text="0" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #dc3545;"/>
+                        </VBox>
+                        <VBox spacing="2" styleClass="kpi-card">
+                            <Label text="Bajo stock" style="-fx-font-size: 11px; -fx-text-fill: #888;"/>
+                            <Label fx:id="bajoStockCountLabel" text="0" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #ffc107;"/>
+                        </VBox>
+                        <VBox spacing="2" styleClass="kpi-card">
+                            <Label text="En reposicion" style="-fx-font-size: 11px; -fx-text-fill: #888;"/>
+                            <Label fx:id="enReposicionCountLabel" text="0" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #17a2b8;"/>
+                        </VBox>
+                    </HBox>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="reposicionTable">
+                            <columns>
+                                <TableColumn fx:id="colRepReferencia" text="Referencia" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colRepNombre" text="Nombre" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colRepCategoria" text="Categoria" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colRepStockActual" text="Stock actual" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colRepStockMinimo" text="Stock min" prefWidth="80" resizable="true"/>
+                                <TableColumn fx:id="colRepEstado" text="Estado" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colRepProveedor" text="Proveedor" prefWidth="150" resizable="true"/>
+                                <TableColumn fx:id="colRepSucursal" text="Sucursal" prefWidth="110" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Button fx:id="generarReposicionBtn" text="Generar reposicion" styleClass="btn-action"/>
+                        <Button fx:id="verProveedorBtn" text="Ver proveedor" styleClass="btn-action"/>
+                        <Button fx:id="marcarPedidoBtn" text="Marcar pedido" styleClass="btn-action"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 6: Recepcion y abastecimiento -->
+                <VBox fx:id="recepcionSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Recepcion y abastecimiento" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <SplitPane orientation="VERTICAL" dividerPositions="0.65" VBox.vgrow="ALWAYS">
+                        <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                            <TableView fx:id="recepcionTable">
+                                <columns>
+                                    <TableColumn fx:id="colRecReferencia" text="Referencia" prefWidth="90" resizable="true"/>
+                                    <TableColumn fx:id="colRecFecha" text="Fecha" prefWidth="100" resizable="true"/>
+                                    <TableColumn fx:id="colRecProveedor" text="Proveedor" prefWidth="180" resizable="true"/>
+                                    <TableColumn fx:id="colRecSucursal" text="Sucursal" prefWidth="120" resizable="true"/>
+                                    <TableColumn fx:id="colRecEstado" text="Estado" prefWidth="110" resizable="true"/>
+                                    <TableColumn fx:id="colRecResponsable" text="Responsable" prefWidth="150" resizable="true"/>
+                                </columns>
+                            </TableView>
+                        </ScrollPane>
+                        <!-- Detail panel -->
+                        <VBox spacing="8" style="-fx-padding: 8;" styleClass="detail-panel">
+                            <Label text="Detalle de recepcion" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                            <Label text="Seleccione una recepcion para ver detalles" style="-fx-font-size: 11px; -fx-text-fill: #888;"/>
+                        </VBox>
+                    </SplitPane>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Button fx:id="registrarRecepcionBtn" text="Registrar recepcion" styleClass="btn-action"/>
+                        <Button fx:id="marcarCompletaBtn" text="Marcar completa" styleClass="btn-action"/>
+                        <Button fx:id="registrarDiferenciaBtn" text="Registrar diferencia" styleClass="btn-action"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 7: Historico y analisis de stock -->
+                <VBox fx:id="analisisSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Historico y analisis de stock" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <!-- KPI indicators -->
+                    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="kpi-bar">
+                        <VBox spacing="2" styleClass="kpi-card">
+                            <Label text="Total productos" style="-fx-font-size: 11px; -fx-text-fill: #888;"/>
+                            <Label fx:id="totalProductosLabel" text="0" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #28a745;"/>
+                        </VBox>
+                        <VBox spacing="2" styleClass="kpi-card">
+                            <Label text="Rotacion media" style="-fx-font-size: 11px; -fx-text-fill: #888;"/>
+                            <Label fx:id="rotacionMediaLabel" text="-" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #17a2b8;"/>
+                        </VBox>
+                        <VBox spacing="2" styleClass="kpi-card">
+                            <Label text="Bajo stock" style="-fx-font-size: 11px; -fx-text-fill: #888;"/>
+                            <Label fx:id="productosBajoStockLabel" text="0" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #ffc107;"/>
+                        </VBox>
+                    </HBox>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="analisisTable">
+                            <columns>
+                                <TableColumn fx:id="colAnaReferencia" text="Referencia" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colAnaNombre" text="Nombre" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colAnaCategoria" text="Categoria" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colAnaRotacion" text="Rotacion" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colAnaUltimaSalida" text="Ultima salida" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colAnaEstado" text="Estado" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colAnaObservacion" text="Observacion" prefWidth="200" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Button fx:id="exportarAnalisisBtn" text="Exportar analisis" styleClass="btn-action"/>
+                        <Button fx:id="verProductoBtn" text="Ver producto" styleClass="btn-action"/>
+                        <Button fx:id="marcarRevisionBtn" text="Marcar revision" styleClass="btn-action"/>
+                    </HBox>
+                </VBox>
+
+            </StackPane>
+
+            <!-- Summary section -->
+            <Separator/>
+            <Label text="Detalle del producto seleccionado" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-text-secondary;"/>
+
+            <!-- Product summary panel -->
+            <VBox spacing="12" style="-fx-padding: 0;">
+
+                <!-- Product identity header -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label fx:id="summaryReferencia" text="Sin seleccion" styleClass="summary-ref"/>
+                    <Label fx:id="summaryNombre" text="" styleClass="summary-title"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label fx:id="summaryCategoria" text="" styleClass="summary-badge"/>
+                        <Label fx:id="summaryMarca" text="" styleClass="summary-badge"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Scrollable summary fields -->
+                <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="summary-scroll">
+                    <VBox fx:id="summaryFieldsContainer" spacing="10" style="-fx-padding: 8;">
+
+                        <!-- Identidad del producto -->
+                        <Label text="Identidad del producto" styleClass="summary-section-title"/>
+                        <VBox spacing="4">
+                            <Label fx:id="summaryEstadoStock" text="" styleClass="summary-field-value"/>
+                            <Label fx:id="summaryStockActual" text="" styleClass="summary-field-value"/>
+                            <Label fx:id="summarySucursal" text="" styleClass="summary-field-value"/>
+                            <Label fx:id="summaryUbicacion" text="" styleClass="summary-field-value"/>
+                        </VBox>
+
+                        <!-- Contexto de stock -->
+                        <Label text="Contexto de stock" styleClass="summary-section-title"/>
+                        <VBox spacing="4">
+                            <Label text="Stock: " styleClass="summary-field-label"/>
+                            <Label fx:id="summaryStockActual2" text="-" styleClass="summary-field-value"/>
+                            <Label text="Estado: " styleClass="summary-field-label"/>
+                            <Label fx:id="summaryEstadoStock2" text="-" styleClass="summary-field-value"/>
+                        </VBox>
+
+                        <!-- Contexto comercial -->
+                        <Label text="Contexto comercial" styleClass="summary-section-title"/>
+                        <VBox spacing="4">
+                            <Label text="Precio: " styleClass="summary-field-label"/>
+                            <Label fx:id="summaryPrecioVenta" text="-" styleClass="summary-field-value highlighted"/>
+                            <Label text="Ultima salida: " styleClass="summary-field-label"/>
+                            <Label fx:id="summaryUltimaSalida" text="-" styleClass="summary-field-value"/>
+                        </VBox>
+
+                        <!-- Contexto de abastecimiento -->
+                        <Label text="Contexto de abastecimiento" styleClass="summary-section-title"/>
+                        <VBox spacing="4">
+                            <Label text="Proveedor: " styleClass="summary-field-label"/>
+                            <Label fx:id="summaryProveedor" text="-" styleClass="summary-field-value"/>
+                            <Label text="Ultima recepcion: " styleClass="summary-field-label"/>
+                            <Label fx:id="summaryUltimaRecepcion" text="-" styleClass="summary-field-value"/>
+                            <Label text="Estado reposicion: " styleClass="summary-field-label"/>
+                            <Label fx:id="summaryEstadoReposicion" text="-" styleClass="summary-field-value"/>
+                        </VBox>
+
+                        <!-- Acciones rapidas -->
+                        <Label text="Acciones rapidas" styleClass="summary-section-title"/>
+                        <VBox spacing="6">
+                            <Button text="Ver detalle completo" styleClass="btn-action" maxWidth="Infinity"/>
+                            <Button text="Historial de movimientos" styleClass="btn-action" maxWidth="Infinity"/>
+                            <Button text="Ajustar stock" styleClass="btn-action" maxWidth="Infinity"/>
+                        </VBox>
+
+                    </VBox>
+                </ScrollPane>
+
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

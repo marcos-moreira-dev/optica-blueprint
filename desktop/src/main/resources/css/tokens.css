@@ -1,0 +1,33 @@
+/* ===== TOKENS ===== */
+
+.root {
+    -optica-primary: #2B5B6E;
+    -optica-primary-dark: #1E3A4A;
+    -optica-secondary: #5A7D8C;
+    -optica-success: #4A8C5C;
+    -optica-warning: #C4882B;
+    -optica-danger: #A64B4B;
+    -optica-info: #4A8C9C;
+
+    -optica-bg-general: #F4F6F8;
+    -optica-bg-surface: #FFFFFF;
+    -optica-bg-sidebar: #1E3A4A;
+    -optica-bg-sidebar-hover: #264A5C;
+    -optica-bg-sidebar-active: #2B5B6E;
+
+    -optica-text-primary: #1A202C;
+    -optica-text-secondary: #5A6474;
+    -optica-text-on-primary: #FFFFFF;
+    -optica-text-on-sidebar: #C8D6DF;
+
+    -optica-border: #E2E8F0;
+    -optica-border-light: #EDF2F7;
+
+    -optica-radius-sm: 4px;
+    -optica-radius-md: 6px;
+
+    -optica-spacing-xs: 4px;
+    -optica-spacing-sm: 8px;
+    -optica-spacing-md: 16px;
+    -optica-spacing-lg: 24px;
+}

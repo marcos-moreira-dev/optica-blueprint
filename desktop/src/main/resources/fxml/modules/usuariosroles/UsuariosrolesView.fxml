@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.modules.usuariosroles.UsuariosRolesController"
+            styleClass="app-root">
+
+    <!-- ===== TOP ===== -->
+    <top>
+        <VBox spacing="12" BorderPane.alignment="CENTER">
+
+            <!-- Title bar -->
+            <HBox spacing="16" alignment="CENTER_LEFT" styleClass="topbar">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Usuarios y Roles" styleClass="topbar-title"/>
+                    <Label text="Administracion de usuarios, permisos, sesiones y auditoria del sistema" styleClass="topbar-subtitle"/>
+                </VBox>
+                <HBox spacing="8" alignment="CENTER_RIGHT">
+                    <Button fx:id="nuevoUsuarioBtn" text="Nuevo usuario" styleClass="btn-primary"/>
+                    <Button fx:id="actualizarListadoBtn" text="Actualizar listado" styleClass="btn-secondary"/>
+                </HBox>
+            </HBox>
+
+            <!-- Filter bar -->
+            <FlowPane hgap="10" vgap="8" styleClass="filter-bar" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Buscar por usuario, nombre o sucursal..." prefWidth="280" styleClass="filter-field"/>
+                <ComboBox fx:id="rolCombo" promptText="Rol" prefWidth="160" styleClass="filter-combo"/>
+                <ComboBox fx:id="estadoCombo" promptText="Estado" prefWidth="130" styleClass="filter-combo"/>
+                <ComboBox fx:id="sucursalCombo" promptText="Sucursal" prefWidth="140" styleClass="filter-combo"/>
+                <ComboBox fx:id="actividadCombo" promptText="Actividad" prefWidth="140" styleClass="filter-combo"/>
+                <DatePicker fx:id="desdePicker" promptText="Desde" prefWidth="120" styleClass="filter-combo"/>
+                <DatePicker fx:id="hastaPicker" promptText="Hasta" prefWidth="120" styleClass="filter-combo"/>
+                <CheckBox fx:id="soloEventosSensiblesCheck" text="Solo eventos sensibles"/>
+                <Button fx:id="limpiarFiltrosBtn" text="Limpiar filtros" styleClass="btn-filter-clear"/>
+            </FlowPane>
+
+            <!-- Sub-view toggle buttons -->
+            <HBox spacing="8" alignment="CENTER_LEFT" styleClass="subview-toggle-bar">
+                <ToggleButton fx:id="btnDirectorio" text="Directorio de usuarios" styleClass="toggle-subview"/>
+                <ToggleButton fx:id="btnRoles" text="Roles del sistema" styleClass="toggle-subview"/>
+                <ToggleButton fx:id="btnPermisos" text="Permisos por modulo" styleClass="toggle-subview"/>
+                <ToggleButton fx:id="btnSucursales" text="Usuarios por sucursal" styleClass="toggle-subview"/>
+                <ToggleButton fx:id="btnSesiones" text="Sesiones y accesos" styleClass="toggle-subview"/>
+                <ToggleButton fx:id="btnAuditoria" text="Auditoria y trazabilidad" styleClass="toggle-subview"/>
+                <ToggleButton fx:id="btnHistorico" text="Historico" styleClass="toggle-subview"/>
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <!-- ===== CENTER ===== -->
+    <center>
+        <VBox spacing="12" style="-fx-padding: 8;">
+
+            <!-- Sub-views -->
+            <VBox VBox.vgrow="ALWAYS" style="-fx-padding: 0 0 0 0;">
+
+                <!-- Sub-view 1: Directorio de usuarios -->
+                <VBox fx:id="sectionDirectorio" spacing="8" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label fx:id="lblDirectorioCount" text="0 usuarios visibles" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    </HBox>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="directorioTable">
+                            <columns>
+                                <TableColumn fx:id="colDUsuario" text="Usuario" prefWidth="190" resizable="true"/>
+                                <TableColumn fx:id="colDNombre" text="Nombre" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colDRol" text="Rol" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colDSucursal" text="Sucursal" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colDEstado" text="Estado" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colDUltimoAcceso" text="Ultimo acceso" prefWidth="130" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <fx:include fx:id="paginationBar" source="/fxml/shared/components/PaginationBar.fxml"/>
+
+                    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="pagination-bar">
+                        <Label fx:id="footerDirectorio" text="Mostrando 0 de 0 usuarios" styleClass="pagination-label"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 2: Roles del sistema -->
+                <VBox fx:id="sectionRoles" spacing="8" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <Label text="Roles del sistema" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="rolesTable">
+                            <columns>
+                                <TableColumn fx:id="colRNombre" text="Nombre" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colRDescripcion" text="Descripcion" prefWidth="250" resizable="true"/>
+                                <TableColumn fx:id="colRSedeRecomendada" text="Sede recomendada" prefWidth="150" resizable="true"/>
+                                <TableColumn fx:id="colRNivelAcceso" text="Nivel de acceso" prefWidth="130" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 3: Permisos por modulo -->
+                <VBox fx:id="sectionPermisos" spacing="8" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="Permisos por modulo" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                        <HBox HBox.hgrow="ALWAYS"/>
+                        <Label text="Rol:" style="-fx-font-size: 12px;"/>
+                        <ComboBox fx:id="permisosRolCombo" promptText="Seleccionar rol" prefWidth="200" styleClass="filter-combo"/>
+                        <Button fx:id="btnGuardarPermisos" text="Guardar permisos" styleClass="btn-primary"/>
+                    </HBox>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="permisosTable">
+                            <columns>
+                                <TableColumn fx:id="colPModulo" text="Modulo" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colPVer" text="Ver" prefWidth="70" resizable="true"/>
+                                <TableColumn fx:id="colPCrear" text="Crear" prefWidth="70" resizable="true"/>
+                                <TableColumn fx:id="colPEditar" text="Editar" prefWidth="70" resizable="true"/>
+                                <TableColumn fx:id="colPAprobar" text="Aprobar" prefWidth="80" resizable="true"/>
+                                <TableColumn fx:id="colPExportar" text="Exportar" prefWidth="80" resizable="true"/>
+                                <TableColumn fx:id="colPCerrar" text="Cerrar" prefWidth="70" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 4: Usuarios por sucursal -->
+                <VBox fx:id="sectionSucursales" spacing="8" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <Label text="Usuarios por sucursal" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="sucursalesTable">
+                            <columns>
+                                <TableColumn fx:id="colSucSucursal" text="Sucursal" prefWidth="180" resizable="true"/>
+                                <TableColumn fx:id="colSUsuariosActivos" text="Usuarios activos" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colSRolesPrincipales" text="Roles principales" prefWidth="220" resizable="true"/>
+                                <TableColumn fx:id="colSucEstado" text="Estado" prefWidth="130" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 5: Sesiones y accesos -->
+                <VBox fx:id="sectionSesiones" spacing="8" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <Label text="Sesiones y accesos" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="sesionesTable">
+                            <columns>
+                                <TableColumn fx:id="colSFechaHora" text="Fecha / Hora" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colSUsuario" text="Usuario" prefWidth="180" resizable="true"/>
+                                <TableColumn fx:id="colSEvento" text="Evento" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colSSucursal" text="Sucursal" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colSEstado" text="Estado" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colSObservacion" text="Observacion" prefWidth="180" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 6: Auditoria y trazabilidad -->
+                <VBox fx:id="sectionAuditoria" spacing="8" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <Label text="Auditoria y trazabilidad" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="auditoriaTable">
+                            <columns>
+                                <TableColumn fx:id="colAFechaHora" text="Fecha / Hora" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colAUsuario" text="Usuario" prefWidth="170" resizable="true"/>
+                                <TableColumn fx:id="colAModulo" text="Modulo" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colAAccion" text="Accion" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colARegistroAfectado" text="Registro afectado" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colAObservacion" text="Observacion" prefWidth="180" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 7: Historico -->
+                <VBox fx:id="sectionHistorico" spacing="8" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                    <Label text="Historico de accesos" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="historicoTable">
+                            <columns>
+                                <TableColumn fx:id="colHFecha" text="Fecha" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colHUsuario" text="Usuario" prefWidth="170" resizable="true"/>
+                                <TableColumn fx:id="colHTipoEvento" text="Tipo evento" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colHRolOModulo" text="Rol / Modulo" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colHEstado" text="Estado" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colHObservacion" text="Observacion" prefWidth="180" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+            </VBox>
+
+            <Separator/>
+
+            <!-- RIGHT: Summary panel -->
+            <VBox spacing="12" style="-fx-padding: 0;">
+
+                <!-- User header -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label fx:id="summaryUsuario" text="Seleccione un usuario" styleClass="summary-title"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label fx:id="summaryRolPrincipal" text="—" styleClass="summary-code"/>
+                        <Label text="|" styleClass="summary-separator"/>
+                        <Label fx:id="summarySucursal" text="—" styleClass="summary-sucursal"/>
+                    </HBox>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label fx:id="summaryEstadoActual" text="—" styleClass="summary-badge"/>
+                        <Label text="|" styleClass="summary-separator"/>
+                        <Label fx:id="summaryUltimoAcceso" text="—" styleClass="summary-sucursal"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Action buttons -->
+                <HBox spacing="8" alignment="CENTER_LEFT" styleClass="summary-actions">
+                    <Button fx:id="summaryBtnEditar" text="Editar" styleClass="btn-action" maxWidth="100"/>
+                    <Button fx:id="summaryBtnCambiarRol" text="Cambiar rol" styleClass="btn-action" maxWidth="120"/>
+                    <Button fx:id="summaryBtnVerAuditoria" text="Ver auditoria" styleClass="btn-action" maxWidth="120"/>
+                    <Button fx:id="summaryBtnDesactivar" text="Desactivar" styleClass="btn-action" maxWidth="120"/>
+                </HBox>
+
+                <!-- Scrollable summary fields -->
+                <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="summary-scroll">
+                    <VBox fx:id="summaryFieldsContainer" spacing="10" style="-fx-padding: 8;">
+                    </VBox>
+                </ScrollPane>
+
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

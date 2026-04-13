@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.marcosmoreira.opticademo.shared.ui.components.EmptyStatePaneController">
+    <VBox fx:id="contentBox" alignment="CENTER" spacing="8">
+        <Label fx:id="messageLabel" text="No hay datos disponibles" styleClass="empty-state-message"/>
+        <Label fx:id="subMessageLabel" text="" styleClass="empty-state-submessage" visible="false" managed="false"/>
+        <VBox fx:id="actionContainer" spacing="8" styleClass="empty-state-actions"/>
+    </VBox>
+</StackPane>

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.modules.proveedores.ProveedoresController"
+            styleClass="app-root">
+
+    <!-- ===== TOP ===== -->
+    <top>
+        <VBox spacing="12" BorderPane.alignment="CENTER">
+
+            <!-- Title bar -->
+            <HBox spacing="16" alignment="CENTER_LEFT" styleClass="topbar">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Proveedores" styleClass="topbar-title"/>
+                    <Label text="Directorio, perfil comercial, ordenes y desempeno de proveedores" styleClass="topbar-subtitle"/>
+                </VBox>
+                <HBox spacing="8" alignment="CENTER_RIGHT">
+                    <Button fx:id="nuevoProveedorBtn" text="Nuevo proveedor" styleClass="btn-primary"/>
+                    <Button fx:id="actualizarProveedoresBtn" text="Actualizar" styleClass="btn-secondary"/>
+                    <Button fx:id="exportarDirectorioBtn" text="Exportar directorio" styleClass="btn-secondary"/>
+                </HBox>
+            </HBox>
+
+            <!-- Filter bar -->
+            <FlowPane hgap="10" vgap="8" styleClass="filter-bar" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Buscar por proveedor, contacto, tipo..." prefWidth="280" styleClass="filter-field"/>
+                <ComboBox fx:id="tipoCombo" promptText="Tipo" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="estadoCombo" promptText="Estado" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="categoriaCombo" promptText="Categoria" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="sucursalCombo" promptText="Sucursal" prefWidth="150" styleClass="filter-combo"/>
+                <CheckBox fx:id="soloConIncidenciasCheck" text="Solo con incidencias" styleClass="filter-checkbox"/>
+                <Button fx:id="limpiarFiltrosBtn" text="Limpiar filtros" styleClass="btn-filter-clear"/>
+            </FlowPane>
+
+            <!-- Sub-view toggle buttons -->
+            <ToolBar styleClass="subview-toolbar">
+                <ToggleButton fx:id="subViewDirectorioBtn" text="Directorio" selected="true" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="subViewPerfilBtn" text="Perfil comercial" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="subViewCatalogoBtn" text="Catalogo vinculado" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="subViewOrdenesBtn" text="Ordenes" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="subViewRecepcionesBtn" text="Recepciones" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="subViewDesempenoBtn" text="Desempeno" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="subViewHistoricoBtn" text="Historico" styleClass="subview-toggle"/>
+            </ToolBar>
+
+        </VBox>
+    </top>
+
+    <!-- ===== CENTER ===== -->
+    <center>
+        <VBox spacing="12" style="-fx-padding: 8;">
+
+            <!-- Sub-views -->
+            <VBox VBox.vgrow="ALWAYS" style="-fx-padding: 0 0 0 0;">
+
+                <!-- Sub-view 1: Directorio de proveedores -->
+                <VBox fx:id="directorioSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Directorio de proveedores" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="directorioTable">
+                            <columns>
+                                <TableColumn fx:id="colDirProveedor" text="Proveedor" prefWidth="180" resizable="true"/>
+                                <TableColumn fx:id="colDirTipo" text="Tipo" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colDirContacto" text="Contacto" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colDirTiempoEstimado" text="Tpo. estimado" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colDirEstado" text="Estado" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colDirCobertura" text="Cobertura" prefWidth="150" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                    <fx:include fx:id="paginationBar" source="/fxml/shared/components/PaginationBar.fxml"/>
+                </VBox>
+
+                <!-- Sub-view 2: Perfil comercial -->
+                <VBox fx:id="perfilSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Perfil comercial" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="perfilTable">
+                            <columns>
+                                <TableColumn fx:id="colPerfilCampo" text="Campo" prefWidth="200" resizable="true"/>
+                                <TableColumn fx:id="colPerfilValor" text="Valor" prefWidth="400" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 3: Catalogo vinculado -->
+                <VBox fx:id="catalogoSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Catalogo vinculado" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="catalogoTable">
+                            <columns>
+                                <TableColumn fx:id="colCatReferencia" text="Referencia" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colCatNombre" text="Nombre" prefWidth="200" resizable="true"/>
+                                <TableColumn fx:id="colCatCategoria" text="Categoria" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colCatMarca" text="Marca" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colCatEstado" text="Estado" prefWidth="110" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 4: Ordenes y abastecimiento -->
+                <VBox fx:id="ordenesSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Ordenes y abastecimiento" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="ordenesTable">
+                            <columns>
+                                <TableColumn fx:id="colOrdOrden" text="Orden" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colOrdFecha" text="Fecha" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colOrdEstado" text="Estado" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colOrdTotalItems" text="Total items" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colOrdRecepcion" text="Recepcion" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colOrdObservacion" text="Observacion" prefWidth="200" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 5: Recepciones e incidencias -->
+                <VBox fx:id="recepcionesSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Recepciones e incidencias" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="recepcionesTable">
+                            <columns>
+                                <TableColumn fx:id="colRecFecha" text="Fecha" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colRecTipo" text="Tipo" prefWidth="150" resizable="true"/>
+                                <TableColumn fx:id="colRecOrden" text="Orden" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colRecEstado" text="Estado" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colRecResponsable" text="Responsable" prefWidth="180" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 6: Desempeno del proveedor -->
+                <VBox fx:id="desempenoSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Desempeno del proveedor" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="desempenoTable">
+                            <columns>
+                                <TableColumn fx:id="colDesIndicador" text="Indicador" prefWidth="180" resizable="true"/>
+                                <TableColumn fx:id="colDesValor" text="Valor" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colDesEstado" text="Estado" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colDesObservacion" text="Observacion" prefWidth="250" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Sub-view 7: Historico -->
+                <VBox fx:id="historicoSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Historico de actividades" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="historicoTable">
+                            <columns>
+                                <TableColumn fx:id="colHisFecha" text="Fecha" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colHisProveedor" text="Proveedor" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colHisTipoRegistro" text="Tipo registro" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colHisReferencia" text="Referencia" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colHisEstado" text="Estado" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colHisObservacion" text="Observacion" prefWidth="200" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                </VBox>
+
+            </VBox>
+
+            <Separator/>
+
+            <!-- RIGHT: Persistent provider summary -->
+            <VBox spacing="12" style="-fx-padding: 0;">
+
+                <!-- Provider identity header -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label fx:id="summaryProveedor" text="Sin seleccion" styleClass="summary-ref"/>
+                    <Label fx:id="summaryTipoPrincipal" text="" styleClass="summary-title"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label fx:id="summaryEstado" text="" styleClass="summary-badge"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Scrollable summary fields -->
+                <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="summary-scroll">
+                    <VBox fx:id="summaryFieldsContainer" spacing="10" style="-fx-padding: 8;">
+
+                        <!-- Informacion de contacto -->
+                        <Label text="Informacion de contacto" styleClass="summary-section-title"/>
+                        <VBox spacing="4">
+                            <Label text="Contacto: " styleClass="summary-field-label"/>
+                            <Label fx:id="summaryContacto" text="-" styleClass="summary-field-value"/>
+                            <Label text="Telefono: " styleClass="summary-field-label"/>
+                            <Label fx:id="summaryTelefono" text="-" styleClass="summary-field-value"/>
+                            <Label text="Correo: " styleClass="summary-field-label"/>
+                            <Label fx:id="summaryCorreo" text="-" styleClass="summary-field-value"/>
+                        </VBox>
+
+                        <!-- Cobertura -->
+                        <Label text="Cobertura" styleClass="summary-section-title"/>
+                        <VBox spacing="4">
+                            <Label text="Categoria: " styleClass="summary-field-label"/>
+                            <Label fx:id="summaryCategoriaAbastecida" text="-" styleClass="summary-field-value"/>
+                            <Label text="Sucursales: " styleClass="summary-field-label"/>
+                            <Label fx:id="summarySucursalesAtendidas" text="-" styleClass="summary-field-value"/>
+                        </VBox>
+
+                        <!-- Desempeno operativo -->
+                        <Label text="Desempeno operativo" styleClass="summary-section-title"/>
+                        <VBox spacing="4">
+                            <Label text="Tpo. estimado: " styleClass="summary-field-label"/>
+                            <Label fx:id="summaryTiempoEstimado" text="-" styleClass="summary-field-value highlighted"/>
+                            <Label text="Ultima recepcion: " styleClass="summary-field-label"/>
+                            <Label fx:id="summaryUltimaRecepcion" text="-" styleClass="summary-field-value"/>
+                            <Label text="Incidencias: " styleClass="summary-field-label"/>
+                            <Label fx:id="summaryIncidenciasRecientes" text="-" styleClass="summary-field-value"/>
+                        </VBox>
+
+                        <!-- Observacion clave -->
+                        <Label text="Observacion clave" styleClass="summary-section-title"/>
+                        <VBox spacing="4">
+                            <Label fx:id="summaryObservacionClave" text="-" styleClass="summary-field-value"/>
+                        </VBox>
+
+                        <!-- Acciones rapidas -->
+                        <Label text="Acciones rapidas" styleClass="summary-section-title"/>
+                        <VBox spacing="6">
+                            <Button text="Ver perfil completo" styleClass="btn-action" maxWidth="Infinity"/>
+                            <Button text="Ver catalogo" styleClass="btn-action" maxWidth="Infinity"/>
+                            <Button text="Ver ordenes" styleClass="btn-action" maxWidth="Infinity"/>
+                        </VBox>
+
+                    </VBox>
+                </ScrollPane>
+
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

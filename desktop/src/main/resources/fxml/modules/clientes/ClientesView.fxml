@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.modules.clientes.ClientesController"
+            styleClass="app-root">
+
+    <!-- ===== TOP ===== -->
+    <top>
+        <VBox spacing="12" BorderPane.alignment="CENTER">
+
+            <!-- Title bar -->
+            <HBox spacing="16" alignment="CENTER_LEFT" styleClass="topbar">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Clientes" styleClass="topbar-title"/>
+                    <Label text="Fichas integrales de clientes, recetas y historial de compras" styleClass="topbar-subtitle"/>
+                </VBox>
+                <HBox spacing="8" alignment="CENTER_RIGHT">
+                    <Button fx:id="nuevoClienteBtn" text="Nuevo cliente" styleClass="btn-primary"/>
+                    <Button fx:id="actualizarListadoBtn" text="Actualizar listado" styleClass="btn-secondary"/>
+                    <Label text="Sucursal:" styleClass="topbar-label"/>
+                    <ComboBox fx:id="sucursalCombo" promptText="Seleccionar sucursal" styleClass="topbar-combo" prefWidth="200"/>
+                </HBox>
+            </HBox>
+
+            <!-- Filter bar -->
+            <FlowPane hgap="10" vgap="8" styleClass="filter-bar" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Buscar por nombre, codigo o telefono..." prefWidth="280" styleClass="filter-field"/>
+                <ComboBox fx:id="estadoCombo" promptText="Estado" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="ultimaVisitaCombo" promptText="Ultima visita" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="recetaCombo" promptText="Receta" prefWidth="150" styleClass="filter-combo"/>
+                <Button fx:id="limpiarFiltrosBtn" text="Limpiar filtros" styleClass="btn-filter-clear"/>
+            </FlowPane>
+
+        </VBox>
+    </top>
+
+    <!-- ===== CENTER ===== -->
+    <center>
+        <VBox spacing="12" style="-fx-padding: 8;">
+            <!-- Table area -->
+            <Label text="Listado de clientes" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+            <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent;">
+                <TableView fx:id="clientesTable">
+                    <columns>
+                        <TableColumn fx:id="colNombre" text="Cliente" prefWidth="160" resizable="true"/>
+                        <TableColumn fx:id="colCodigo" text="Codigo" prefWidth="90" resizable="true"/>
+                        <TableColumn fx:id="colTelefono" text="Telefono" prefWidth="110" resizable="true"/>
+                        <TableColumn fx:id="colUltimaVisita" text="Ultima visita" prefWidth="110" resizable="true"/>
+                        <TableColumn fx:id="colReceta" text="Receta" prefWidth="110" resizable="true"/>
+                        <TableColumn fx:id="colEstado" text="Estado" prefWidth="100" resizable="true"/>
+                        <TableColumn fx:id="colSucursal" text="Sucursal" prefWidth="120" resizable="true"/>
+                    </columns>
+                </TableView>
+            </ScrollPane>
+
+            <!-- Pagination bar -->
+            <fx:include fx:id="paginationBar" source="/fxml/shared/components/PaginationBar.fxml"/>
+
+            <!-- Summary section -->
+            <Separator/>
+            <Label text="Detalle del cliente seleccionado" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-text-secondary;"/>
+
+            <!-- Client header -->
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label fx:id="summaryNombre" text="Seleccione un cliente" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                <Label fx:id="summaryCodigo" text="" style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+                <Label fx:id="summaryEstado" text="" styleClass="summary-badge"/>
+                <Label fx:id="summarySucursal" text="" style="-fx-font-size: 12px; -fx-text-fill: -optica-text-secondary;"/>
+            </HBox>
+
+            <!-- Action buttons -->
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <Button fx:id="editarBtn" text="Editar" styleClass="btn-action"/>
+                <Button fx:id="nuevaRecetaBtn" text="Nueva receta" styleClass="btn-action"/>
+                <Button fx:id="nuevaVentaBtn" text="Nueva venta optica" styleClass="btn-action"/>
+                <Button fx:id="agendarCitaBtn" text="Agendar cita" styleClass="btn-action"/>
+            </HBox>
+
+            <!-- Scrollable summary fields -->
+            <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" styleClass="summary-scroll" style="-fx-max-height: 120px;">
+                <VBox fx:id="summaryFieldsContainer" spacing="10" style="-fx-padding: 8;">
+                </VBox>
+            </ScrollPane>
+
+        </VBox>
+    </center>
+
+</BorderPane>

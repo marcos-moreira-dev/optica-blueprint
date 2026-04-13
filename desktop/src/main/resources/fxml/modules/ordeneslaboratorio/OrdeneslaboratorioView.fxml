@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.modules.ordeneslaboratorio.OrdenesLabController"
+            styleClass="app-root">
+
+    <!-- ===== TOP ===== -->
+    <top>
+        <VBox spacing="10" BorderPane.alignment="CENTER">
+
+            <!-- Title bar -->
+            <HBox spacing="16" alignment="CENTER_LEFT" styleClass="topbar">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Ordenes de Laboratorio" styleClass="topbar-title"/>
+                    <Label text="Gestion de ordenes externas, seguimiento por etapas, envios e incidencias" styleClass="topbar-subtitle"/>
+                </VBox>
+                <HBox spacing="8" alignment="CENTER_RIGHT">
+                    <Button fx:id="nuevaOrdenBtn" text="Nueva orden manual" styleClass="btn-primary"/>
+                    <Button fx:id="actualizarModuloBtn" text="Actualizar modulo" styleClass="btn-secondary"/>
+                    <Button fx:id="exportarOrdenesBtn" text="Exportar ordenes" styleClass="btn-secondary"/>
+                </HBox>
+            </HBox>
+
+            <!-- Filter bar -->
+            <FlowPane hgap="10" vgap="8" styleClass="filter-bar" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Buscar por referencia, cliente, tipo..." prefWidth="260" styleClass="filter-field"/>
+                <ComboBox fx:id="estadoCombo" promptText="Estado" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="laboratorioCombo" promptText="Laboratorio" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="sucursalCombo" promptText="Sucursal" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="prioridadCombo" promptText="Prioridad" prefWidth="130" styleClass="filter-combo"/>
+                <DatePicker fx:id="desdePicker" promptText="Desde" prefWidth="130"/>
+                <DatePicker fx:id="hastaPicker" promptText="Hasta" prefWidth="130"/>
+                <Button fx:id="limpiarFiltrosBtn" text="Limpiar filtros" styleClass="btn-filter-clear"/>
+            </FlowPane>
+
+            <!-- Sub-view toggle buttons -->
+            <HBox spacing="6" alignment="CENTER_LEFT" styleClass="tab-bar">
+                <ToggleButton fx:id="btnColaOrdenes" text="Cola de ordenes" styleClass="tab-button"/>
+                <ToggleButton fx:id="btnDetalle" text="Detalle de orden" styleClass="tab-button"/>
+                <ToggleButton fx:id="btnSeguimiento" text="Seguimiento por etapas" styleClass="tab-button"/>
+                <ToggleButton fx:id="btnEnvioRecepcion" text="Envio y recepcion" styleClass="tab-button"/>
+                <ToggleButton fx:id="btnIncidencias" text="Incidencias y retrabajos" styleClass="tab-button"/>
+                <ToggleButton fx:id="btnHistorico" text="Historico y busqueda" styleClass="tab-button"/>
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <!-- ===== CENTER ===== -->
+    <center>
+        <VBox spacing="12" style="-fx-padding: 8;">
+
+            <!-- Sub-views stack -->
+            <VBox VBox.vgrow="ALWAYS" style="-fx-padding: 0 0 0 0;">
+
+                <!-- Sub-view 1: Cola de ordenes -->
+                <VBox fx:id="colaOrdenesView" spacing="8" visible="true" managed="true">
+                    <Label text="Cola de ordenes" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="colaTable">
+                            <columns>
+                                <TableColumn fx:id="colRef" text="Referencia" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colCliente" text="Cliente" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colTipoTrabajo" text="Tipo trabajo" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colIngreso" text="Ingreso" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colFechaPromesa" text="Fecha promesa" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colEstado" text="Estado" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colLaboratorio" text="Laboratorio" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colPrioridad" text="Prioridad" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colSucursal" text="Sucursal" prefWidth="120" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <fx:include fx:id="paginationBar" source="/fxml/shared/components/PaginationBar.fxml"/>
+
+                    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="pagination-bar">
+                        <Label fx:id="colaFooterLabel" text="Mostrando 0 de 0 ordenes" styleClass="pagination-label"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 2: Detalle de orden -->
+                <VBox fx:id="detalleView" spacing="12" visible="false" managed="false">
+                    <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="summary-scroll">
+                        <VBox spacing="16" style="-fx-padding: 12;">
+
+                            <!-- Cabecera -->
+                            <VBox spacing="8" styleClass="detail-block">
+                                <Label text="Cabecera de la orden" styleClass="detail-block-title"/>
+                                <HBox spacing="16">
+                                    <VBox spacing="2">
+                                        <Label text="Referencia" styleClass="detail-label"/>
+                                        <Label fx:id="detReferencia" text="LAB-203" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Cliente" styleClass="detail-label"/>
+                                        <Label fx:id="detCliente" text="Sofia Ramirez" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Tipo" styleClass="detail-label"/>
+                                        <Label fx:id="detTipo" text="Lentes monofocales" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Estado" styleClass="detail-label"/>
+                                        <Label fx:id="detEstado" text="En produccion" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Prioridad" styleClass="detail-label"/>
+                                        <Label fx:id="detPrioridad" text="Alta" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Fecha promesa" styleClass="detail-label"/>
+                                        <Label fx:id="detFechaPromesa" text="16/04/2026" styleClass="detail-value"/>
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+
+                            <!-- Bloque tecnico -->
+                            <VBox spacing="8" styleClass="detail-block">
+                                <Label text="Bloque tecnico" styleClass="detail-block-title"/>
+                                <HBox spacing="16">
+                                    <VBox spacing="2">
+                                        <Label text="Receta" styleClass="detail-label"/>
+                                        <Label fx:id="detReceta" text="OD -2.50 / OS -1.75" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Montura" styleClass="detail-label"/>
+                                        <Label fx:id="detMontura" text="Standard" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Lente" styleClass="detail-label"/>
+                                        <Label fx:id="detLente" text="Monofocal" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Tratamientos" styleClass="detail-label"/>
+                                        <Label fx:id="detTratamientos" text="Anti-reflejo" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="PD" styleClass="detail-label"/>
+                                        <Label fx:id="detPD" text="62mm" styleClass="detail-value"/>
+                                    </VBox>
+                                </HBox>
+                                <VBox spacing="2">
+                                    <Label text="Observacion tecnica" styleClass="detail-label"/>
+                                    <Label fx:id="detObservacion" text="Sin observaciones adicionales" styleClass="detail-value"/>
+                                </VBox>
+                            </VBox>
+
+                            <!-- Bloque logistico -->
+                            <VBox spacing="8" styleClass="detail-block">
+                                <Label text="Bloque logistico" styleClass="detail-block-title"/>
+                                <HBox spacing="16">
+                                    <VBox spacing="2">
+                                        <Label text="Laboratorio" styleClass="detail-label"/>
+                                        <Label fx:id="detLaboratorio" text="LabVision" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Fechas" styleClass="detail-label"/>
+                                        <Label fx:id="detFechas" text="08/04 - 16/04/2026" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Guia" styleClass="detail-label"/>
+                                        <Label fx:id="detGuia" text="-" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Recepcion esperada" styleClass="detail-label"/>
+                                        <Label fx:id="detRecepcionEsperada" text="16/04/2026" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Responsable" styleClass="detail-label"/>
+                                        <Label fx:id="detResponsable" text="Tecnico Lopez" styleClass="detail-value"/>
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+
+                            <!-- Observaciones -->
+                            <VBox spacing="8" styleClass="detail-block">
+                                <Label text="Observaciones" styleClass="detail-block-title"/>
+                                <Label text="Orden en proceso normal. Sin novedades." styleClass="detail-value"/>
+                            </VBox>
+
+                        </VBox>
+                    </ScrollPane>
+
+                    <!-- Action buttons -->
+                    <HBox spacing="8" alignment="CENTER_LEFT" styleClass="summary-actions">
+                        <Button fx:id="detEditarOrdenBtn" text="Editar orden" styleClass="btn-action" maxWidth="140"/>
+                        <Button fx:id="detActualizarEstadoBtn" text="Actualizar estado" styleClass="btn-action" maxWidth="150"/>
+                        <Button fx:id="detRegistrarEnvioBtn" text="Registrar envio" styleClass="btn-action" maxWidth="150"/>
+                        <Button fx:id="detRegistrarRecepcionBtn" text="Registrar recepcion" styleClass="btn-action" maxWidth="160"/>
+                        <Button fx:id="detImprimirHojaBtn" text="Imprimir hoja de trabajo" styleClass="btn-action" maxWidth="180"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 3: Seguimiento por etapas -->
+                <VBox fx:id="seguimientoView" spacing="12" visible="false" managed="false">
+                    <!-- Stage progress bar -->
+                    <VBox spacing="8" styleClass="detail-block">
+                        <Label text="Progreso de etapas" styleClass="detail-block-title"/>
+                        <HBox spacing="6" alignment="CENTER_LEFT">
+                            <Label fx:id="etapaRecibida" text="Recibida" styleClass="stage-badge stage-complete"/>
+                            <Label text="&#8594;" styleClass="stage-arrow"/>
+                            <Label fx:id="etapaValidada" text="Validada" styleClass="stage-badge stage-complete"/>
+                            <Label text="&#8594;" styleClass="stage-arrow"/>
+                            <Label fx:id="etapaEnProduccion" text="En produccion" styleClass="stage-badge stage-active"/>
+                            <Label text="&#8594;" styleClass="stage-arrow"/>
+                            <Label fx:id="etapaEnControl" text="En control" styleClass="stage-badge stage-pending"/>
+                            <Label text="&#8594;" styleClass="stage-arrow"/>
+                            <Label fx:id="etapaLista" text="Lista" styleClass="stage-badge stage-pending"/>
+                            <Label text="&#8594;" styleClass="stage-arrow"/>
+                            <Label fx:id="etapaEnviada" text="Enviada" styleClass="stage-badge stage-pending"/>
+                            <Label text="&#8594;" styleClass="stage-arrow"/>
+                            <Label fx:id="etapaRecibidaSucursal" text="Recibida en sucursal" styleClass="stage-badge stage-pending"/>
+                            <Label text="&#8594;" styleClass="stage-arrow"/>
+                            <Label fx:id="etapaEntregada" text="Entregada" styleClass="stage-badge stage-pending"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Etapas table -->
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="etapasTable">
+                            <columns>
+                                <TableColumn fx:id="colEtapaFecha" text="Fecha" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colEtapaEvento" text="Evento" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colEtapaResponsable" text="Responsable" prefWidth="150" resizable="true"/>
+                                <TableColumn fx:id="colEtapaObservacion" text="Observacion" prefWidth="250" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <!-- Action buttons -->
+                    <HBox spacing="8" alignment="CENTER_LEFT" styleClass="summary-actions">
+                        <Button fx:id="segActualizarEtapaBtn" text="Actualizar etapa" styleClass="btn-action" maxWidth="150"/>
+                        <Button fx:id="segAgregarCheckpointBtn" text="Agregar checkpoint" styleClass="btn-action" maxWidth="160"/>
+                        <Button fx:id="segMarcarListaBtn" text="Marcar lista" styleClass="btn-action" maxWidth="130"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 4: Envio y recepcion -->
+                <VBox fx:id="envioRecepcionView" spacing="12" visible="false" managed="false">
+                    <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="summary-scroll">
+                        <VBox spacing="16" style="-fx-padding: 12;">
+
+                            <!-- Envio block -->
+                            <VBox spacing="8" styleClass="detail-block">
+                                <Label text="Datos de envio" styleClass="detail-block-title"/>
+                                <HBox spacing="16">
+                                    <VBox spacing="2">
+                                        <Label text="Laboratorio" styleClass="detail-label"/>
+                                        <Label fx:id="envioLaboratorio" text="LabVision" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Fecha envio" styleClass="detail-label"/>
+                                        <Label fx:id="envioFechaEnvio" text="10/04/2026" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Guia" styleClass="detail-label"/>
+                                        <Label fx:id="envioGuia" text="GV-2026-0456" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Transportista" styleClass="detail-label"/>
+                                        <Label fx:id="envioTransportista" text="DHL Express" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Fecha est. retorno" styleClass="detail-label"/>
+                                        <Label fx:id="envioFechaEstimada" text="18/04/2026" styleClass="detail-value"/>
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+
+                            <!-- Recepcion block -->
+                            <VBox spacing="8" styleClass="detail-block">
+                                <Label text="Datos de recepcion" styleClass="detail-block-title"/>
+                                <HBox spacing="16">
+                                    <VBox spacing="2">
+                                        <Label text="Fecha recepcion" styleClass="detail-label"/>
+                                        <Label fx:id="recepFechaRecepcion" text="-" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Recibido por" styleClass="detail-label"/>
+                                        <Label fx:id="recepRecibidoPor" text="-" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Sucursal recepcion" styleClass="detail-label"/>
+                                        <Label fx:id="recepSucursal" text="-" styleClass="detail-value"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="Estado al recibir" styleClass="detail-label"/>
+                                        <Label fx:id="recepEstado" text="Pendiente" styleClass="detail-value"/>
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+
+                        </VBox>
+                    </ScrollPane>
+
+                    <!-- Action buttons -->
+                    <HBox spacing="8" alignment="CENTER_LEFT" styleClass="summary-actions">
+                        <Button fx:id="envRegistrarEnvioBtn" text="Registrar envio" styleClass="btn-action" maxWidth="150"/>
+                        <Button fx:id="envRegistrarRecepcionBtn" text="Registrar recepcion" styleClass="btn-action" maxWidth="160"/>
+                        <Button fx:id="envActualizarGuiaBtn" text="Actualizar guia" styleClass="btn-action" maxWidth="150"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 5: Incidencias y retrabajos -->
+                <VBox fx:id="incidenciasView" spacing="8" visible="false" managed="false">
+                    <SplitPane orientation="VERTICAL" dividerPositions="0.6" VBox.vgrow="ALWAYS">
+                        <!-- Incidencias table -->
+                        <VBox spacing="4">
+                            <Label text="Listado de incidencias" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                            <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="incidenciasTable">
+                                    <columns>
+                                        <TableColumn fx:id="colIncFecha" text="Fecha" prefWidth="100" resizable="true"/>
+                                        <TableColumn fx:id="colIncTipo" text="Tipo" prefWidth="150" resizable="true"/>
+                                        <TableColumn fx:id="colIncEstado" text="Estado" prefWidth="120" resizable="true"/>
+                                        <TableColumn fx:id="colIncResponsable" text="Responsable" prefWidth="140" resizable="true"/>
+                                        <TableColumn fx:id="colIncResolucion" text="Resolucion" prefWidth="200" resizable="true"/>
+                                    </columns>
+                                </TableView>
+                            </ScrollPane>
+                        </VBox>
+
+                        <!-- Detail panel -->
+                        <VBox spacing="8" styleClass="detail-block">
+                            <Label text="Detalle de incidencia" styleClass="detail-block-title"/>
+                            <HBox spacing="16">
+                                <VBox spacing="2">
+                                    <Label text="Fecha" styleClass="detail-label"/>
+                                    <Label fx:id="incDetalleFecha" text="-" styleClass="detail-value"/>
+                                </VBox>
+                                <VBox spacing="2">
+                                    <Label text="Tipo" styleClass="detail-label"/>
+                                    <Label fx:id="incDetalleTipo" text="-" styleClass="detail-value"/>
+                                </VBox>
+                                <VBox spacing="2">
+                                    <Label text="Estado" styleClass="detail-label"/>
+                                    <Label fx:id="incDetalleEstado" text="-" styleClass="detail-value"/>
+                                </VBox>
+                                <VBox spacing="2">
+                                    <Label text="Responsable" styleClass="detail-label"/>
+                                    <Label fx:id="incDetalleResponsable" text="-" styleClass="detail-value"/>
+                                </VBox>
+                                <VBox spacing="2">
+                                    <Label text="Resolucion" styleClass="detail-label"/>
+                                    <Label fx:id="incDetalleResolucion" text="-" styleClass="detail-value"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                    </SplitPane>
+
+                    <!-- Action buttons -->
+                    <HBox spacing="8" alignment="CENTER_LEFT" styleClass="summary-actions">
+                        <Button fx:id="incRegistrarBtn" text="Registrar incidencia" styleClass="btn-action" maxWidth="160"/>
+                        <Button fx:id="incMarcarResueltaBtn" text="Marcar resuelta" styleClass="btn-action" maxWidth="140"/>
+                        <Button fx:id="incGenerarRetrabajoBtn" text="Generar retrabajo" styleClass="btn-action" maxWidth="160"/>
+                        <Button fx:id="incNotificarClienteBtn" text="Notificar cliente" styleClass="btn-action" maxWidth="150"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 6: Historico y busqueda avanzada -->
+                <VBox fx:id="historicoView" spacing="10" visible="false" managed="false">
+                    <!-- Extended filters -->
+                    <FlowPane hgap="10" vgap="8" styleClass="filter-bar" alignment="CENTER_LEFT">
+                        <TextField fx:id="histSearchField" promptText="Buscar en historico..." prefWidth="240" styleClass="filter-field"/>
+                        <ComboBox fx:id="histEstadoCombo" promptText="Estado final" prefWidth="150" styleClass="filter-combo"/>
+                        <ComboBox fx:id="histLaboratorioCombo" promptText="Laboratorio" prefWidth="150" styleClass="filter-combo"/>
+                        <ComboBox fx:id="histSucursalCombo" promptText="Sucursal" prefWidth="150" styleClass="filter-combo"/>
+                        <DatePicker fx:id="histDesdePicker" promptText="Desde" prefWidth="130"/>
+                        <DatePicker fx:id="histHastaPicker" promptText="Hasta" prefWidth="130"/>
+                    </FlowPane>
+
+                    <!-- Historico table -->
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="historicoTable">
+                            <columns>
+                                <TableColumn fx:id="colHistRef" text="Referencia" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colHistCliente" text="Cliente" prefWidth="150" resizable="true"/>
+                                <TableColumn fx:id="colHistIngreso" text="Ingreso" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colHistFechaPromesa" text="Fecha promesa" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colHistEstadoFinal" text="Estado final" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colHistLaboratorio" text="Laboratorio" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colHistSucursal" text="Sucursal" prefWidth="130" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <!-- Action buttons -->
+                    <HBox spacing="8" alignment="CENTER_LEFT" styleClass="summary-actions">
+                        <Button fx:id="histAbrirOrdenBtn" text="Abrir orden" styleClass="btn-action" maxWidth="130"/>
+                        <Button fx:id="histExportarBtn" text="Exportar historico" styleClass="btn-action" maxWidth="160"/>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+
+            <Separator/>
+
+            <!-- RIGHT: Persistent order summary -->
+            <VBox style="-fx-padding: 0;">
+                <Label text="Detalle seleccionado" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-text-secondary;"/>
+                <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" styleClass="summary-scroll" VBox.vgrow="ALWAYS">
+                <VBox spacing="14" style="-fx-padding: 12;">
+
+                    <!-- Identidad de la orden -->
+                    <VBox spacing="4" styleClass="summary-section">
+                        <Label text="Identidad de la orden" styleClass="summary-section-title"/>
+                        <HBox spacing="6" alignment="BASELINE_LEFT">
+                            <Label fx:id="summaryReferencia" text="Sin seleccion" styleClass="summary-title"/>
+                            <Label fx:id="summaryTipoTrabajo" text="" styleClass="summary-subtitle"/>
+                        </HBox>
+                        <Label fx:id="summaryPrioridad" text="" styleClass="summary-priority"/>
+                    </VBox>
+
+                    <!-- Contexto del cliente -->
+                    <VBox fx:id="summaryFieldsContainer" spacing="10" styleClass="summary-section">
+                        <Label text="Contexto del cliente" styleClass="summary-section-title"/>
+                        <!-- Dynamic fields populated by controller -->
+                    </VBox>
+
+                    <!-- Resumen tecnico -->
+                    <VBox spacing="4" styleClass="summary-section">
+                        <Label text="Resumen tecnico" styleClass="summary-section-title"/>
+                        <Label text="Seleccione una orden para ver detalles" styleClass="summary-placeholder"/>
+                    </VBox>
+
+                    <!-- Estado y logistica -->
+                    <VBox spacing="4" styleClass="summary-section">
+                        <Label text="Estado y logistica" styleClass="summary-section-title"/>
+                        <Label text="Seleccione una orden para ver detalles" styleClass="summary-placeholder"/>
+                    </VBox>
+
+                    <!-- Acciones rapidas -->
+                    <VBox spacing="6" styleClass="summary-section">
+                        <Label text="Acciones rapidas" styleClass="summary-section-title"/>
+                        <HBox spacing="6" alignment="CENTER_LEFT">
+                            <Button fx:id="summaryEditarBtn" text="Editar" styleClass="btn-action-sm" maxWidth="100"/>
+                            <Button fx:id="summaryActualizarEstadoBtn" text="Actualizar" styleClass="btn-action-sm" maxWidth="100"/>
+                        </HBox>
+                        <HBox spacing="6" alignment="CENTER_LEFT">
+                            <Button fx:id="summaryRegistrarEnvioBtn" text="Registrar envio" styleClass="btn-action-sm" maxWidth="130"/>
+                            <Button fx:id="summaryRegistrarRecepcionBtn" text="Registrar recep." styleClass="btn-action-sm" maxWidth="130"/>
+                        </HBox>
+                        <Button fx:id="summaryImprimirBtn" text="Imprimir hoja de trabajo" styleClass="btn-action-sm" maxWidth="180"/>
+                    </VBox>
+
+                </VBox>
+            </ScrollPane>
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

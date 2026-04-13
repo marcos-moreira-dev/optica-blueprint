@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.modules.recetas.RecetasController"
+            styleClass="app-root">
+
+    <!-- ===== TOP ===== -->
+    <top>
+        <VBox spacing="12" BorderPane.alignment="CENTER">
+
+            <!-- Title bar -->
+            <HBox spacing="16" alignment="CENTER_LEFT" styleClass="topbar">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Recetas" styleClass="topbar-title"/>
+                    <Label text="Gestion integral de recetas optometricas, historial y vinculacion con ordenes" styleClass="topbar-subtitle"/>
+                </VBox>
+                <HBox spacing="8" alignment="CENTER_RIGHT">
+                    <Button fx:id="nuevaRecetaBtn" text="Nueva receta" styleClass="btn-primary"/>
+                    <Button fx:id="actualizarModuloBtn" text="Actualizar modulo" styleClass="btn-secondary"/>
+                    <Button fx:id="imprimirRecetaBtn" text="Imprimir receta" styleClass="btn-secondary"/>
+                </HBox>
+            </HBox>
+
+            <!-- Quick context bar -->
+            <FlowPane hgap="16" vgap="6" styleClass="filter-bar" alignment="CENTER_LEFT">
+                <Label text="Cliente:" styleClass="topbar-label"/>
+                <Label fx:id="ctxCliente" text="Sofia Ramirez" styleClass="topbar-value"/>
+                <Label text="|" styleClass="topbar-label"/>
+                <Label text="Codigo:" styleClass="topbar-label"/>
+                <Label fx:id="ctxCodigo" text="CL-00124" styleClass="topbar-value"/>
+                <Label text="|" styleClass="topbar-label"/>
+                <Label text="Receta activa:" styleClass="topbar-label"/>
+                <Label fx:id="ctxRecetaActiva" text="12/04/2026" styleClass="topbar-value"/>
+                <Label text="|" styleClass="topbar-label"/>
+                <Label text="Estado:" styleClass="topbar-label"/>
+                <Label fx:id="ctxEstado" text="Vigente" styleClass="topbar-value"/>
+                <Label text="|" styleClass="topbar-label"/>
+                <Label text="Profesional:" styleClass="topbar-label"/>
+                <Label fx:id="ctxProfesional" text="Dra. Salazar" styleClass="topbar-value"/>
+                <Label text="|" styleClass="topbar-label"/>
+                <Label text="Sucursal:" styleClass="topbar-label"/>
+                <Label fx:id="ctxSucursal" text="Matriz Centro" styleClass="topbar-value"/>
+            </FlowPane>
+
+            <!-- Filter bar -->
+            <FlowPane hgap="10" vgap="8" styleClass="filter-bar" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Buscar por cliente..." prefWidth="220" styleClass="filter-field"/>
+                <ComboBox fx:id="estadoCombo" promptText="Estado" prefWidth="130" styleClass="filter-combo"/>
+                <ComboBox fx:id="profesionalCombo" promptText="Profesional" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="desdeCombo" promptText="Desde" prefWidth="120" styleClass="filter-combo"/>
+                <ComboBox fx:id="hastaCombo" promptText="Hasta" prefWidth="120" styleClass="filter-combo"/>
+                <Button fx:id="limpiarFiltrosBtn" text="Limpiar filtros" styleClass="btn-filter-clear"/>
+            </FlowPane>
+
+            <!-- Sub-view toggle buttons -->
+            <ToolBar styleClass="subview-toolbar">
+                <ToggleButton fx:id="subViewRecetaActualBtn" text="Receta actual" selected="true" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="subViewHistorialBtn" text="Historial de recetas" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="subViewMedidasBtn" text="Medidas y parametros" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="subViewRecomendacionesBtn" text="Recomendaciones" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="subViewVinculacionBtn" text="Vinculacion con orden" styleClass="subview-toggle"/>
+            </ToolBar>
+
+        </VBox>
+    </top>
+
+    <!-- ===== CENTER ===== -->
+    <center>
+        <SplitPane dividerPositions="0.65" styleClass="content-host">
+
+            <!-- LEFT: Sub-views -->
+            <StackPane>
+
+                <!-- Sub-view 1: Receta actual -->
+                <VBox fx:id="recetaActualSection" spacing="12" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Receta actual" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+                    <!-- OD / OI Grid -->
+                    <VBox spacing="8" styleClass="summary-panel">
+                        <Label text="Prescripcion optica" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-primary;"/>
+                        <HBox spacing="24">
+                            <!-- OD Column -->
+                            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                <Label text="Ojo Derecho (OD)" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: -optica-secondary;"/>
+                                <GridPane hgap="8" vgap="4">
+                                    <Label text="SPH:" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="summary-field-label"/>
+                                    <Label fx:id="raOdSph" text="-1.25" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="summary-field-value"/>
+                                    <Label text="CYL:" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="summary-field-label"/>
+                                    <Label fx:id="raOdCyl" text="-0.50" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="summary-field-value"/>
+                                    <Label text="Axis:" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="summary-field-label"/>
+                                    <Label fx:id="raOdAxis" text="180" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="summary-field-value"/>
+                                    <Label text="Prism:" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="summary-field-label"/>
+                                    <Label fx:id="raOdPrism" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="summary-field-value"/>
+                                    <Label text="Base:" GridPane.columnIndex="0" GridPane.rowIndex="4" styleClass="summary-field-label"/>
+                                    <Label fx:id="raOdBase" text="-" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="summary-field-value"/>
+                                    <Label text="ADD:" GridPane.columnIndex="0" GridPane.rowIndex="5" styleClass="summary-field-label"/>
+                                    <Label fx:id="raOdAdd" text="+1.00" GridPane.columnIndex="1" GridPane.rowIndex="5" styleClass="summary-field-value"/>
+                                </GridPane>
+                            </VBox>
+
+                            <!-- OI Column -->
+                            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                <Label text="Ojo Izquierdo (OI)" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: -optica-secondary;"/>
+                                <GridPane hgap="8" vgap="4">
+                                    <Label text="SPH:" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="summary-field-label"/>
+                                    <Label fx:id="raOiSph" text="-1.00" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="summary-field-value"/>
+                                    <Label text="CYL:" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="summary-field-label"/>
+                                    <Label fx:id="raOiCyl" text="-0.25" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="summary-field-value"/>
+                                    <Label text="Axis:" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="summary-field-label"/>
+                                    <Label fx:id="raOiAxis" text="170" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="summary-field-value"/>
+                                    <Label text="Prism:" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="summary-field-label"/>
+                                    <Label fx:id="raOiPrism" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="summary-field-value"/>
+                                    <Label text="Base:" GridPane.columnIndex="0" GridPane.rowIndex="4" styleClass="summary-field-label"/>
+                                    <Label fx:id="raOiBase" text="-" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="summary-field-value"/>
+                                    <Label text="ADD:" GridPane.columnIndex="0" GridPane.rowIndex="5" styleClass="summary-field-label"/>
+                                    <Label fx:id="raOiAdd" text="+1.00" GridPane.columnIndex="1" GridPane.rowIndex="5" styleClass="summary-field-value"/>
+                                </GridPane>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Shared parameters -->
+                    <VBox spacing="8" styleClass="summary-panel">
+                        <Label text="Parametros compartidos" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-primary;"/>
+                        <GridPane hgap="16" vgap="6">
+                            <Label text="PD:" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="summary-field-label"/>
+                            <Label fx:id="raPd" text="62mm" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="summary-field-value"/>
+                            <Label text="Uso principal:" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="summary-field-label"/>
+                            <Label fx:id="raUsoPrincipal" text="Diario y pantalla" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="summary-field-value"/>
+                            <Label text="Vigencia:" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="summary-field-label"/>
+                            <Label fx:id="raVigencia" text="12/04/2026" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="summary-field-value"/>
+                            <Label text="Tratamiento sugerido:" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="summary-field-label"/>
+                            <Label fx:id="raTratamiento" text="Antirreflejo + Blue Cut" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="summary-field-value"/>
+                        </GridPane>
+                    </VBox>
+
+                    <!-- Observation / Recommendation blocks -->
+                    <VBox spacing="8" styleClass="summary-panel">
+                        <Label text="Observacion y recomendacion" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-primary;"/>
+                        <VBox spacing="4">
+                            <Label text="Observacion:" styleClass="summary-field-label"/>
+                            <Label fx:id="raObservacion" text="Sin observaciones especiales" wrapText="true" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="4">
+                            <Label text="Recomendacion:" styleClass="summary-field-label"/>
+                            <Label fx:id="raRecomendacion" text="Antirreflejo + Blue Cut recomendado por Dra. Salazar" wrapText="true" styleClass="summary-field-value"/>
+                        </VBox>
+                    </VBox>
+
+                    <!-- Action buttons -->
+                    <HBox spacing="8" alignment="CENTER_LEFT" styleClass="summary-actions">
+                        <Button fx:id="editarRecetaBtn" text="Editar receta" styleClass="btn-action"/>
+                        <Button fx:id="guardarCambiosBtn" text="Guardar cambios" styleClass="btn-action"/>
+                        <Button fx:id="duplicarRecetaBtn" text="Duplicar receta" styleClass="btn-action"/>
+                        <Button fx:id="pasarAVentaBtn" text="Pasar a venta optica" styleClass="btn-action"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 2: Historial de recetas -->
+                <VBox fx:id="historialSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Historial de recetas" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="historialTable">
+                            <columns>
+                                <TableColumn fx:id="colHistFecha" text="Fecha" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colHistProfesional" text="Profesional" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colHistEstado" text="Estado" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colHistOdResumen" text="OD resumen" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colHistOiResumen" text="OI resumen" prefWidth="160" resizable="true"/>
+                                <TableColumn fx:id="colHistPd" text="PD" prefWidth="70" resizable="true"/>
+                                <TableColumn fx:id="colHistObservacion" text="Observacion breve" prefWidth="200" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+                    <HBox spacing="8" alignment="CENTER_LEFT" styleClass="summary-actions">
+                        <Button fx:id="verRecetaBtn" text="Ver receta" styleClass="btn-action"/>
+                        <Button fx:id="duplicarDesdeHistorialBtn" text="Duplicar receta" styleClass="btn-action"/>
+                        <Button fx:id="compararConActualBtn" text="Comparar con actual" styleClass="btn-action"/>
+                        <Button fx:id="imprimirRecetaHistBtn" text="Imprimir receta" styleClass="btn-action"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 3: Medidas y parametros -->
+                <VBox fx:id="medidasSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Medidas y parametros" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="summary-scroll">
+                        <VBox spacing="12" style="-fx-padding: 8;">
+                            <!-- Medidas basicas -->
+                            <VBox spacing="6" styleClass="summary-panel">
+                                <Label text="Medidas basicas" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-primary;"/>
+                                <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true">
+                                    <TableView fx:id="medidasTable">
+                                        <columns>
+                                            <TableColumn fx:id="colMedParametro" text="Parametro" prefWidth="200" resizable="true"/>
+                                            <TableColumn fx:id="colMedValor" text="Valor" prefWidth="100" resizable="true"/>
+                                            <TableColumn fx:id="colMedUnidad" text="Unidad" prefWidth="80" resizable="true"/>
+                                            <TableColumn fx:id="colMedObservacion" text="Observacion" prefWidth="250" resizable="true"/>
+                                        </columns>
+                                    </TableView>
+                                </ScrollPane>
+                            </VBox>
+                        </VBox>
+                    </ScrollPane>
+                    <HBox spacing="8" alignment="CENTER_LEFT" styleClass="summary-actions">
+                        <Button fx:id="editarMedidasBtn" text="Editar medidas" styleClass="btn-action"/>
+                        <Button fx:id="guardarParametrosBtn" text="Guardar parametros" styleClass="btn-action"/>
+                        <Button fx:id="copiarDesdeRecetaBtn" text="Copiar desde receta actual" styleClass="btn-action"/>
+                        <Button fx:id="pasarAVentaMedBtn" text="Pasar a venta optica" styleClass="btn-action"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 4: Recomendaciones y observaciones -->
+                <VBox fx:id="recomendacionesSection" spacing="8" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Recomendaciones y observaciones" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="summary-scroll">
+                        <VBox spacing="12" style="-fx-padding: 8;">
+                            <!-- Recomendacion principal -->
+                            <VBox spacing="6" styleClass="summary-panel">
+                                <Label text="Recomendacion principal" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-primary;"/>
+                                <Label fx:id="recRecomendacionPrincipal" text="Se recomienda lente con filtro blue cut por uso prolongado de pantalla." wrapText="true" styleClass="summary-field-value"/>
+                            </VBox>
+
+                            <!-- Observacion tecnica -->
+                            <VBox spacing="6" styleClass="summary-panel">
+                                <Label text="Observacion tecnica" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-primary;"/>
+                                <Label fx:id="recObservacionTecnica" text="Considerar lente progresivo en proxima receta por edad del paciente." wrapText="true" styleClass="summary-field-value"/>
+                            </VBox>
+
+                            <!-- Notas internas -->
+                            <VBox spacing="6" styleClass="summary-panel">
+                                <Label text="Notas internas" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-primary;"/>
+                                <Label fx:id="recNotasInternas" text="Tratamiento antirreflejo indispensable para comodidad visual.\nControl optometrico en 6 meses para seguimiento de miopia." wrapText="true" styleClass="summary-field-value"/>
+                            </VBox>
+                        </VBox>
+                    </ScrollPane>
+                    <HBox spacing="8" alignment="CENTER_LEFT" styleClass="summary-actions">
+                        <Button fx:id="editarRecomendacionesBtn" text="Editar recomendaciones" styleClass="btn-action"/>
+                        <Button fx:id="guardarObservacionesBtn" text="Guardar observaciones" styleClass="btn-action"/>
+                        <Button fx:id="usarPlantillaBtn" text="Usar plantilla" styleClass="btn-action"/>
+                        <Button fx:id="enviarAOrdenBtn" text="Enviar a orden optica" styleClass="btn-action"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 5: Vinculacion con orden optica -->
+                <VBox fx:id="vinculacionSection" spacing="12" style="-fx-padding: 0 8 0 0;">
+                    <Label text="Vinculacion con orden optica" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+                    <!-- Estado de vinculacion -->
+                    <VBox spacing="8" styleClass="summary-panel">
+                        <Label text="Estado de vinculacion" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-primary;"/>
+                        <Label fx:id="vincEstadoVinculacion" text="En proceso" styleClass="summary-field-value"/>
+                    </VBox>
+
+                    <!-- Orden relacionada -->
+                    <VBox spacing="8" styleClass="summary-panel">
+                        <Label text="Orden relacionada" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-primary;"/>
+                        <GridPane hgap="16" vgap="6">
+                            <Label text="Referencia:" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="summary-field-label"/>
+                            <Label fx:id="vincRefOrden" text="OV-00215" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="summary-field-value"/>
+                            <Label text="Estado:" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="summary-field-label"/>
+                            <Label fx:id="vincEstadoOrden" text="En proceso" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="summary-field-value"/>
+                            <Label text="Saldo:" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="summary-field-label"/>
+                            <Label fx:id="vincSaldo" text=" 249.50" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="summary-field-value"/>
+                            <Label text="Entrega estimada:" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="summary-field-label"/>
+                            <Label fx:id="vincEntrega" text="17/04/2026" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="summary-field-value"/>
+                        </GridPane>
+                    </VBox>
+
+                    <!-- Acciones disponibles -->
+                    <VBox spacing="8" styleClass="summary-panel">
+                        <Label text="Acciones disponibles" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-primary;"/>
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Button fx:id="verOrdenBtn" text="Ver orden" styleClass="btn-action"/>
+                            <Button fx:id="actualizarEstadoBtn" text="Actualizar estado" styleClass="btn-action"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+            </StackPane>
+
+            <!-- RIGHT: Persistent client context -->
+            <VBox spacing="12" style="-fx-padding: 0 0 0 8;">
+
+                <!-- Client header -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label fx:id="summaryNombre" text="Sofia Ramirez" styleClass="summary-title"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label fx:id="summaryCodigo" text="CL-00124" styleClass="summary-code"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Resumen del cliente -->
+                <VBox spacing="8" styleClass="summary-panel">
+                    <Label text="Resumen del cliente" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: -optica-primary;"/>
+                    <VBox fx:id="summaryFieldsContainer" spacing="6">
+                        <VBox spacing="2" styleClass="summary-field-row">
+                            <Label text="Telefono:" styleClass="summary-field-label"/>
+                            <Label fx:id="summaryTelefono" text="0991234567" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" styleClass="summary-field-row">
+                            <Label text="Ultima visita:" styleClass="summary-field-label"/>
+                            <Label fx:id="summaryUltimaVisita" text="07/04/2026" styleClass="summary-field-value"/>
+                        </VBox>
+                        <VBox spacing="2" styleClass="summary-field-row">
+                            <Label text="Sucursal:" styleClass="summary-field-label"/>
+                            <Label fx:id="summarySucursal" text="Matriz Centro" styleClass="summary-field-value"/>
+                        </VBox>
+                    </VBox>
+                </VBox>
+
+                <!-- Estado rapido de receta -->
+                <VBox spacing="8" styleClass="summary-panel">
+                    <Label text="Estado rapido de receta" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: -optica-primary;"/>
+                    <VBox spacing="4">
+                        <HBox spacing="6" styleClass="summary-field-row">
+                            <Label text="Estado:" styleClass="summary-field-label"/>
+                            <Label fx:id="summaryEstadoReceta" text="Vigente" styleClass="summary-field-value"/>
+                        </HBox>
+                        <HBox spacing="6" styleClass="summary-field-row">
+                            <Label text="PD:" styleClass="summary-field-label"/>
+                            <Label fx:id="summaryPd" text="62mm" styleClass="summary-field-value"/>
+                        </HBox>
+                        <HBox spacing="6" styleClass="summary-field-row">
+                            <Label text="Profesional:" styleClass="summary-field-label"/>
+                            <Label fx:id="summaryProfesional" text="Dra. Salazar" styleClass="summary-field-value"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <!-- Resumen comercial -->
+                <VBox spacing="8" styleClass="summary-panel">
+                    <Label text="Resumen comercial" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: -optica-primary;"/>
+                    <VBox spacing="4">
+                        <HBox spacing="6" styleClass="summary-field-row">
+                            <Label text="Ordenes activas:" styleClass="summary-field-label"/>
+                            <Label fx:id="summaryOrdenesActivas" text="1" styleClass="summary-field-value"/>
+                        </HBox>
+                        <HBox spacing="6" styleClass="summary-field-row">
+                            <Label text="Entregas pendientes:" styleClass="summary-field-label"/>
+                            <Label fx:id="summaryEntregasPendientes" text="1" styleClass="summary-field-value"/>
+                        </HBox>
+                        <HBox spacing="6" styleClass="summary-field-row">
+                            <Label text="Saldo pendiente:" styleClass="summary-field-label"/>
+                            <Label fx:id="summarySaldoPendiente" text=" 249.50" styleClass="summary-field-highlighted"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <!-- Acciones rapidas -->
+                <VBox spacing="8" styleClass="summary-panel">
+                    <Label text="Acciones rapidas" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: -optica-primary;"/>
+                    <VBox spacing="4">
+                        <Button text="Nueva receta" maxWidth="Infinity" styleClass="btn-action"/>
+                        <Button text="Ir a venta optica" maxWidth="Infinity" styleClass="btn-action"/>
+                        <Button text="Agendar cita" maxWidth="Infinity" styleClass="btn-action"/>
+                    </VBox>
+                </VBox>
+
+                <!-- Scrollable extra fields -->
+                <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="summary-scroll">
+                    <VBox spacing="4" style="-fx-padding: 4;">
+                    </VBox>
+                </ScrollPane>
+
+            </VBox>
+
+        </SplitPane>
+    </center>
+
+</BorderPane>

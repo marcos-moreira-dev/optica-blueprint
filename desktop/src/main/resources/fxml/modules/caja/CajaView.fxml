@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcosmoreira.opticademo.modules.caja.CajaController"
+            styleClass="app-root">
+
+    <!-- ===== TOP ===== -->
+    <top>
+        <VBox spacing="12" BorderPane.alignment="CENTER">
+
+            <!-- Title bar -->
+            <HBox spacing="16" alignment="CENTER_LEFT" styleClass="topbar">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label text="Caja" styleClass="topbar-title"/>
+                    <Label text="Cobros, abonos, comprobantes y cierre de caja" styleClass="topbar-subtitle"/>
+                </VBox>
+                <HBox spacing="8" alignment="CENTER_RIGHT">
+                    <Button fx:id="nuevoCobroBtn" text="Nuevo cobro" styleClass="btn-primary"/>
+                    <Button fx:id="actualizarCajaBtn" text="Actualizar caja" styleClass="btn-secondary"/>
+                    <Button fx:id="exportarCobrosBtn" text="Exportar cobros" styleClass="btn-secondary"/>
+                </HBox>
+            </HBox>
+
+            <!-- Filter bar -->
+            <FlowPane hgap="10" vgap="8" styleClass="filter-bar" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Buscar por cliente, orden o comprobante..." prefWidth="280" styleClass="filter-field"/>
+                <ComboBox fx:id="estadoCombo" promptText="Estado" prefWidth="150" styleClass="filter-combo"/>
+                <ComboBox fx:id="metodoPagoCombo" promptText="Metodo de pago" prefWidth="160" styleClass="filter-combo"/>
+                <ComboBox fx:id="sucursalCombo" promptText="Sucursal" prefWidth="150" styleClass="filter-combo"/>
+                <DatePicker fx:id="desdePicker" promptText="Desde" prefWidth="130"/>
+                <DatePicker fx:id="hastaPicker" promptText="Hasta" prefWidth="130"/>
+                <CheckBox fx:id="soloPendientesCheck" text="Solo pagos pendientes"/>
+                <Button fx:id="limpiarFiltrosBtn" text="Limpiar filtros" styleClass="btn-filter-clear"/>
+            </FlowPane>
+
+            <!-- Sub-view toggle buttons -->
+            <HBox spacing="6" alignment="CENTER_LEFT" style="-fx-padding: 0 0 4 0;">
+                <ToggleButton fx:id="btnCobroOrden" text="Cobro de orden" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnAbonosSaldos" text="Abonos y saldos" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnComprobantes" text="Comprobantes y facturacion" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnCierreCaja" text="Cierre de caja" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnPagosPendientes" text="Pagos pendientes" styleClass="subview-toggle"/>
+                <ToggleButton fx:id="btnHistorico" text="Historico de cobros" styleClass="subview-toggle"/>
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <!-- ===== CENTER ===== -->
+    <center>
+        <VBox spacing="12" style="-fx-padding: 8;">
+            <!-- Table area -->
+            <StackPane VBox.vgrow="ALWAYS">
+
+                <!-- Sub-view 1: Cobro de orden -->
+                <VBox fx:id="sectionCobroOrden" spacing="12" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Cobro de orden" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <!-- Order search -->
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="Orden:" styleClass="summary-field-label" minWidth="60"/>
+                        <TextField fx:id="ordenSearchField" promptText="Referencia de orden (ej. OV-124)..." prefWidth="300" HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="lblOrdenInfo" text="Busque una orden para cobrar" styleClass="topbar-subtitle" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+
+                    <!-- Economic block -->
+                    <VBox fx:id="bloqueconomico" spacing="8" styleClass="summary-fields-container" style="-fx-padding: 12; -fx-border-color: -optica-border; -fx-border-radius: 6; -fx-background-color: -optica-bg-surface;">
+                        <Label text="Resumen economico de la orden" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                        <HBox spacing="16" alignment="CENTER_LEFT">
+                            <VBox spacing="2">
+                                <Label text="Subtotal" styleClass="summary-field-label"/>
+                                <Label text="105.00" styleClass="summary-field-value"/>
+                            </VBox>
+                            <VBox spacing="2">
+                                <Label text="Descuento" styleClass="summary-field-label"/>
+                                <Label text="5.00" styleClass="summary-field-value"/>
+                            </VBox>
+                            <VBox spacing="2">
+                                <Label text="Abonado" styleClass="summary-field-label"/>
+                                <Label text="50.00" styleClass="summary-field-value"/>
+                            </VBox>
+                            <VBox spacing="2">
+                                <Label text="Saldo" styleClass="summary-field-label"/>
+                                <Label text="55.00" styleClass="summary-field-value highlighted"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Payment method and register -->
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 8 0 0 0;">
+                        <Label text="Metodo de pago:" styleClass="summary-field-label" minWidth="120"/>
+                        <ComboBox fx:id="metodoPagoCobroCombo" promptText="Seleccionar metodo" prefWidth="200"/>
+                        <Button fx:id="registrarCobroBtn" text="Registrar cobro" styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 2: Abonos y saldos -->
+                <VBox fx:id="sectionAbonosSaldos" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Abonos y saldos pendientes" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="saldosTable">
+                            <columns>
+                                <TableColumn fx:id="colSaldoOrden" text="Orden" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colSaldoCliente" text="Cliente" prefWidth="150" resizable="true"/>
+                                <TableColumn fx:id="colSaldoTotal" text="Total" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colSaldoAbonado" text="Abonado" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colSaldoSaldo" text="Saldo" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colSaldoUltimoPago" text="Ultimo pago" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colSaldoEstado" text="Estado" prefWidth="120" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <fx:include fx:id="paginationBar" source="/fxml/shared/components/PaginationBar.fxml"/>
+
+                    <!-- Nuevo abono form -->
+                    <VBox fx:id="nuevoAbonoForm" spacing="8" styleClass="summary-fields-container" style="-fx-padding: 12; -fx-border-color: -optica-border; -fx-border-radius: 6; -fx-background-color: -optica-bg-surface;">
+                        <Label text="Nuevo abono" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Label text="Orden:" minWidth="60"/>
+                            <TextField fx:id="abonoOrdenField" promptText="Referencia..." prefWidth="150"/>
+                            <Label text="Monto:" minWidth="60"/>
+                            <TextField fx:id="abonoMontoField" promptText="0.00" prefWidth="100"/>
+                            <Label text="Metodo:" minWidth="60"/>
+                            <ComboBox fx:id="abonoMetodoCombo" promptText="Metodo" prefWidth="150"/>
+                            <Button fx:id="registrarAbonoBtn" text="Registrar abono" styleClass="btn-primary"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <!-- Sub-view 3: Comprobantes -->
+                <VBox fx:id="sectionComprobantes" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Comprobantes y facturacion" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="comprobantesTable">
+                            <columns>
+                                <TableColumn fx:id="colCompNumero" text="Comprobante" prefWidth="130" resizable="true"/>
+                                <TableColumn fx:id="colCompFecha" text="Fecha" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colCompCliente" text="Cliente" prefWidth="150" resizable="true"/>
+                                <TableColumn fx:id="colCompOrden" text="Orden" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colCompTotal" text="Total" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colCompEstado" text="Estado" prefWidth="120" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <!-- Detail panel -->
+                    <VBox fx:id="compDetailPanel" spacing="6" styleClass="summary-fields-container" style="-fx-padding: 12; -fx-border-color: -optica-border; -fx-border-radius: 6; -fx-background-color: -optica-bg-surface;">
+                        <Label text="Detalle del comprobante" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblCompDetail" text="Seleccione un comprobante para ver el detalle" styleClass="topbar-subtitle"/>
+                    </VBox>
+                </VBox>
+
+                <!-- Sub-view 4: Cierre de caja -->
+                <VBox fx:id="sectionCierreCaja" spacing="12" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Cierre de caja" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <VBox fx:id="cierreStatsContainer" spacing="10" styleClass="summary-fields-container" style="-fx-padding: 16; -fx-border-color: -optica-border; -fx-border-radius: 6; -fx-background-color: -optica-bg-surface;">
+                        <Label text="Resumen del dia" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+                        <HBox spacing="24" alignment="CENTER_LEFT">
+                            <VBox spacing="2">
+                                <Label text="Fecha" styleClass="summary-field-label"/>
+                                <Label fx:id="lblCierreFecha" text="-" styleClass="summary-field-value"/>
+                            </VBox>
+                            <VBox spacing="2">
+                                <Label text="Sucursal" styleClass="summary-field-label"/>
+                                <Label fx:id="lblCierreSucursal" text="-" styleClass="summary-field-value"/>
+                            </VBox>
+                            <VBox spacing="2">
+                                <Label text="Total cobros" styleClass="summary-field-label"/>
+                                <Label fx:id="lblCierreTotalCobros" text="0" styleClass="summary-field-value"/>
+                            </VBox>
+                            <VBox spacing="2">
+                                <Label text="Total del dia" styleClass="summary-field-label"/>
+                                <Label fx:id="lblCierreTotalDia" text="0.00" styleClass="summary-field-value highlighted"/>
+                            </VBox>
+                        </HBox>
+
+                        <Label text="Desglose por metodo de pago" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 8 0 0 0;"/>
+                        <VBox fx:id="cierrePorMetodoContainer" spacing="6"/>
+                    </VBox>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 8 0 0 0;">
+                        <Button fx:id="confirmarCierreBtn" text="Confirmar cierre" styleClass="btn-primary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 5: Pagos pendientes -->
+                <VBox fx:id="sectionPagosPendientes" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Pagos pendientes" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="pendientesTable">
+                            <columns>
+                                <TableColumn fx:id="colPendOrden" text="Orden" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colPendCliente" text="Cliente" prefWidth="140" resizable="true"/>
+                                <TableColumn fx:id="colPendSaldo" text="Saldo" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colPendUltimoPago" text="Ultimo pago" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colPendEstado" text="Estado" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colPendSucursal" text="Sucursal" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colPendPrioridad" text="Prioridad" prefWidth="90" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 4 0 0 0;">
+                        <Button fx:id="contactarClienteBtn" text="Contactar cliente" styleClass="btn-secondary"/>
+                        <Button fx:id="enviarRecordatorioBtn" text="Enviar recordatorio" styleClass="btn-secondary"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sub-view 6: Historico -->
+                <VBox fx:id="sectionHistorico" spacing="8" visible="false" managed="false" style="-fx-padding: 8;">
+                    <Label text="Historico de cobros" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="historicoTable">
+                            <columns>
+                                <TableColumn fx:id="colHistFecha" text="Fecha" prefWidth="100" resizable="true"/>
+                                <TableColumn fx:id="colHistOrden" text="Orden" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colHistCliente" text="Cliente" prefWidth="150" resizable="true"/>
+                                <TableColumn fx:id="colHistMonto" text="Monto" prefWidth="90" resizable="true"/>
+                                <TableColumn fx:id="colHistMetodo" text="Metodo" prefWidth="120" resizable="true"/>
+                                <TableColumn fx:id="colHistEstado" text="Estado" prefWidth="110" resizable="true"/>
+                                <TableColumn fx:id="colHistComprobante" text="Comprobante" prefWidth="130" resizable="true"/>
+                            </columns>
+                        </TableView>
+                    </ScrollPane>
+
+                    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="pagination-bar">
+                        <Label fx:id="footerLabel" text="Total registros: 0" styleClass="pagination-label"/>
+                    </HBox>
+                </VBox>
+
+            </StackPane>
+
+            <!-- Summary section -->
+            <Separator/>
+            <Label text="Resumen de cobro" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -optica-text-secondary;"/>
+
+            <!-- Payment summary panel -->
+            <VBox spacing="12" style="-fx-padding: 0;">
+
+                <!-- Order identity -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label text="Resumen de cobro" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <Label text="Identidad de la orden" styleClass="topbar-subtitle"/>
+                </VBox>
+
+                <VBox spacing="6" styleClass="summary-fields-container">
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Orden:" styleClass="summary-field-label" minWidth="80"/>
+                        <Label fx:id="summaryOrden" text="OV-124" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Cliente:" styleClass="summary-field-label" minWidth="80"/>
+                        <Label fx:id="summaryCliente" text="Sofia Ramirez" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="Cod. Cliente:" styleClass="summary-field-label" minWidth="80"/>
+                        <Label fx:id="summaryCodigoCliente" text="CL-00124" styleClass="summary-field-value"/>
+                    </HBox>
+                    <HBox spacing="4" alignment="BASELINE_LEFT">
+                        <Label text="F. Promesa:" styleClass="summary-field-label" minWidth="80"/>
+                        <Label fx:id="summaryFechaPromesa" text="18/04/2026" styleClass="summary-field-value"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Contexto del cliente -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label text="Contexto del cliente" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                </VBox>
+
+                <!-- Resumen economico -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label text="Resumen economico" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                </VBox>
+
+                <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="summary-scroll">
+                    <VBox fx:id="summaryFieldsContainer" spacing="10" style="-fx-padding: 8;">
+                    </VBox>
+                </ScrollPane>
+
+                <!-- Estado del cobro -->
+                <VBox spacing="4" styleClass="summary-header">
+                    <Label text="Estado del cobro" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                </VBox>
+
+                <!-- Acciones rapidas -->
+                <VBox spacing="6" styleClass="summary-header">
+                    <Label text="Acciones rapidas" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                    <HBox spacing="6" alignment="CENTER_LEFT">
+                        <Button fx:id="summaryBtnCobrar" text="Cobrar" styleClass="btn-action" maxWidth="100"/>
+                        <Button fx:id="summaryBtnImprimir" text="Imprimir" styleClass="btn-action" maxWidth="100"/>
+                        <Button fx:id="summaryBtnEnviar" text="Enviar" styleClass="btn-action" maxWidth="100"/>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

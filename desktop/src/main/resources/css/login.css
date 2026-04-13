@@ -1,0 +1,78 @@
+/* ===== LOGIN ===== */
+
+.login-root {
+    -fx-background-color: -optica-bg-general;
+}
+
+.login-brand {
+    -fx-background-color: -optica-primary;
+    -fx-alignment: center;
+}
+
+.login-brand-title {
+    -fx-text-fill: white;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+.login-brand-subtitle {
+    -fx-text-fill: rgba(255,255,255,0.75);
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+}
+
+.login-brand-desc {
+    -fx-text-fill: rgba(255,255,255,0.6);
+    -fx-font-size: 12px;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+}
+
+.login-form-panel {
+    -fx-background-color: -optica-bg-surface;
+}
+
+.login-form-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.login-form-subtitle {
+    -fx-text-fill: -optica-text-secondary;
+    -fx-font-size: 12px;
+}
+
+.login-help {
+    -fx-text-fill: -optica-text-secondary;
+    -fx-font-size: 11px;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+}
+
+.login-profile-info {
+    -fx-font-size: 12px;
+    -fx-text-fill: -optica-primary;
+    -fx-font-weight: bold;
+}
+
+.login-sucursal-info {
+    -fx-font-size: 11px;
+    -fx-text-fill: -optica-text-secondary;
+}
+
+.login-version {
+    -fx-font-size: 10px;
+    -fx-text-fill: -optica-text-secondary;
+    -fx-opacity: 0.6;
+}
+
+.form-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: -optica-text-secondary;
+}
+
+.form-field {
+    -fx-font-size: 13px;
+    -fx-padding: 8px 12px 8px 12px;
+}

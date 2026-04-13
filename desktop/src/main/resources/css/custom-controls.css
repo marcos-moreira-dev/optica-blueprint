@@ -1,0 +1,127 @@
+/* ============================================================================
+   CUSTOM CONTROLS - OpticaButton, OpticaComboBox, OpticaTextField,
+   OpticaDatePicker, OpticaToggleButton
+   These extend base JavaFX controls with baked-in styleClasses.
+   ============================================================================ */
+
+/* --- OpticaButton --- */
+
+.optica-button {
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+    -fx-padding: 8px 16px 8px 16px;
+    -fx-font-size: 13px;
+    -fx-background-color: -optica-bg-surface;
+    -fx-text-fill: -optica-text-primary;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+.optica-button:hover {
+    -fx-background-color: derive(-optica-bg-surface, -8%);
+    -fx-border-color: -optica-primary;
+}
+
+.optica-button:focused {
+    -fx-border-color: -optica-primary;
+}
+
+.optica-button:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+/* --- OpticaComboBox --- */
+
+.optica-combo-box {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-font-size: 13px;
+}
+
+.optica-combo-box:hover {
+    -fx-border-color: -optica-primary;
+}
+
+.optica-combo-box:focused {
+    -fx-border-color: -optica-primary;
+    -fx-effect: dropshadow(gaussian, rgba(43, 91, 110, 0.15), 4px, 0px, 0px, 0px);
+}
+
+/* --- OpticaTextField --- */
+
+.optica-text-field {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 10px 6px 10px;
+    -fx-font-size: 13px;
+    -fx-text-fill: -optica-text-primary;
+    -fx-prompt-text-fill: -optica-text-secondary;
+}
+
+.optica-text-field:hover {
+    -fx-border-color: -optica-primary;
+}
+
+.optica-text-field:focused {
+    -fx-border-color: -optica-primary;
+    -fx-effect: dropshadow(gaussian, rgba(43, 91, 110, 0.15), 4px, 0px, 0px, 0px);
+}
+
+/* --- OpticaDatePicker --- */
+
+.optica-date-picker {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-font-size: 13px;
+}
+
+.optica-date-picker:hover {
+    -fx-border-color: -optica-primary;
+}
+
+.optica-date-picker:focused {
+    -fx-border-color: -optica-primary;
+    -fx-effect: dropshadow(gaussian, rgba(43, 91, 110, 0.15), 4px, 0px, 0px, 0px);
+}
+
+/* --- OpticaToggleButton --- */
+
+.optica-toggle-button {
+    -fx-background-color: -optica-bg-surface;
+    -fx-border-color: -optica-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 12px 6px 12px;
+    -fx-font-size: 13px;
+    -fx-text-fill: -optica-text-primary;
+    -fx-cursor: hand;
+}
+
+.optica-toggle-button:hover {
+    -fx-background-color: derive(-optica-bg-surface, -8%);
+    -fx-border-color: -optica-primary;
+}
+
+.optica-toggle-button:selected {
+    -fx-background-color: -optica-primary;
+    -fx-text-fill: -optica-text-on-primary;
+    -fx-font-weight: bold;
+    -fx-border-color: -optica-primary;
+    -fx-border-width: 1px 1px 1px 3px;
+}
+
+.optica-toggle-button:focused {
+    -fx-border-color: -optica-primary;
+}
