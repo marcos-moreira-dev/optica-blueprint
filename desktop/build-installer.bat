@@ -41,7 +41,7 @@ mkdir installer 2>nul
     --main-class com.marcosmoreira.opticademo.app.AppLauncher ^
     --name "OpticaDemo" ^
     --type msi ^
-    --icon logo.png ^
+    --icon logo.ico ^
     --win-dir-chooser ^
     --win-menu ^
     --win-shortcut ^

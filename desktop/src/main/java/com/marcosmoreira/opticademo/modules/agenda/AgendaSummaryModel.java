@@ -1,17 +1,35 @@
 package com.marcosmoreira.opticademo.modules.agenda;
 
+import com.marcosmoreira.opticademo.modules.agenda.AgendaRowModel;
+
 /**
- * Summary model for the right-hand appointment detail panel in the Agenda module.
+ * Modelo resumen para el panel lateral derecho persistente del modulo Agenda.
+ * Contiene los datos de resumen de una cita seleccionada en la tabla principal.
+ * La fachada (AgendaFacade) actualiza este modelo cada vez que el usuario selecciona
+ * una fila en la tabla de citas del dia, invocando los metodos estaticos {@code fromCitaDia}
+ * o {@code fromListaDia} segun la vista activa.
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
  */
 public record AgendaSummaryModel(
+        /** Nombre completo del cliente asociado a la cita. */
         String cliente,
+        /** Hora programada de la cita. */
         String hora,
+        /** Tipo de atencion solicitada (examen visual, entrega, recall, etc.). */
         String atencion,
+        /** Estado actual de la cita (confirmada, pendiente, cancelada, etc.). */
         String estado,
+        /** Profesional asignado a la atencion. */
         String profesional,
+        /** Sucursal donde se realizara la cita. */
         String sucursal,
+        /** Telefono o medio de contacto del cliente. */
         String contacto,
+        /** Observaciones adicionales sobre la cita. */
         String observaciones,
+        /** Fecha de la cita en formato dd/MM/yyyy. */
         String fechaCita
 ) {
 

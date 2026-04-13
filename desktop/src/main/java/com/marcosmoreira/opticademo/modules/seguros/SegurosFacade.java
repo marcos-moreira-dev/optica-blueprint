@@ -10,12 +10,35 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Facade that provides demo data for the Seguros module.
- * No business logic -- just view-facing data assembly.
+ * Facade para el modulo de Seguros (gestion de convenios y coberturas).
+ * <p>
+ * Este facade proporciona datos de demostracion para todas las sub-vistas del modulo
+ * de Seguros, el cual gestiona la verificacion de coberturas de seguros/convenios,
+ * autorizaciones, reclamos y el historico de gestiones. Todos los datos provienen
+ * de seed data estatico embebido en constantes de clase.
+ * </p>
+ * <p>
+ * Sub-vistas que alimenta:
+ * <ul>
+ *   <li><b>Verificaciones:</b> tabla paginada de verificaciones de cobertura.</li>
+ *   <li><b>Planes:</b> catalogos de planes de convenio con detalles.</li>
+ *   <li><b>Autorizaciones:</b> autorizaciones pendientes y aprobadas.</li>
+ *   <li><b>Reclamos:</b> reclamos enviados a aseguradoras.</li>
+ *   <li><b>Respuestas:</b> respuestas de aseguradoras a reclamos.</li>
+ *   <li><b>Cobertura en Venta:</b> coberturas aplicadas a ventas.</li>
+ *   <li><b>Historico:</b> registro historico de todas las gestiones.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see FilterSupport
+ * @see PaginationHelper
  */
 public class SegurosFacade {
 
     // ---- Seed data: Verificaciones ----
+    /** Seed data para verificaciones de cobertura. */
     private static final List<SegurosRowModel.VerificacionRow> VERIFICACIONES = List.of(
             new SegurosRowModel.VerificacionRow("CB-001", "Sofia Ramirez", "Convenio Visual Plus", "Cobertura activa", "31/12/2026", "$80", "Matriz Centro"),
             new SegurosRowModel.VerificacionRow("CB-002", "Ana Vera", "Beneficio Optico Basico", "Pendiente validacion", "30/06/2026", "$0", "Norte Mall"),
@@ -104,6 +127,12 @@ public class SegurosFacade {
 
     // ------------------------------------------------------------------ Summary
 
+    /**
+     * Construye un modelo de resumen para la verificacion de cobertura seleccionada.
+     *
+     * @param verificacion fila de verificacion seleccionada
+     * @return {@link SegurosSummaryModel} con datos de la verificacion, o demo seed si es nula
+     */
     public SegurosSummaryModel buildSummary(SegurosRowModel.VerificacionRow verificacion) {
         if (verificacion == null) {
             return SegurosSummaryModel.demoSeed();

@@ -10,20 +10,55 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Facade that queries the DemoStore and returns data for the Proveedores module.
- * No business logic -- just view-facing data assembly.
+ * Facade para el modulo de Proveedores (gestion de proveedores y abastecimiento).
+ * <p>
+ * Este facade actua como capa de abstraccion entre el {@link DemoStore} (colecciones
+ * de {@link Proveedor} y sucursales) y las siete sub-vistas del modulo de Proveedores.
+ * Proporciona datos del directorio, perfil comercial, catalogo vinculado, ordenes,
+ * recepciones, desempeno e historico de cada proveedor.
+ * </p>
+ * <p>
+ * Sub-vistas que alimenta:
+ * <ul>
+ *   <li><b>Directorio:</b> lista de proveedores con tipo, contacto y estado.</li>
+ *   <li><b>Perfil Comercial:</b> datos detallados del proveedor seleccionado.</li>
+ *   <li><b>Catalogo Vinculado:</b> productos asociados al proveedor.</li>
+ *   <li><b>Ordenes:</b> ordenes de compra asociadas al proveedor.</li>
+ *   <li><b>Recepciones:</b> historial de recepciones de mercaderia.</li>
+ *   <li><b>Desempeno:</b> metricas de cumplimiento y calidad.</li>
+ *   <li><b>Historico:</b> registro historico de operaciones.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see DemoStore
+ * @see Proveedor
+ * @see DateGenerator
+ * @see FilterSupport
  */
 public class ProveedoresFacade {
 
     private final DemoStore store;
     private final DateGenerator dates = new DateGenerator();
 
+    /**
+     * Construye el facade con referencia al almacén de datos de demostración.
+     *
+     * @param store instancia del {@link DemoStore}
+     */
     public ProveedoresFacade(DemoStore store) {
         this.store = store;
     }
 
     // ==================== Sub-view 1: Directorio de proveedores ====================
 
+    /**
+     * Retorna el directorio de proveedores filtrado por tipo, estado, categoria y sucursal.
+     *
+     * @param filters criterios de filtrado
+     * @return lista de {@link ProveedoresRowModel.DirectorioRow}
+     */
     public List<ProveedoresRowModel.DirectorioRow> getDirectorio(ProveedoresFilters filters) {
         return store.proveedores.stream()
                 .filter(p -> matchesDirectorioFilters(p, filters))
@@ -261,10 +296,21 @@ public class ProveedoresFacade {
 
     // ==================== Summary and lookup helpers ====================
 
+    /**
+     * Construye un modelo de resumen para el proveedor seleccionado.
+     *
+     * @param proveedor entidad {@link Proveedor} seleccionada
+     * @return {@link ProveedoresSummaryModel} con datos del proveedor
+     */
     public ProveedoresSummaryModel buildSummary(Proveedor proveedor) {
         return ProveedoresSummaryModel.from(proveedor);
     }
 
+    /**
+     * Retorna los tipos de proveedor distinct desde el {@link DemoStore}.
+     *
+     * @return lista ordenada de tipos de proveedor
+     */
     public List<String> getTiposProveedor() {
         return store.proveedores.stream()
                 .map(p -> p.getTipoProveedor() != null ? p.getTipoProveedor() : "")
@@ -283,6 +329,12 @@ public class ProveedoresFacade {
         return estados;
     }
 
+    /**
+     * Retorna las categorias abastecidas distinct para el combo de filtro.
+     * Si no hay datos en el store, retorna valores por defecto.
+     *
+     * @return lista ordenada de categorias abastecidas
+     */
     public List<String> getCategoriasAbastecidas() {
         List<String> categorias = store.proveedores.stream()
                 .map(p -> p.getCategoriaAbastecida() != null ? p.getCategoriaAbastecida() : "")

@@ -12,13 +12,40 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Facade that queries the DemoStore and returns data for the Entregas module.
- * No business logic -- just view-facing data assembly.
+ * Facade para el modulo de Entregas (gestion de entregas de trabajos).
+ * <p>
+ * Este facade proporciona datos de demostracion para todas las sub-vistas del modulo
+ * de Entregas, el cual gestiona la entrega de trabajos opticos a los clientes.
+ * Los datos de trabajos listos combinan seed data estatico con datos del
+ * {@link DemoStore} (ventas en estado LISTO o EN_PROCESO).
+ * </p>
+ * <p>
+ * Sub-vistas que alimenta:
+ * <ul>
+ *   <li><b>Trabajos Listos:</b> tabla paginada con estado, saldo y notificacion.</li>
+ *   <li><b>Validaciones:</b> checklist de validacion previa a la entrega.</li>
+ *   <li><b>Pendientes de Retiro:</b> trabajos listos no retirados por el cliente.</li>
+ *   <li><b>Post-Entrega:</b> ajustes y observaciones posteriores a la entrega.</li>
+ *   <li><b>Historico:</b> registro historico de entregas con filtros extendidos.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see DemoStore
+ * @see VentaOptica
+ * @see FilterSupport
+ * @see PaginationHelper
  */
 public class EntregasFacade {
 
     private final DemoStore store;
 
+    /**
+     * Construye el facade con referencia al almacén de datos de demostración.
+     *
+     * @param store instancia del {@link DemoStore}
+     */
     public EntregasFacade(DemoStore store) {
         this.store = store;
     }
@@ -26,7 +53,12 @@ public class EntregasFacade {
     // ------------------------------------------------------------------ Trabajos listos (sub-view 1)
 
     /**
-     * Returns a paginated, filtered list of trabajos listos row models.
+     * Retorna una pagina de trabajos listos para entrega filtrada segun
+     * los criterios de busqueda.
+     *
+     * @param filters     criterios de filtrado
+     * @param pageRequest solicitud de paginacion
+     * @return {@link PageResult} con la pagina de {@link EntregasRowModel.TrabajoListoRow}
      */
     public PageResult<EntregasRowModel.TrabajoListoRow> getTrabajosListos(EntregasFilters filters, PageRequest pageRequest) {
         List<EntregasRowModel.TrabajoListoRow> filtered = buildTrabajosListos().stream()
@@ -37,7 +69,10 @@ public class EntregasFacade {
     }
 
     /**
-     * Returns all trabajos listos as a list.
+     * Retorna todos los trabajos listos como lista (sin paginacion).
+     *
+     * @param filters criterios de filtrado
+     * @return lista de {@link EntregasRowModel.TrabajoListoRow} filtrados
      */
     public List<EntregasRowModel.TrabajoListoRow> getTrabajosListos(EntregasFilters filters) {
         return buildTrabajosListos().stream()
@@ -48,7 +83,10 @@ public class EntregasFacade {
     // ------------------------------------------------------------------ Validaciones (sub-view 2)
 
     /**
-     * Returns validation rows for the validation checklist sub-view.
+     * Retorna las filas de validacion para el checklist de validacion previa
+     * a la entrega, verificando coincidencia de lentes, montura y cobro.
+     *
+     * @return lista de {@link EntregasRowModel.ValidacionRow} con resultados de validacion
      */
     public List<EntregasRowModel.ValidacionRow> getValidaciones() {
         List<EntregasRowModel.ValidacionRow> list = new ArrayList<>();
@@ -88,7 +126,10 @@ public class EntregasFacade {
     // ------------------------------------------------------------------ Pendientes de retiro (sub-view 4)
 
     /**
-     * Returns trabajos that are ready but not yet picked up.
+     * Retorna los trabajos que estan listos pero no han sido retirados
+     * por el cliente, mostrando dias de espera, saldo y estado de notificacion.
+     *
+     * @return lista de {@link EntregasRowModel.PendienteRow} con trabajos pendientes de retiro
      */
     public List<EntregasRowModel.PendienteRow> getPendientesRetiro() {
         List<EntregasRowModel.PendienteRow> list = new ArrayList<>();
@@ -116,7 +157,10 @@ public class EntregasFacade {
     // ------------------------------------------------------------------ Post-entrega (sub-view 5)
 
     /**
-     * Returns post-delivery adjustment and observation records.
+     * Retorna los registros de ajustes y observaciones posteriores a la entrega,
+     * con fecha, tipo de ajuste, estado y responsable.
+     *
+     * @return lista de {@link EntregasRowModel.PostEntregaRow} con datos post-entrega
      */
     public List<EntregasRowModel.PostEntregaRow> getPostEntrega() {
         List<EntregasRowModel.PostEntregaRow> list = new ArrayList<>();
@@ -143,7 +187,11 @@ public class EntregasFacade {
     // ------------------------------------------------------------------ Historico (sub-view 6)
 
     /**
-     * Returns historical delivery records with extended filters.
+     * Retorna el historico de entregas con filtros extendidos de busqueda,
+     * mostrando fecha, referencia, cliente, estado final, saldo y observaciones.
+     *
+     * @param filters criterios de filtrado
+     * @return lista de {@link EntregasRowModel.HistoricoRow} filtradas
      */
     public List<EntregasRowModel.HistoricoRow> getHistorico(EntregasFilters filters) {
         List<EntregasRowModel.HistoricoRow> list = new ArrayList<>();
@@ -169,7 +217,10 @@ public class EntregasFacade {
     // ------------------------------------------------------------------ Summary
 
     /**
-     * Builds a delivery summary model for the selected order.
+     * Construye un modelo de resumen de entrega para la orden seleccionada.
+     *
+     * @param venta entidad {@link VentaOptica} seleccionada
+     * @return {@link EntregasSummaryModel} con datos de la entrega, o demo seed si es nula
      */
     public EntregasSummaryModel buildSummary(VentaOptica venta) {
         if (venta == null) {
@@ -181,7 +232,9 @@ public class EntregasFacade {
     // ------------------------------------------------------------------ Filter combos
 
     /**
-     * Returns all distinct delivery estado values.
+     * Retorna los estados de entrega distinct para el combo de filtro.
+     *
+     * @return lista de estados de entrega (Lista para entrega, Pendiente de validacion, etc.)
      */
     public List<String> getEstadosEntrega() {
         return List.of(
@@ -198,7 +251,9 @@ public class EntregasFacade {
     }
 
     /**
-     * Returns all distinct notification estado values.
+     * Retorna los estados de notificacion distinct para el combo de filtro.
+     *
+     * @return lista de estados de notificacion
      */
     public List<String> getEstadosNotificacion() {
         return List.of(
@@ -211,7 +266,10 @@ public class EntregasFacade {
     // ------------------------------------------------------------------ Stats pendientes
 
     /**
-     * Returns pending delivery statistics.
+     * Retorna estadisticas de entregas pendientes: total pendientes,
+     * con saldo pendiente y notificados.
+     *
+     * @return {@link StatsPendientes} con contadores de estado
      */
     public StatsPendientes getStatsPendientes() {
         List<EntregasRowModel.PendienteRow> pendientes = getPendientesRetiro();
@@ -227,6 +285,13 @@ public class EntregasFacade {
         return new StatsPendientes(totalPendientes, conSaldo, notificados);
     }
 
+    /**
+     * Record que encapsula las estadisticas de entregas pendientes.
+     *
+     * @param pendientes  total de trabajos pendientes de retiro
+     * @param conSaldo    cantidad con saldo pendiente
+     * @param notificados cantidad de clientes notificados
+     */
     public record StatsPendientes(int pendientes, int conSaldo, int notificados) {
     }
 

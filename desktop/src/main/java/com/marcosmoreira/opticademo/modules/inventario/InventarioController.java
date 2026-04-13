@@ -21,8 +21,31 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Controller for the Inventario module.
- * Manages 7 sub-views with a persistent right panel for product summary.
+ * Controlador para el modulo de Inventario del sistema Optica.
+ * <p>
+ * Administra el catalogo completo de productos del sistema, incluyendo monturas,
+ * lentes oftalmicos y accesorios. El modulo se organiza en 7 sub-vistas intercambiables:
+ * Catalogo general, Monturas, Lentes, Movimientos de stock, Reposicion y stock critico,
+ * Recepcion y abastecimiento, y Analisis de rotacion de inventario.
+ * </p>
+ * <p>
+ * El catalogo general presenta una tabla paginada con filtros por categoria, estado
+ * de stock, marca, sucursal y proveedor. Cada sub-vista muestra datos especificos
+ * del tipo de producto y operaciones relacionadas. El panel derecho muestra un
+ * resumen detallado del producto seleccionado.
+ * </p>
+ * <p>
+ * Toda la logica de negocio se delega en {@link InventarioFacade}, quien consulta
+ * el {@link DemoStore} y proporciona estadisticas de stock critico y analisis
+ * de rotacion.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see InventarioFacade
+ * @see InventarioRowModel
+ * @see InventarioFilters
+ * @see InventarioSummaryModel
  */
 public class InventarioController {
 
@@ -416,6 +439,20 @@ public class InventarioController {
     private int currentPageIndex = 0;
     private int pageSize = 20;
 
+    /**
+     * Inicializa el controlador y configura las 7 sub-vistas del modulo de inventario.
+     * <p>
+     * Instancia {@link InventarioFacade} con el {@link DemoStore} global, configura
+     * los combos filtrables mediante {@link ComboBoxFactory}, establece el grupo de
+     * toggles para las sub-vistas, inicializa todas las tablas con sus
+     * {@code cellValueFactory} (incluyendo badges de estado), y carga los datos
+     * de todas las sub-vistas. Por defecto se muestra la sub-vista de Catalogo.
+     * </p>
+     *
+     * @see InventarioFacade
+     * @see ComboBoxFactory
+     * @see App#getDemoStore()
+     */
     public void initialize() {
         DemoStore store = App.getDemoStore();
         this.facade = new InventarioFacade(store);
@@ -1087,22 +1124,40 @@ public class InventarioController {
 
     // ==================== Placeholder actions ====================
 
+    /** Maneja la creacion de un nuevo producto. Metodo placeholder. */
     private void onNuevoProducto() { }
+    /** Maneja la exportacion del inventario completo. Metodo placeholder. */
     private void onExportarInventario() { }
+    /** Maneja la visualizacion de una montura. Metodo placeholder. */
     private void onVerMontura() { }
+    /** Maneja el ajuste de stock de un producto. Metodo placeholder. */
     private void onAjustarStock() { }
+    /** Maneja la visualizacion de stock por sucursales. Metodo placeholder. */
     private void onVerSucursales() { }
+    /** Maneja la visualizacion de un lente. Metodo placeholder. */
     private void onVerLente() { }
+    /** Maneja el registro de un ajuste de inventario. Metodo placeholder. */
     private void onRegistrarAjuste() { }
+    /** Maneja el registro de una transferencia entre sucursales. Metodo placeholder. */
     private void onRegistrarTransferencia() { }
+    /** Maneja la exportacion de movimientos de stock. Metodo placeholder. */
     private void onExportarMovimientos() { }
+    /** Maneja la generacion de un pedido de reposicion. Metodo placeholder. */
     private void onGenerarReposicion() { }
+    /** Maneja la visualizacion de datos de un proveedor. Metodo placeholder. */
     private void onVerProveedor() { }
+    /** Maneja el marcado de un pedido como enviado. Metodo placeholder. */
     private void onMarcarPedido() { }
+    /** Maneja el registro de una recepcion de mercancia. Metodo placeholder. */
     private void onRegistrarRecepcion() { }
+    /** Maneja el marcado de una recepcion como completa. Metodo placeholder. */
     private void onMarcarCompleta() { }
+    /** Maneja el registro de diferencias en una recepcion. Metodo placeholder. */
     private void onRegistrarDiferencia() { }
+    /** Maneja la exportacion del analisis de rotacion. Metodo placeholder. */
     private void onExportarAnalisis() { }
+    /** Maneja la visualizacion detallada de un producto. Metodo placeholder. */
     private void onVerProducto() { }
+    /** Maneja el marcado de un producto para revision. Metodo placeholder. */
     private void onMarcarRevision() { }
 }

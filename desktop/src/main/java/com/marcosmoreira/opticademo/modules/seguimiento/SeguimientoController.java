@@ -20,69 +20,108 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Controller for the Seguimiento module.
- * Manages 6 sub-views, filter bar, and persistent right panel with case summary.
- * Clean separation: no business logic.
+ * Controller principal del modulo de Seguimiento del sistema optico.
+ * <p>
+ * Gestiona seis sub-vistas especializadas: Bandeja de seguimiento, Recall y revisiones,
+ * Pedidos listos y no retirados, Cobros pendientes, Mensajes y recordatorios, e Historico
+ * de casos. Implementa una arquitectura de tres paneles: barra superior con acciones globales
+ * y filtros, area central con sub-vistas intercambiables mediante toggle buttons, y panel
+ * derecho persistente con resumen del caso seleccionado.
+ * </p>
+ * <p>
+ * La logica de negocio esta delegada completamente en {@link SeguimientoFacade}, manteniendo
+ * una separacion limpia entre la capa de presentacion y la capa de dominio. El controller
+ * se encarga exclusivamente de la configuracion de componentes JavaFX, binding de datos a
+ * las tablas, gestion de filtros y actualizacion del panel de resumen.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see SeguimientoFacade
+ * @see SeguimientoFilters
+ * @see SeguimientoSummaryModel
  */
 public class SeguimientoController {
 
     // ---- Top bar ----
+
+    /** Boton para crear un nuevo caso de seguimiento. */
     @FXML
     private Button nuevoSeguimientoBtn;
 
+    /** Boton para actualizar los datos del modulo. */
     @FXML
     private Button actualizarSeguimientoBtn;
 
+    /** Boton para exportar los datos de seguimiento. */
     @FXML
     private Button exportarSeguimientoBtn;
 
     // ---- Filters ----
+
+    /** Campo de texto para busqueda libre por referencia o cliente. */
     @FXML
     private TextField searchField;
 
+    /** ComboBox para filtrar por tipo de seguimiento (recall, no retirado, cobro, etc.). */
     @FXML
     private ComboBox<String> tipoCombo;
 
+    /** ComboBox para filtrar por estado del caso. */
     @FXML
     private ComboBox<String> estadoCombo;
 
+    /** ComboBox para filtrar por prioridad (alta, media, baja). */
     @FXML
     private ComboBox<String> prioridadCombo;
 
+    /** ComboBox para filtrar por sucursal. */
     @FXML
     private ComboBox<String> sucursalCombo;
 
+    /** ComboBox para filtrar por canal de contacto. */
     @FXML
     private ComboBox<String> canalCombo;
 
+    /** DatePicker para fecha inicio del rango de filtrado. */
     @FXML
     private DatePicker desdePicker;
 
+    /** DatePicker para fecha fin del rango de filtrado. */
     @FXML
     private DatePicker hastaPicker;
 
+    /** CheckBox para mostrar solo casos abiertos. */
     @FXML
     private CheckBox soloCasosAbiertosCheck;
 
+    /** Boton para limpiar todos los filtros aplicados. */
     @FXML
     private Button limpiarFiltrosBtn;
 
     // ---- Sub-view toggle buttons ----
+
+    /** Toggle button para la sub-vista Bandeja de seguimiento. */
     @FXML
     private ToggleButton btnBandeja;
 
+    /** Toggle button para la sub-vista Recall y revisiones. */
     @FXML
     private ToggleButton btnRecall;
 
+    /** Toggle button para la sub-vista Pedidos no retirados. */
     @FXML
     private ToggleButton btnNoRetirados;
 
+    /** Toggle button para la sub-vista Cobros pendientes. */
     @FXML
     private ToggleButton btnCobros;
 
+    /** Toggle button para la sub-vista Mensajes y recordatorios. */
     @FXML
     private ToggleButton btnMensajes;
 
+    /** Toggle button para la sub-vista Historico. */
     @FXML
     private ToggleButton btnHistorico;
 
@@ -109,9 +148,11 @@ public class SeguimientoController {
     @FXML
     private Label lblBandejaCount;
 
+    /** Tabla principal que muestra los casos de seguimiento activos. */
     @FXML
     private TableView<SeguimientoRowModel.BandejaRow> bandejaTable;
 
+    /** Componente de paginacion para la bandeja de seguimiento. */
     @FXML
     private com.marcosmoreira.opticademo.shared.ui.components.PaginationBarController paginationBarController;
 
@@ -421,7 +462,7 @@ public class SeguimientoController {
     @FXML
     private Button summaryBtnExportar;
 
-    // ---- Facade ----
+    /** Fachada que centraliza toda la logica de negocio del modulo de seguimiento. */
     private SeguimientoFacade facade;
 
     private SeguimientoFilters currentFilters;
@@ -429,6 +470,16 @@ public class SeguimientoController {
     private int currentPageIndex = 0;
     private int pageSize = 20;
 
+    /**
+     * Metodo de inicializacion invocado por JavaFX al cargar el FXML.
+     * <p>
+     * Instancia la fachada {@link SeguimientoFacade} con el {@link DemoStore} global,
+     * configura los combos de filtrado, establece el sistema de toggle entre sub-vistas,
+     * configura las columnas de cada tabla con sus respectivas cell value factories,
+     * registra los listeners de seleccion para actualizar el panel de resumen,
+     * y carga los datos iniciales de la bandeja de seguimiento.
+     * </p>
+     */
     public void initialize() {
         DemoStore store = App.getDemoStore();
         this.facade = new SeguimientoFacade(store);

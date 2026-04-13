@@ -4,7 +4,17 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- * Row models for the Seguros module TableView entries.
+ * Modelos de fila para las vistas del modulo Seguros (gestion de seguros y convenios).
+ * <p>
+ * Estos registros alimentan los {@code TableView} del modulo: verificacion de seguros,
+ * planes y convenios, autorizaciones, reclamos a aseguradoras, respuestas recibidas,
+ * cobertura aplicada en ventas e historico. La fachada crea estas instancias a partir
+ * de las entidades {@code Seguro}, {@code Plan} y {@code Reclamo} del dominio.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see com.marcosmoreira.opticademo.modules.seguros.SegurosFacade
  */
 public final class SegurosRowModel {
 
@@ -13,6 +23,22 @@ public final class SegurosRowModel {
 
     // ------------------------------------------------------------------ VerificacionRow
 
+    /**
+     * Modelo de fila para la tabla de verificacion de seguros.
+     * <p>
+     * Muestra el resultado de verificar la cobertura del seguro de un paciente.
+     * El campo {@code estado} indica si el seguro esta "Vigente", "Vencido" o
+     * "Sin cobertura".
+     * </p>
+     *
+     * @param referencia       identificador de la verificacion (columna "Referencia")
+     * @param cliente          nombre del asegurado (columna "Cliente")
+     * @param planConvenio     nombre del plan o convenio aplicado (columna "Plan")
+     * @param estado           estado de la verificacion (columna "Estado")
+     * @param vigencia         periodo de vigencia de la poliza (columna "Vigencia")
+     * @param montoDisponible  monto restante del beneficio (columna "Monto Disponible")
+     * @param sucursal         sede donde se verifico (columna "Sucursal")
+     */
     public record VerificacionRow(
             String referencia,
             String cliente,
@@ -54,6 +80,19 @@ public final class SegurosRowModel {
 
     // ------------------------------------------------------------------ PlanRow
 
+    /**
+     * Modelo de fila para la tabla de planes y convenios.
+     * <p>
+     * Detalla los planes de seguros disponibles con sus coberturas y restricciones.
+     * </p>
+     *
+     * @param nombre              nombre del plan (columna "Nombre")
+     * @param vigenciaGeneral     vigencia estandar del plan (columna "Vigencia")
+     * @param coberturaMaxima     monto maximo cubierto (columna "Cobertura Maxima")
+     * @param copago              porcentaje de copago del paciente (columna "Copago")
+     * @param categoriasCubiertas categorias incluidas (columna "Categorias Cubiertas")
+     * @param restricciones       restricciones del plan (columna "Restricciones")
+     */
     public record PlanRow(
             String nombre,
             String vigenciaGeneral,
@@ -90,6 +129,20 @@ public final class SegurosRowModel {
 
     // ------------------------------------------------------------------ AutorizacionRow
 
+    /**
+     * Modelo de fila para la tabla de autorizaciones pre-previas.
+     * <p>
+     * Registra las autorizaciones solicitadas a la aseguradora antes de realizar
+     * el servicio. El campo {@code estado} indica: "Aprobada", "Rechazada", "Pendiente".
+     * </p>
+     *
+     * @param autorizacion numero de autorizacion (columna "Autorizacion")
+     * @param cliente      nombre del asegurado (columna "Cliente")
+     * @param plan         plan aplicado (columna "Plan")
+     * @param fecha        fecha de solicitud (columna "Fecha")
+     * @param estado       estado de la autorizacion (columna "Estado")
+     * @param observacion  notas sobre la autorizacion (columna "Observacion")
+     */
     public record AutorizacionRow(
             String autorizacion,
             String cliente,
@@ -126,6 +179,19 @@ public final class SegurosRowModel {
 
     // ------------------------------------------------------------------ ReclamoRow
 
+    /**
+     * Modelo de fila para la tabla de reclamos a aseguradoras.
+     * <p>
+     * Registra los reclamos enviados para cobro de servicios cubiertos.
+     * </p>
+     *
+     * @param reclamo          numero de reclamo (columna "Reclamo")
+     * @param cliente          nombre del asegurado (columna "Cliente")
+     * @param ordenRelacionada orden asociada al reclamo (columna "Orden")
+     * @param montoReclamado   monto solicitado a la aseguradora (columna "Monto")
+     * @param estado           estado: "Enviado", "Aprobado", "Rechazado" (columna "Estado")
+     * @param fechaEnvio       fecha de envio del reclamo (columna "Fecha Envio")
+     */
     public record ReclamoRow(
             String reclamo,
             String cliente,
@@ -162,6 +228,15 @@ public final class SegurosRowModel {
 
     // ------------------------------------------------------------------ RespuestaRow
 
+    /**
+     * Modelo de fila para la tabla de respuestas de aseguradoras.
+     *
+     * @param fecha        fecha de la respuesta (columna "Fecha")
+     * @param referencia   identificador del caso (columna "Referencia")
+     * @param tipoRespuesta tipo: "Aprobacion", "Rechazo", "Parcial" (columna "Tipo")
+     * @param estado       estado de la respuesta (columna "Estado")
+     * @param resultado    resultado detallado (columna "Resultado")
+     */
     public record RespuestaRow(
             String fecha,
             String referencia,
@@ -193,6 +268,21 @@ public final class SegurosRowModel {
 
     // ------------------------------------------------------------------ CoberturaVentaRow
 
+    /**
+     * Modelo de fila para la tabla de cobertura aplicada en ventas.
+     * <p>
+     * Muestra como se aplico el seguro en cada venta: monto cubierto por la
+     * aseguradora, copago del cliente y saldo restante.
+     * </p>
+     *
+     * @param venta          identificador de la venta (columna "Venta")
+     * @param cliente        nombre del asegurado (columna "Cliente")
+     * @param planAplicado   plan utilizado (columna "Plan Aplicado")
+     * @param montoCubierto  monto pagado por el seguro (columna "Monto Cubierto")
+     * @param copago         monto que paga el cliente (columna "Copago")
+     * @param saldoCliente   saldo pendiente del cliente (columna "Saldo Cliente")
+     * @param estado         estado de la cobertura (columna "Estado")
+     */
     public record CoberturaVentaRow(
             String venta,
             String cliente,
@@ -234,6 +324,16 @@ public final class SegurosRowModel {
 
     // ------------------------------------------------------------------ HistoricoRow
 
+    /**
+     * Modelo de fila para el historico de gestiones de seguros.
+     *
+     * @param fecha        fecha del registro (columna "Fecha")
+     * @param referencia   identificador (columna "Referencia")
+     * @param cliente      nombre del asegurado (columna "Cliente")
+     * @param tipoCaso     tipo: "Verificacion", "Reclamo", "Autorizacion" (columna "Tipo")
+     * @param estadoFinal  resultado final (columna "Estado Final")
+     * @param observacion  nota sobre el caso (columna "Observacion")
+     */
     public record HistoricoRow(
             String fecha,
             String referencia,

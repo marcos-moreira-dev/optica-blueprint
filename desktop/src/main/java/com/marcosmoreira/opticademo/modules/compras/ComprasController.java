@@ -16,68 +16,106 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Controller for the Compras module.
- * Manages 7 sub-views with a persistent right panel for purchase summary.
+ * Controller del modulo de Compras del sistema optico.
+ * <p>
+ * Gestiona siete sub-vistas para la gestion integral del proceso de abastecimiento:
+ * Solicitudes de compra, Ordenes de compra, Compras por proveedor, Back-orders,
+ * Recepcion vinculada, Compras por sucursal, e Historico de compras.
+ * </p>
+ * <p>
+ * Cada sub-vista presenta datos tabulares con badges de estado coloreados. La seleccion
+ * de una solicitud u orden actualiza el panel de resumen derecho con los detalles
+ * del registro seleccionado. La fachada {@link ComprasFacade} centraliza el acceso
+ * a los datos de compras almacenados en el {@link DemoStore}.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see ComprasFacade
+ * @see ComprasFilters
+ * @see ComprasSummaryModel
  */
 public class ComprasController {
 
     // ---- Top bar ----
+
+    /** Boton para crear una nueva solicitud de compra. */
     @FXML
     private Button nuevaSolicitudBtn;
 
+    /** Boton para crear una nueva orden de compra. */
     @FXML
     private Button nuevaOrdenBtn;
 
+    /** Boton para exportar los datos de compras. */
     @FXML
     private Button exportarComprasBtn;
 
     // ---- Filters ----
+
+    /** Campo de busqueda por referencia de solicitud u orden. */
     @FXML
     private TextField searchField;
 
+    /** ComboBox para filtrar por estado de la compra. */
     @FXML
     private ComboBox<String> estadoCombo;
 
+    /** ComboBox para filtrar por proveedor. */
     @FXML
     private ComboBox<String> proveedorCombo;
 
+    /** ComboBox para filtrar por categoria de productos. */
     @FXML
     private ComboBox<String> categoriaCombo;
 
+    /** ComboBox para filtrar por sucursal destino. */
     @FXML
     private ComboBox<String> sucursalCombo;
 
+    /** DatePicker para fecha inicio del rango de filtrado. */
     @FXML
     private DatePicker desdePicker;
 
+    /** DatePicker para fecha fin del rango de filtrado. */
     @FXML
     private DatePicker hastaPicker;
 
+    /** CheckBox para mostrar solo pedidos pendientes criticos. */
     @FXML
     private CheckBox soloPendientesCriticosCheck;
 
+    /** Boton para limpiar todos los filtros aplicados. */
     @FXML
     private Button limpiarFiltrosBtn;
 
     // ---- Sub-view toggle buttons ----
+
+    /** Toggle button para la sub-vista Solicitudes de compra. */
     @FXML
     private ToggleButton subViewSolicitudesBtn;
 
+    /** Toggle button para la sub-vista Ordenes de compra. */
     @FXML
     private ToggleButton subViewOrdenesBtn;
 
+    /** Toggle button para la sub-vista Compras por proveedor. */
     @FXML
     private ToggleButton subViewProveedorBtn;
 
+    /** Toggle button para la sub-vista Back-orders. */
     @FXML
     private ToggleButton subViewBackOrdersBtn;
 
+    /** Toggle button para la sub-vista Recepcion vinculada. */
     @FXML
     private ToggleButton subViewRecepcionBtn;
 
+    /** Toggle button para la sub-vista Compras por sucursal. */
     @FXML
     private ToggleButton subViewSucursalBtn;
 
+    /** Toggle button para la sub-vista Historico. */
     @FXML
     private ToggleButton subViewHistoricoBtn;
 
@@ -307,13 +345,23 @@ public class ComprasController {
     private VBox summaryFieldsContainer;
 
     // ---- Facade ----
+    /** Fachada que centraliza la logica de gestion de compras y abastecimiento. */
     private ComprasFacade facade;
     private ComprasFilters currentFilters;
     private com.marcosmoreira.opticademo.shared.query.PageRequest currentPageRequest;
     private int currentPageIndex = 0;
     private int pageSize = 20;
+    /** Resumen actual del registro de compra seleccionado. */
     private ComprasSummaryModel currentSummary;
 
+    /**
+     * Metodo de inicializacion invocado por JavaFX al cargar el FXML.
+     * <p>
+     * Instancia {@link ComprasFacade} con el {@link DemoStore} global, configura los combos
+     * de filtrado, el sistema de toggle entre sub-vistas, las columnas de cada tabla
+     * con sus respectivas cell factories y status badges, y carga los datos de solicitudes.
+     * </p>
+     */
     public void initialize() {
         DemoStore store = App.getDemoStore();
         this.facade = new ComprasFacade(store);

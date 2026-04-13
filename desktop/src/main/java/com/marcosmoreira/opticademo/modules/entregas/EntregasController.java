@@ -21,9 +21,32 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
- * Controller for the Entregas module.
- * Manages 6 sub-views, filter bar, and persistent right panel with delivery summary.
- * Clean separation: no business logic.
+ * Controlador para el modulo de Entregas del sistema Optica.
+ * <p>
+ * Gestiona el proceso completo de entrega de trabajos terminados a los clientes.
+ * El modulo se organiza en 6 sub-vistas intercambiables: Lista de trabajos listos
+ * para entrega, Validacion previa a la entrega, Registro de retiro, Pendientes
+ * de retiro con notificaciones, Ajustes y observaciones post-entrega, e Historico
+ * de entregas completadas.
+ * </p>
+ * <p>
+ * La lista de trabajos listos presenta una tabla paginada con filtros por estado,
+ * sucursal, notificacion y fecha. La validacion previa verifica que el trabajo
+ * recibido cumpla con los requisitos antes de la entrega. El registro de retiro
+ * documenta quien retira el trabajo y si requiere seguimiento posterior.
+ * </p>
+ * <p>
+ * El panel derecho muestra el resumen de entrega de la orden seleccionada, incluyendo
+ * tipo de trabajo, fechas, estado de notificacion, saldo pendiente y estado de cobro.
+ * Toda la logica de negocio se delega en {@link EntregasFacade}.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see EntregasFacade
+ * @see EntregasRowModel
+ * @see EntregasFilters
+ * @see EntregasSummaryModel
  */
 public class EntregasController {
 
@@ -403,6 +426,21 @@ public class EntregasController {
     private int currentPageIndex = 0;
     private int pageSize = 20;
 
+    /**
+     * Inicializa el controlador y configura las 6 sub-vistas del modulo de entregas.
+     * <p>
+     * Instancia {@link EntregasFacade} con el {@link DemoStore} global, configura
+     * los combos filtrables mediante {@link ComboBoxFactory}, establece el grupo
+     * de toggles para las sub-vistas, inicializa todas las tablas con sus
+     * {@code cellValueFactory} (incluyendo badges de estado para cada tipo de
+     * registro), y configura el panel de resumen de entrega. Por defecto se muestra
+     * la sub-vista de Trabajos listos.
+     * </p>
+     *
+     * @see EntregasFacade
+     * @see ComboBoxFactory
+     * @see App#getDemoStore()
+     */
     public void initialize() {
         DemoStore store = App.getDemoStore();
         this.facade = new EntregasFacade(store);
@@ -1008,11 +1046,16 @@ public class EntregasController {
         showSubView(2);
     }
 
+    /**
+     * Maneja la accion de actualizar todos los datos del modulo de entregas.
+     * Reaplica los filtros actuales y recarga el panel de resumen.
+     */
     private void onActualizarEntregas() {
         applyFilters();
         loadSummaryPanel();
     }
 
+    /** Maneja la exportacion de entregas a CSV. Metodo placeholder. */
     private void onExportarEntregas() {
         // Placeholder: export to CSV
     }

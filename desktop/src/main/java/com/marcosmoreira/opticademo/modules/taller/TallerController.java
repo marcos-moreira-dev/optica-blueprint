@@ -19,69 +19,107 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
- * Controller for the Taller module.
- * Manages 7 sub-views, filter bar, and persistent right panel with technical work summary.
- * Clean separation: no business logic.
+ * Controller del modulo de Taller del sistema optico.
+ * <p>
+ * Gestiona siete sub-vistas para la administracion de trabajos tecnicos de reparacion
+ * y mantenimiento de articulos opticos: Bandeja de ingresos, Diagnosticos,
+ * Reparaciones en proceso, Piezas y repuestos utilizados, Envios a talleres externos,
+ * Entregas al cliente, e Historico de trabajos realizados.
+ * </p>
+ * <p>
+ * La arquitectura implementa tres paneles con filtros, sub-vistas intercambiables
+ * mediante toggle buttons, y panel derecho con resumen tecnico del trabajo seleccionado.
+ * La fachada {@link TallerFacade} proporciona todos los datos y logica de agregacion
+ * necesaria para las vistas.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see TallerFacade
+ * @see TallerFilters
+ * @see TallerSummaryModel
  */
 public class TallerController {
 
     // ---- Top bar ----
+
+    /** Boton para registrar un nuevo ingreso de trabajo al taller. */
     @FXML
     private Button nuevoIngresoBtn;
 
+    /** Boton para actualizar los datos del taller. */
     @FXML
     private Button actualizarTallerBtn;
 
+    /** Boton para exportar los datos del taller. */
     @FXML
     private Button exportarTallerBtn;
 
     // ---- Filters ----
+
+    /** Campo de busqueda por referencia o nombre de cliente. */
     @FXML
     private TextField searchField;
 
+    /** ComboBox para filtrar por tipo de intervencion tecnica. */
     @FXML
     private ComboBox<String> tipoCombo;
 
+    /** ComboBox para filtrar por estado del trabajo. */
     @FXML
     private ComboBox<String> estadoCombo;
 
+    /** ComboBox para filtrar por tecnico responsable. */
     @FXML
     private ComboBox<String> tecnicoCombo;
 
+    /** ComboBox para filtrar por sucursal de origen. */
     @FXML
     private ComboBox<String> sucursalCombo;
 
+    /** DatePicker para fecha inicio del rango de filtrado. */
     @FXML
     private DatePicker desdePicker;
 
+    /** DatePicker para fecha fin del rango de filtrado. */
     @FXML
     private DatePicker hastaPicker;
 
+    /** CheckBox para mostrar solo trabajos pendientes urgentes. */
     @FXML
     private CheckBox soloPendientesUrgentesCheck;
 
+    /** Boton para limpiar todos los filtros aplicados. */
     @FXML
     private Button limpiarFiltrosBtn;
 
     // ---- Sub-view toggle buttons ----
+
+    /** Toggle button para la sub-vista Bandeja de ingresos. */
     @FXML
     private ToggleButton btnBandeja;
 
+    /** Toggle button para la sub-vista Diagnosticos. */
     @FXML
     private ToggleButton btnDiagnosticos;
 
+    /** Toggle button para la sub-vista Reparaciones. */
     @FXML
     private ToggleButton btnReparaciones;
 
+    /** Toggle button para la sub-vista Piezas y repuestos. */
     @FXML
     private ToggleButton btnPiezas;
 
+    /** Toggle button para la sub-vista Envios externos. */
     @FXML
     private ToggleButton btnEnvios;
 
+    /** Toggle button para la sub-vista Entregas. */
     @FXML
     private ToggleButton btnEntregas;
 
+    /** Toggle button para la sub-vista Historico. */
     @FXML
     private ToggleButton btnHistorico;
 
@@ -320,6 +358,8 @@ public class TallerController {
     private BorderPane rootPane;
 
     // ---- Facade ----
+
+    /** Fachada que centraliza la logica de gestion de trabajos tecnicos del taller. */
     private TallerFacade facade;
 
     private TallerFilters currentFilters;
@@ -327,6 +367,14 @@ public class TallerController {
     private int currentPageIndex = 0;
     private int pageSize = 20;
 
+    /**
+     * Metodo de inicializacion invocado por JavaFX al cargar el FXML.
+     * <p>
+     * Instancia {@link TallerFacade}, configura los combos de filtrado, el sistema
+     * de toggle entre las siete sub-vistas, las columnas de cada tabla con status badges,
+     * y carga los datos iniciales de la bandeja de ingresos al taller.
+     * </p>
+     */
     public void initialize() {
         this.facade = new TallerFacade();
         this.currentFilters = new TallerFilters();

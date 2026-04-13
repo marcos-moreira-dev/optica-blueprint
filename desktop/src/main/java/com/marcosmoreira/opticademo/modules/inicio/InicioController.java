@@ -27,53 +27,109 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Controller for the Inicio (Dashboard) module.
- * Wires FXML elements to the facade and populates the view on initialize.
+ * Controlador para el modulo de Inicio (Dashboard) del sistema Optica.
+ * <p>
+ * Este modulo presenta una vista general del estado del negocio mediante tarjetas KPI,
+ * una tabla de proximas citas con badges de estado, alertas operativas, accesos rapidos
+ * a los modulos principales y un registro de actividad reciente. Delega toda la logica
+ * de negocio a {@link InicioFacade}, quien consulta el {@link DemoStore} para obtener
+ * los datos de demostracion.
+ * </p>
+ * <p>
+ * El controlador gestiona un selector de sucursal que filtra la informacion mostrada
+ * y utiliza componentes reutilizables como {@link KpiCardController} y
+ * {@link StatusBadgeController} para mantener consistencia visual en la interfaz.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see InicioFacade
+ * @see InicioRowModel
+ * @see KpiCardController
+ * @see StatusBadgeController
  */
 public class InicioController {
 
-    // ---- Top bar ----
+    /**
+     * Selector de sucursal para filtrar los datos del dashboard.
+     * Permite seleccionar una sucursal especifica o visualizar todas.
+     */
     @FXML
     private ComboBox<String> sucursalCombo;
 
-    // ---- KPI cards grid ----
+    /**
+     * Contenedor de tipo {@link GridPane} para las tarjetas KPI.
+     * Alberga las tarjetas con indicadores clave como citas del dia, ventas, etc.
+     */
     @FXML
     private GridPane kpiGrid;
 
-    // ---- Proximas citas ----
+    /**
+     * Tabla que muestra las proximas citas programadas.
+     * Incluye columnas de hora, cliente, tipo de atencion, estado y profesional.
+     */
     @FXML
     private TableView<InicioRowModel.CitaRow> citasTable;
 
+    /** Columna de hora en la tabla de citas. */
     @FXML
     private TableColumn<InicioRowModel.CitaRow, String> colHora;
 
+    /** Columna de nombre del cliente en la tabla de citas. */
     @FXML
     private TableColumn<InicioRowModel.CitaRow, String> colCliente;
 
+    /** Columna de tipo de atencion en la tabla de citas. */
     @FXML
     private TableColumn<InicioRowModel.CitaRow, String> colAtencion;
 
+    /** Columna de estado de la cita, renderizada con {@link StatusBadgeController}. */
     @FXML
     private TableColumn<InicioRowModel.CitaRow, String> colEstado;
 
+    /** Columna de profesional asignado en la tabla de citas. */
     @FXML
     private TableColumn<InicioRowModel.CitaRow, String> colProfesional;
 
-    // ---- Alertas ----
+    /**
+     * Contenedor vertical para las alertas operativas del negocio.
+     * Cada alerta se representa como un {@link HBox} con badges de tipo y estado.
+     */
     @FXML
     private VBox alertasContainer;
 
-    // ---- Accesos rapidos ----
+    /**
+     * Grid de accesos rapidos a los modulos principales del sistema.
+     * Incluye botones para nueva cita, cliente, venta, entrega, inventario y reportes.
+     */
     @FXML
     private GridPane accesosGrid;
 
-    // ---- Actividad reciente ----
+    /**
+     * Contenedor vertical para el registro de actividad reciente.
+     * Cada entrada se muestra como un item con formato de lista.
+     */
     @FXML
     private VBox actividadContainer;
 
-    // ---- Facade ----
+    /**
+     * Fachada que centraliza la logica de negocio del modulo Inicio.
+     * Consulta el {@link DemoStore} para obtener datos de demostracion.
+     */
     private InicioFacade facade;
 
+    /**
+     * Inicializa el controlador y carga todos los componentes del dashboard.
+     * <p>
+     * Este metodo es invocado automaticamente por el {@link FXMLLoader} tras cargar
+     * el FXML. Instancia {@link InicioFacade} con el {@link DemoStore} global y
+     * delega la carga de cada seccion: combo de sucursal, tarjetas KPI, tabla de citas,
+     * alertas, accesos rapidos y actividad reciente.
+     * </p>
+     *
+     * @see InicioFacade
+     * @see App#getDemoStore()
+     */
     public void initialize() {
         DemoStore store = App.getDemoStore();
         this.facade = new InicioFacade(store);
@@ -87,6 +143,14 @@ public class InicioController {
     }
 
     // ---- Sucursal combo ----
+
+    /**
+     * Configura el combo de sucursal con los nombres de las sucursales disponibles.
+     * <p>
+     * Utiliza {@link ComboBoxFactory#createFilterCombo(String, String, String[])}
+     * para crear un combo filtrable y reemplaza el componente inyectado por FXML.
+     * </p>
+     */
     private void populateSucursalCombo() {
         List<Sucursal> sucursales = store().sucursales;
         String[] items = sucursales.stream()

@@ -3,20 +3,40 @@ package com.marcosmoreira.opticademo.modules.entregas;
 import com.marcosmoreira.opticademo.shared.domain.venta.VentaOptica;
 
 /**
- * Summary model for the right-hand delivery summary panel in the Entregas module.
+ * Modelo resumen para el panel lateral derecho persistente del modulo Entregas.
+ * Presenta el estado de entrega de una orden, incluyendo tipo de trabajo, fechas
+ * de promesa y recepcion, estado de notificacion al cliente y saldos pendientes.
+ * La fachada (EntregasFacade) actualiza este modelo al seleccionar una orden en la
+ * tabla principal, derivando los valores de la entidad {@link VentaOptica} mediante
+ * el metodo estatico {@code from}.
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
  */
 public record EntregasSummaryModel(
+        /** Referencia unica de la orden de entrega. */
         String referencia,
+        /** Tipo de trabajo entregado (montura+lente, solo lente, montura). */
         String tipoTrabajo,
+        /** Sucursal donde se realiza la entrega. */
         String sucursal,
+        /** Nombre del cliente que recibe la entrega. */
         String cliente,
+        /** Codigo interno del cliente. */
         String codigoCliente,
+        /** Fecha prometida de entrega. */
         String fechaPromesa,
+        /** Fecha de recepcion real del trabajo del laboratorio. */
         String fechaRecepcion,
+        /** Estado actual de la entrega (lista para entrega, entregada, pendiente). */
         String estadoEntrega,
+        /** Estado de notificacion al cliente (notificado por SMS, pendiente, etc.). */
         String notificacion,
+        /** Prioridad de la entrega. */
         String prioridad,
+        /** Saldo pendiente de pago al momento de la entrega. */
         String saldoPendiente,
+        /** Estado del cobro asociado a la entrega. */
         String estadoCobro
 ) {
 

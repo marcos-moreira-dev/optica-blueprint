@@ -14,8 +14,32 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 
 /**
- * Controller for the Venta Optica 7-stage wizard.
- * Clean separation: no business logic, only UI wiring and facade delegation.
+ * Controlador para el modulo de Venta Optica del sistema Optica.
+ * <p>
+ * Implementa un asistente (wizard) de 7 etapas guiadas para el proceso completo
+ * de venta optica: (1) Seleccion de cliente, (2) Seleccion de receta, (3) Seleccion
+ * de montura, (4) Configuracion de lentes, (5) Registro de medidas opticas,
+ * (6) Proceso de cobro y (7) Confirmacion de la orden. Cada etapa se presenta
+ * de forma secuencial con validacion de progreso para evitar saltos incompletos.
+ * </p>
+ * <p>
+ * El controlador mantiene el estado de la orden en curso (cliente seleccionado,
+ * receta, montura, lente, medidas, datos de cobro) y actualiza un panel de resumen
+ * lateral en tiempo real. Toda la logica de consulta de datos se delega en
+ * {@link VentaOpticaFacade}, quien accede al {@link DemoStore}.
+ * </p>
+ * <p>
+ * La navegacion entre etapas utiliza un grupo de {@link ToggleButton} que permite
+ * volver a etapas anteriores pero impide avanzar sin completar los requisitos
+ * minimos de cada fase.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see VentaOpticaFacade
+ * @see VentaOpticaRowModel
+ * @see VentaOpticaFilters
+ * @see VentaOpticaSummaryModel
  */
 public class VentaOpticaController {
 
@@ -381,6 +405,18 @@ public class VentaOpticaController {
     private ToggleGroup stageToggleGroup;
     private VBox[] stageContents;
 
+    /**
+     * Inicializa el controlador y configura las 7 etapas del wizard de venta optica.
+     * <p>
+     * Instancia {@link VentaOpticaFacade} con el {@link DemoStore} global, configura
+     * cada etapa con sus respectivos {@code cellValueFactory} para las tablas,
+     * establece el grupo de toggles para navegacion entre etapas, y muestra la
+     * primera etapa (seleccion de cliente) como punto de partida.
+     * </p>
+     *
+     * @see VentaOpticaFacade
+     * @see App#getDemoStore()
+     */
     public void initialize() {
         DemoStore store = App.getDemoStore();
         this.facade = new VentaOpticaFacade(store);

@@ -12,19 +12,50 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Facade that queries the DemoStore and returns data for the Ordenes de Laboratorio module.
- * No business logic -- just view-facing data assembly.
+ * Facade para el modulo de Ordenes de Laboratorio.
+ * <p>
+ * Este facade proporciona datos de demostracion para la gestion de ordenes
+ * enviadas a laboratorios externos e internos. Utiliza seed data inicializado
+ * en el constructor para la cola de ordenes, etapas del proceso, incidencias
+ * e historico. Complementa con datos del {@link DemoStore} para sucursales.
+ * </p>
+ * <p>
+ * Sub-vistas que alimenta:
+ * <ul>
+ *   <li><b>Cola de Ordenes:</b> tabla paginada con estado, prioridad, laboratorio y sucursal.</li>
+ *   <li><b>Etapas del Proceso:</b> tracking visual del progreso de cada orden.</li>
+ *   <li><b>Envio y Recepcion:</b> datos de envio al laboratorio y recepcion en sucursal.</li>
+ *   <li><b>Incidencias:</b> registro de problemas (lentes rayados, retrasos, etc.).</li>
+ *   <li><b>Historico:</b> ordenes completadas con fecha de ingreso y entrega.</li>
+ *   <li><b>Panel de Resumen:</b> datos detallados de la orden seleccionada.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see DemoStore
+ * @see VentaOptica
+ * @see FilterSupport
+ * @see PaginationHelper
  */
 public class OrdenesLabFacade {
 
     private final DemoStore store;
 
-    // Seed data for lab orders
+    /** Seed data para la cola de ordenes de laboratorio. */
     private final List<OrdenesLabRowModel.ColaRow> seedCola;
+    /** Seed data para las etapas del proceso de laboratorio. */
     private final List<OrdenesLabRowModel.EtapaRow> seedEtapas;
+    /** Seed data para incidencias de laboratorio. */
     private final List<OrdenesLabRowModel.IncidenciaRow> seedIncidencias;
+    /** Seed data para el historico de ordenes. */
     private final List<OrdenesLabRowModel.HistoricoRow> seedHistorico;
 
+    /**
+     * Construye el facade e inicializa los datos seed de laboratorio.
+     *
+     * @param store instancia del {@link DemoStore}
+     */
     public OrdenesLabFacade(DemoStore store) {
         this.store = store;
         this.seedCola = initSeedCola();
@@ -34,7 +65,13 @@ public class OrdenesLabFacade {
     }
 
     /**
-     * Returns a paginated, filtered list of lab order row models for the Cola de ordenes.
+     * Retorna una pagina de ordenes de laboratorio filtrada segun los criterios
+     * de busqueda, mostrando referencia, cliente, tipo de trabajo, fechas,
+     * estado, laboratorio, prioridad y sucursal.
+     *
+     * @param filters     criterios de filtrado
+     * @param pageRequest solicitud de paginacion
+     * @return {@link PageResult} con la pagina de {@link OrdenesLabRowModel.ColaRow}
      */
     public PageResult<OrdenesLabRowModel.ColaRow> getColaOrdenes(OrdenesLabFilters filters, PageRequest pageRequest) {
         List<OrdenesLabRowModel.ColaRow> filtered = seedCola.stream()
@@ -45,7 +82,11 @@ public class OrdenesLabFacade {
     }
 
     /**
-     * Returns the list of etapa rows for a given order.
+     * Retorna la lista de etapas del proceso para una orden de laboratorio,
+     * desde "Recibida" hasta "Entregada", con fecha, responsable y observaciones.
+     *
+     * @param ordenId identificador de la orden
+     * @return lista de {@link OrdenesLabRowModel.EtapaRow} con el tracking del proceso
      */
     public List<OrdenesLabRowModel.EtapaRow> getEtapas(String ordenId) {
         if (ordenId == null || ordenId.isBlank()) {
@@ -57,7 +98,11 @@ public class OrdenesLabFacade {
     }
 
     /**
-     * Returns the envio row for a given order.
+     * Retorna los datos de envio de la orden al laboratorio externo,
+     * incluyendo nombre del laboratorio, fecha de envio, guia y fecha estimada.
+     *
+     * @param ordenId identificador de la orden
+     * @return {@link OrdenesLabRowModel.EnvioRow} con datos del envio
      */
     public OrdenesLabRowModel.EnvioRow getEnvio(String ordenId) {
         return new OrdenesLabRowModel.EnvioRow(
@@ -70,7 +115,11 @@ public class OrdenesLabFacade {
     }
 
     /**
-     * Returns the recepcion row for a given order.
+     * Retorna los datos de recepcion de la orden en sucursal, con fecha,
+     * responsable, estado de conformidad y observaciones.
+     *
+     * @param ordenId identificador de la orden
+     * @return {@link OrdenesLabRowModel.RecepcionRow} con datos de la recepcion
      */
     public OrdenesLabRowModel.RecepcionRow getRecepcion(String ordenId) {
         return new OrdenesLabRowModel.RecepcionRow(
@@ -82,7 +131,12 @@ public class OrdenesLabFacade {
     }
 
     /**
-     * Returns the list of incidencia rows for a given order.
+     * Retorna las incidencias asociadas a una orden de laboratorio.
+     * Solo retorna datos para la orden {@code LAB-207} (seed data);
+     * para las demas retorna lista vacia.
+     *
+     * @param ordenId identificador de la orden
+     * @return lista de {@link OrdenesLabRowModel.IncidenciaRow} con incidencias
      */
     public List<OrdenesLabRowModel.IncidenciaRow> getIncidencias(String ordenId) {
         if (ordenId != null && !"LAB-207".equals(ordenId)) {
@@ -92,14 +146,20 @@ public class OrdenesLabFacade {
     }
 
     /**
-     * Returns all incidencias for the list view.
+     * Retorna todas las incidencias para la vista de listado general.
+     *
+     * @return lista de todas las {@link OrdenesLabRowModel.IncidenciaRow}
      */
     public List<OrdenesLabRowModel.IncidenciaRow> getAllIncidencias() {
         return new ArrayList<>(seedIncidencias);
     }
 
     /**
-     * Returns the filtered list of historico rows.
+     * Retorna el historico de ordenes de laboratorio filtrado por criterios
+     * de busqueda, incluyendo ordenes completadas y en proceso.
+     *
+     * @param filters criterios de filtrado
+     * @return lista de {@link OrdenesLabRowModel.HistoricoRow} filtradas
      */
     public List<OrdenesLabRowModel.HistoricoRow> getHistorico(OrdenesLabFilters filters) {
         return seedHistorico.stream()
@@ -108,14 +168,21 @@ public class OrdenesLabFacade {
     }
 
     /**
-     * Builds a summary model for the selected order.
+     * Construye un modelo de resumen para la orden de laboratorio seleccionada
+     * a partir de la entidad {@link VentaOptica}.
+     *
+     * @param ventaOptica entidad de venta con datos de laboratorio
+     * @return {@link OrdenesLabSummaryModel} con datos de la orden
      */
     public OrdenesLabSummaryModel buildSummary(VentaOptica ventaOptica) {
         return OrdenesLabSummaryModel.from(ventaOptica);
     }
 
     /**
-     * Builds a summary model from a ColaRow.
+     * Construye un modelo de resumen a partir de una fila de la cola de ordenes.
+     *
+     * @param row fila seleccionada en la tabla
+     * @return {@link OrdenesLabSummaryModel} con datos de la orden
      */
     public OrdenesLabSummaryModel buildSummaryFromRow(OrdenesLabRowModel.ColaRow row) {
         return new OrdenesLabSummaryModel(
@@ -138,7 +205,9 @@ public class OrdenesLabFacade {
     }
 
     /**
-     * Returns all distinct estado values for the filter combo.
+     * Retorna los estados distinct de ordenes de laboratorio para el combo de filtro.
+     *
+     * @return lista ordenada de estados (En produccion, Validada, Lista, etc.)
      */
     public List<String> getEstados() {
         return seedCola.stream()
@@ -149,7 +218,9 @@ public class OrdenesLabFacade {
     }
 
     /**
-     * Returns all distinct laboratorio values for the filter combo.
+     * Retorna los laboratorios distinct para el combo de filtro.
+     *
+     * @return lista ordenada de nombres de laboratorio
      */
     public List<String> getLaboratorios() {
         return seedCola.stream()
@@ -160,7 +231,9 @@ public class OrdenesLabFacade {
     }
 
     /**
-     * Returns all distinct prioridad values for the filter combo.
+     * Retorna las prioridades distinct para el combo de filtro.
+     *
+     * @return lista ordenada de prioridades (Alta, Normal)
      */
     public List<String> getPrioridades() {
         return seedCola.stream()
@@ -171,7 +244,9 @@ public class OrdenesLabFacade {
     }
 
     /**
-     * Returns all distinct sucursal values.
+     * Retorna las sucursales distinct desde el {@link DemoStore} para el combo de filtro.
+     *
+     * @return lista ordenada de nombres de sucursal
      */
     public List<String> getSucursales() {
         return store.sucursales.stream()

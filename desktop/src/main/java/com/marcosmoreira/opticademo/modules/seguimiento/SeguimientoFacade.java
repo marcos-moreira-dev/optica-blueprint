@@ -11,19 +11,53 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Facade that queries the DemoStore and returns data for the Seguimiento module.
- * No business logic -- just view-facing data assembly.
+ * Facade para el modulo de Seguimiento (seguimiento post-venta y retencion).
+ * <p>
+ * Este facade proporciona datos de demostracion para todas las sub-vistas del modulo
+ * de Seguimiento, el cual gestiona el seguimiento post-venta, recalls, cobros pendientes,
+ * mensajes y retencion de clientes. Todos los datos provienen de seed data estatico.
+ * </p>
+ * <p>
+ * Sub-vistas que alimenta:
+ * <ul>
+ *   <li><b>Bandeja de Seguimiento:</b> tabla paginada de casos activos con prioridad.</li>
+ *   <li><b>Recall y Revisiones:</b> citas de control y revisiones proximas.</li>
+ *   <li><b>Pedidos No Retirados:</b> trabajos listos no retirados por el cliente.</li>
+ *   <li><b>Cobros Pendientes:</b> saldos pendientes con acciones de cobro.</li>
+ *   <li><b>Mensajes y Recordatorios:</b> historial de comunicaciones con clientes.</li>
+ *   <li><b>Historico:</b> casos cerrados con filtros extendidos.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see DemoStore
+ * @see FilterSupport
+ * @see PaginationHelper
  */
 public class SeguimientoFacade {
 
     private final DemoStore store;
 
+    /**
+     * Construye el facade con referencia al almacén de datos de demostración.
+     *
+     * @param store instancia del {@link DemoStore}
+     */
     public SeguimientoFacade(DemoStore store) {
         this.store = store;
     }
 
     // ------------------------------------------------------------------ Bandeja de seguimiento (sub-view 1)
 
+    /**
+     * Retorna una pagina de la bandeja de seguimiento filtrada segun
+     * los criterios de busqueda.
+     *
+     * @param filters     criterios de filtrado
+     * @param pageRequest solicitud de paginacion
+     * @return {@link PageResult} con la pagina de {@link SeguimientoRowModel.BandejaRow}
+     */
     public PageResult<SeguimientoRowModel.BandejaRow> getBandeja(SeguimientoFilters filters, PageRequest pageRequest) {
         List<SeguimientoRowModel.BandejaRow> filtered = buildBandeja().stream()
                 .filter(r -> matchesBandejaFilters(r, filters))
@@ -175,6 +209,12 @@ public class SeguimientoFacade {
 
     // ------------------------------------------------------------------ Summary
 
+    /**
+     * Construye un modelo de resumen para el caso de seguimiento seleccionado.
+     *
+     * @param caso objeto de caso (BandejaRow) seleccionado en la vista
+     * @return {@link SeguimientoSummaryModel} con datos del caso
+     */
     public SeguimientoSummaryModel buildSummary(Object caso) {
         if (caso instanceof SeguimientoRowModel.BandejaRow row) {
             return SeguimientoSummaryModel.fromBandeja(row);
@@ -184,6 +224,11 @@ public class SeguimientoFacade {
 
     // ------------------------------------------------------------------ Filter combos
 
+    /**
+     * Retorna los tipos de seguimiento disponibles para el combo de filtro.
+     *
+     * @return lista de tipos (Recall, No retirado, Cobro pendiente, Mensaje, Revision)
+     */
     public List<String> getTiposSeguimiento() {
         return List.of(
                 "Recall",
@@ -194,6 +239,11 @@ public class SeguimientoFacade {
         );
     }
 
+    /**
+     * Retorna los estados de seguimiento disponibles para el combo de filtro.
+     *
+     * @return lista de estados de seguimiento
+     */
     public List<String> getEstadosSeguimiento() {
         return List.of(
                 "Recall pendiente",
@@ -207,6 +257,11 @@ public class SeguimientoFacade {
         );
     }
 
+    /**
+     * Retorna los canales de comunicacion para el combo de filtro.
+     *
+     * @return lista de canales (WhatsApp, SMS, Llamada, Email, Presencial)
+     */
     public List<String> getCanales() {
         return List.of(
                 "WhatsApp",
@@ -219,6 +274,11 @@ public class SeguimientoFacade {
 
     // ------------------------------------------------------------------ Stats Recalls
 
+    /**
+     * Retorna estadisticas de recalls: pendientes, recetas vencidas y revisiones proximas.
+     *
+     * @return {@link StatsRecalls} con contadores de recalls
+     */
     public StatsRecalls getStatsRecalls() {
         List<SeguimientoRowModel.RecallRow> recalls = getRecalls();
 
@@ -235,11 +295,23 @@ public class SeguimientoFacade {
         return new StatsRecalls(recallPendiente, recetasVencidas, revisionesProximas);
     }
 
+    /**
+     * Record que encapsula las estadisticas de recalls.
+     *
+     * @param recallPendiente cantidad de recalls pendientes
+     * @param recetasVencidas cantidad de recetas vencidas
+     * @param revisionesProximas cantidad de revisiones proximas
+     */
     public record StatsRecalls(int recallPendiente, int recetasVencidas, int revisionesProximas) {
     }
 
     // ------------------------------------------------------------------ Stats No Retirados
 
+    /**
+     * Retorna estadisticas de pedidos no retirados: total, notificados y con saldo.
+     *
+     * @return {@link StatsNoRetirados} con contadores de no retirados
+     */
     public StatsNoRetirados getStatsNoRetirados() {
         List<SeguimientoRowModel.NoRetiradoRow> noRetirados = getNoRetirados();
 
@@ -261,11 +333,23 @@ public class SeguimientoFacade {
         return new StatsNoRetirados(total, notificados, conSaldo);
     }
 
+    /**
+     * Record que encapsula las estadisticas de pedidos no retirados.
+     *
+     * @param noRetirados total de pedidos no retirados
+     * @param notificados cantidad de clientes notificados
+     * @param conSaldo    cantidad con saldo pendiente
+     */
     public record StatsNoRetirados(int noRetirados, int notificados, int conSaldo) {
     }
 
     // ------------------------------------------------------------------ Stats Cobros
 
+    /**
+     * Retorna estadisticas de cobros pendientes: casos con saldo, monto total y vencidos.
+     *
+     * @return {@link StatsCobros} con estadisticas de cobros
+     */
     public StatsCobros getStatsCobros() {
         List<SeguimientoRowModel.CobroPendienteRow> cobros = getCobrosPendientes();
 

@@ -11,13 +11,43 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Facade that queries the DemoStore and returns data for the Sucursales module.
- * No business logic -- just view-facing data assembly.
+ * Facade para el modulo de Sucursales (gestion de sedes).
+ * <p>
+ * Este facade actua como capa de abstraccion entre el {@link DemoStore} (colecciones
+ * de {@link Sucursal}, {@link Usuario} y {@link Producto}) y las sub-vistas del modulo
+ * de Sucursales. Proporciona datos del directorio de sucursales, personal asignado,
+ * inventario local, agenda local, caja local, comparativo entre sucursales y resumen.
+ * </p>
+ * <p>
+ * Sub-vistas que alimenta:
+ * <ul>
+ *   <li><b>Directorio:</b> lista de sucursales con ciudad, responsable, horario y servicios.</li>
+ *   <li><b>Personal:</b> usuarios asignados a cada sucursal.</li>
+ *   <li><b>Inventario Local:</b> productos almacenados en cada sucursal.</li>
+ *   <li><b>Agenda Local:</b> KPIs de citas de la sucursal.</li>
+ *   <li><b>Caja Local:</b> KPIs financieros de la sucursal.</li>
+ *   <li><b>Comparativo:</b> analisis comparativo entre todas las sucursales.</li>
+ *   <li><b>Resumen:</b> panel con datos consolidados de la sucursal seleccionada.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see DemoStore
+ * @see Sucursal
+ * @see Usuario
+ * @see Producto
+ * @see FilterSupport
  */
 public class SucursalesFacade {
 
     private final DemoStore store;
 
+    /**
+     * Construye el facade con referencia al almacén de datos de demostración.
+     *
+     * @param store instancia del {@link DemoStore}
+     */
     public SucursalesFacade(DemoStore store) {
         this.store = store;
     }
@@ -27,7 +57,10 @@ public class SucursalesFacade {
     // =========================================================================
 
     /**
-     * Returns a filtered list of directorio row models.
+     * Retorna el directorio de sucursales filtrado por estado, servicio y ciudad.
+     *
+     * @param filters criterios de filtrado
+     * @return lista de {@link SucursalesRowModel.DirectorioRow}
      */
     public List<SucursalesRowModel.DirectorioRow> getDirectorio(SucursalesFilters filters) {
         return store.sucursales.stream()
@@ -112,7 +145,10 @@ public class SucursalesFacade {
     // =========================================================================
 
     /**
-     * Returns the list of personal (usuarios) assigned to a given sucursal.
+     * Retorna la lista de personal (usuarios) asignados a una sucursal especifica.
+     *
+     * @param sucursalId identificador de la sucursal
+     * @return lista de {@link SucursalesRowModel.PersonalRow} con usuarios de la sucursal
      */
     public List<SucursalesRowModel.PersonalRow> getPersonal(String sucursalId) {
         return store.usuarios.stream()
@@ -135,7 +171,10 @@ public class SucursalesFacade {
     // =========================================================================
 
     /**
-     * Returns the list of productos for a given sucursal.
+     * Retorna la lista de productos almacenados en una sucursal especifica.
+     *
+     * @param sucursalId identificador de la sucursal
+     * @return lista de {@link SucursalesRowModel.InventarioRow} con productos locales
      */
     public List<SucursalesRowModel.InventarioRow> getInventarioLocal(String sucursalId) {
         return store.productos.stream()
@@ -160,7 +199,11 @@ public class SucursalesFacade {
     // =========================================================================
 
     /**
-     * Returns agenda KPI rows for a given sucursal.
+     * Retorna los KPIs de agenda para una sucursal especifica, con citas de hoy,
+     * pendientes, confirmadas y cancelaciones del mes.
+     *
+     * @param sucursalId identificador de la sucursal
+     * @return lista de {@link SucursalesRowModel.AgendaRow} con KPIs de agenda
      */
     public List<SucursalesRowModel.AgendaRow> getAgendaLocal(String sucursalId) {
         List<SucursalesRowModel.AgendaRow> rows = new ArrayList<>();
@@ -190,7 +233,11 @@ public class SucursalesFacade {
     // =========================================================================
 
     /**
-     * Returns caja KPI rows for a given sucursal.
+     * Retorna los KPIs financieros para una sucursal especifica, con ventas del dia,
+     * cobros pendientes y ticket promedio.
+     *
+     * @param sucursalId identificador de la sucursal
+     * @return lista de {@link SucursalesRowModel.CajaRow} con KPIs de caja
      */
     public List<SucursalesRowModel.CajaRow> getCajaLocal(String sucursalId) {
         List<SucursalesRowModel.CajaRow> rows = new ArrayList<>();
@@ -216,7 +263,10 @@ public class SucursalesFacade {
     // =========================================================================
 
     /**
-     * Returns comparativo rows for all sucursales.
+     * Retorna el analisis comparativo entre todas las sucursales, con ventas,
+     * ticket promedio, stock critico, recalls pendientes y retrasos.
+     *
+     * @return lista de {@link SucursalesRowModel.ComparativoRow} con datos comparativos
      */
     public List<SucursalesRowModel.ComparativoRow> getComparativo() {
         return store.sucursales.stream()
@@ -274,7 +324,11 @@ public class SucursalesFacade {
     // =========================================================================
 
     /**
-     * Builds a summary model for the selected sucursal.
+     * Construye un modelo de resumen para la sucursal seleccionada, con datos
+     * de direccion, responsable, servicios habilitados y observaciones operativas.
+     *
+     * @param s entidad {@link Sucursal} seleccionada
+     * @return {@link SucursalesSummaryModel} con datos consolidados de la sucursal
      */
     public SucursalesSummaryModel buildSummary(Sucursal s) {
         return new SucursalesSummaryModel(
@@ -313,7 +367,9 @@ public class SucursalesFacade {
     // =========================================================================
 
     /**
-     * Returns all distinct estado values for the filter combo.
+     * Retorna los estados distinct de sucursales desde el {@link DemoStore} para el combo de filtro.
+     *
+     * @return lista ordenada de estados de sucursal
      */
     public List<String> getEstados() {
         return store.sucursales.stream()
@@ -324,14 +380,18 @@ public class SucursalesFacade {
     }
 
     /**
-     * Returns all distinct servicios for the filter combo.
+     * Retorna los servicios disponibles para el combo de filtro.
+     *
+     * @return lista de servicios (Caja, Inventario, Entregas, Agenda)
      */
     public List<String> getServicios() {
         return List.of("Caja", "Inventario", "Entregas", "Agenda");
     }
 
     /**
-     * Returns all distinct ciudades for the filter combo.
+     * Retorna las ciudades distinct de sucursales para el combo de filtro.
+     *
+     * @return lista ordenada de ciudades
      */
     public List<String> getCiudades() {
         return store.sucursales.stream()
@@ -342,7 +402,10 @@ public class SucursalesFacade {
     }
 
     /**
-     * Returns a sucursal by name.
+     * Busca una sucursal por nombre exacto.
+     *
+     * @param nombre nombre de la sucursal
+     * @return {@link Sucursal} encontrada o {@code null}
      */
     public Sucursal findSucursalByName(String nombre) {
         return store.sucursales.stream()

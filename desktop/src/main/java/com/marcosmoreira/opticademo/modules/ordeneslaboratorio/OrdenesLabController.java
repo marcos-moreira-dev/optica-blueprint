@@ -21,9 +21,30 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Controller for the Ordenes de Laboratorio module.
- * Manages 6 sub-views with a persistent right panel showing order summary.
- * Clean separation: no business logic.
+ * Controlador para el modulo de Ordenes de Laboratorio del sistema Optica.
+ * <p>
+ * Gestiona el ciclo de vida completo de las ordenes enviadas a laboratorio externo
+ * para la fabricacion de lentes. El modulo se organiza en 6 sub-vistas intercambiables:
+ * Cola de ordenes, Detalle de orden, Seguimiento por etapas, Envio y recepcion,
+ * Incidencias e Historico de ordenes cerradas.
+ * </p>
+ * <p>
+ * La Cola de ordenes presenta una tabla paginada con filtros por estado, laboratorio,
+ * sucursal y prioridad. El panel derecho muestra un resumen de la orden seleccionada
+ * con botones de accion rapida. La vista de Seguimiento visualiza el progreso de la
+ * orden a traves de 8 etapas desde recepcion hasta entrega.
+ * </p>
+ * <p>
+ * Toda la logica de negocio se delega en {@link OrdenesLabFacade}, quien consulta
+ * el {@link DemoStore} y proporciona modelos de resumen y filtrado.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see OrdenesLabFacade
+ * @see OrdenesLabRowModel
+ * @see OrdenesLabFilters
+ * @see OrdenesLabSummaryModel
  */
 public class OrdenesLabController {
 
@@ -423,6 +444,18 @@ public class OrdenesLabController {
 
     private ToggleGroup subViewToggleGroup;
 
+    /**
+     * Inicializa el controlador y configura las 6 sub-vistas del modulo de ordenes.
+     * <p>
+     * Instancia {@link OrdenesLabFacade} con el {@link DemoStore} global, configura
+     * los combos filtrables, el grupo de toggles para sub-vistas, las columnas de
+     * las tablas (cola, seguimiento, incidencias, historico) con sus
+     * {@code cellValueFactory}, y carga la primera pagina de la cola de ordenes.
+     * </p>
+     *
+     * @see OrdenesLabFacade
+     * @see App#getDemoStore()
+     */
     public void initialize() {
         DemoStore store = App.getDemoStore();
         this.facade = new OrdenesLabFacade(store);
@@ -843,70 +876,88 @@ public class OrdenesLabController {
     }
 
     // ---- Placeholder actions ----
+
+    /** Maneja la creacion de una nueva orden de laboratorio. Metodo placeholder. */
     private void onNuevaOrden() {
         // Placeholder: open new lab order form
     }
 
+    /** Maneja la exportacion de ordenes a CSV/PDF. Metodo placeholder. */
     private void onExportarOrdenes() {
         // Placeholder: export orders to CSV/PDF
     }
 
+    /** Maneja la edicion de una orden existente. Metodo placeholder. */
     private void onEditarOrden() {
         // Placeholder: open edit order form
     }
 
+    /** Maneja la actualizacion del estado de una orden. Metodo placeholder. */
     private void onActualizarEstado() {
         // Placeholder: update order status
     }
 
+    /** Maneja el registro de envio de orden a laboratorio. Metodo placeholder. */
     private void onRegistrarEnvio() {
         // Placeholder: register shipment
     }
 
+    /** Maneja el registro de recepcion de orden desde laboratorio. Metodo placeholder. */
     private void onRegistrarRecepcion() {
         // Placeholder: register reception
     }
 
+    /** Maneja la impresion de la hoja de trabajo de la orden. Metodo placeholder. */
     private void onImprimirHoja() {
         // Placeholder: print work sheet
     }
 
+    /** Maneja la actualizacion de etapa en el seguimiento. Metodo placeholder. */
     private void onActualizarEtapa() {
         // Placeholder: update stage
     }
 
+    /** Maneja la adicion de un checkpoint en el seguimiento. Metodo placeholder. */
     private void onAgregarCheckpoint() {
         // Placeholder: add checkpoint
     }
 
+    /** Maneja el marcado de orden como lista para entrega. Metodo placeholder. */
     private void onMarcarLista() {
         // Placeholder: mark as ready
     }
 
+    /** Maneja la actualizacion de la guia de despacho. Metodo placeholder. */
     private void onActualizarGuia() {
         // Placeholder: update tracking number
     }
 
+    /** Maneja el registro de una incidencia en la orden. Metodo placeholder. */
     private void onRegistrarIncidencia() {
         // Placeholder: register incident
     }
 
+    /** Maneja el marcado de incidencia como resuelta. Metodo placeholder. */
     private void onMarcarResuelta() {
         // Placeholder: mark incident as resolved
     }
 
+    /** Maneja la generacion de un retrabajo por incidencia. Metodo placeholder. */
     private void onGenerarRetrabajo() {
         // Placeholder: generate rework
     }
 
+    /** Maneja la notificacion al cliente sobre su orden. Metodo placeholder. */
     private void onNotificarCliente() {
         // Placeholder: notify client
     }
 
+    /** Maneja la apertura del detalle de una orden. Metodo placeholder. */
     private void onAbrirOrden() {
         // Placeholder: open order
     }
 
+    /** Maneja la exportacion del historico de ordenes. Metodo placeholder. */
     private void onExportarHistorico() {
         // Placeholder: export history
     }

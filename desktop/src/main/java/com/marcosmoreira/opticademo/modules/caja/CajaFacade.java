@@ -16,13 +16,42 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Facade that queries the DemoStore and returns data for the Caja module.
- * No business logic -- just view-facing data assembly.
+ * Facade para el modulo de Caja (gestion de cobros y pagos).
+ * <p>
+ * Este facade actua como capa de abstraccion entre el {@link DemoStore} (colecciones
+ * de {@link Cobro} y {@link VentaOptica}) y las sub-vistas del modulo de Caja.
+ * Proporciona datos de cobros, saldos pendientes, comprobantes, cierre de caja
+ * y pagos pendientes, todo sin logica de negocio.
+ * </p>
+ * <p>
+ * Sub-vistas que alimenta:
+ * <ul>
+ *   <li><b>Cobros:</b> tabla paginada de cobros registrados.</li>
+ *   <li><b>Saldos Pendientes:</b> ordenes con balance pendiente.</li>
+ *   <li><b>Comprobantes:</b> listado de facturas/recibos emitidos.</li>
+ *   <li><b>Cierre de Caja:</b> resumen diario agrupado por metodo de pago y sucursal.</li>
+ *   <li><b>Pagos Pendientes:</b> ordenes con cobros pendientes o en proceso.</li>
+ *   <li><b>Historico:</b> historial completo de cobros con filtros extendidos.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see DemoStore
+ * @see Cobro
+ * @see VentaOptica
+ * @see FilterSupport
+ * @see PaginationHelper
  */
 public class CajaFacade {
 
     private final DemoStore store;
 
+    /**
+     * Construye el facade con referencia al almacén de datos de demostración.
+     *
+     * @param store instancia del {@link DemoStore}
+     */
     public CajaFacade(DemoStore store) {
         this.store = store;
     }
@@ -30,7 +59,11 @@ public class CajaFacade {
     // ------------------------------------------------------------------ Cobros (sub-view 1 & 6)
 
     /**
-     * Returns a paginated, filtered list of cobro row models.
+     * Retorna una pagina de cobros filtrada segun los criterios de busqueda.
+     *
+     * @param filters     criterios de filtrado
+     * @param pageRequest solicitud de paginacion
+     * @return {@link PageResult} con la pagina de {@link CajaRowModel.CobroRow}
      */
     public PageResult<CajaRowModel.CobroRow> getCobros(CajaFilters filters, PageRequest pageRequest) {
         List<CajaRowModel.CobroRow> filtered = store.cobros.stream()
@@ -42,7 +75,10 @@ public class CajaFacade {
     }
 
     /**
-     * Returns all cobros as a list (for historical view without pagination).
+     * Retorna todos los cobros como lista (para vista historica sin paginacion).
+     *
+     * @param filters criterios de filtrado
+     * @return lista de {@link CajaRowModel.CobroRow} filtrados
      */
     public List<CajaRowModel.CobroRow> getCobrosList(CajaFilters filters) {
         return store.cobros.stream()
@@ -54,7 +90,9 @@ public class CajaFacade {
     // ------------------------------------------------------------------ Saldos (sub-view 2)
 
     /**
-     * Returns orders with pending balance.
+     * Retorna las ordenes con saldo pendiente de pago.
+     *
+     * @return lista de {@link CajaRowModel.SaldoRow} con saldos pendientes
      */
     public List<CajaRowModel.SaldoRow> getSaldoPendiente() {
         return store.ventas.stream()
@@ -66,7 +104,9 @@ public class CajaFacade {
     // ------------------------------------------------------------------ Comprobantes (sub-view 3)
 
     /**
-     * Returns all receipts/invoices.
+     * Retorna todos los comprobantes (facturas/recibos) emitidos.
+     *
+     * @return lista de {@link CajaRowModel.ComprobanteRow} con datos de comprobantes
      */
     public List<CajaRowModel.ComprobanteRow> getComprobantes() {
         return store.cobros.stream()
@@ -78,7 +118,10 @@ public class CajaFacade {
     // ------------------------------------------------------------------ Cierre de caja (sub-view 4)
 
     /**
-     * Returns day summary statistics grouped by payment method.
+     * Retorna el resumen del dia agrupado por metodo de pago y sucursal,
+     * con totales de cobros y monto acumulado.
+     *
+     * @return {@link CierreDiaSummary} con estadisticas del dia
      */
     public CierreDiaSummary getCierreDia() {
         List<Cobro> cobrosHoy = store.cobros;
@@ -114,6 +157,16 @@ public class CajaFacade {
         );
     }
 
+    /**
+     * Record que encapsula el resumen diario de caja.
+     *
+     * @param fecha        fecha del cierre
+     * @param sucursal     sucursal del cierre
+     * @param totalCobros  cantidad total de cobros del dia
+     * @param totalDia     monto total cobrado en el dia
+     * @param porMetodo    mapa de monto acumulado por metodo de pago
+     * @param porSucursal  mapa de cantidad de cobros por sucursal
+     */
     public record CierreDiaSummary(
             String fecha,
             String sucursal,
@@ -127,7 +180,9 @@ public class CajaFacade {
     // ------------------------------------------------------------------ Pagos pendientes (sub-view 5)
 
     /**
-     * Returns orders with pending payments.
+     * Retorna las ordenes con pagos pendientes, en proceso o por cobrar.
+     *
+     * @return lista de {@link CajaRowModel.PendienteRow} con pagos pendientes
      */
     public List<CajaRowModel.PendienteRow> getPagosPendientes() {
         return store.ventas.stream()
@@ -148,7 +203,10 @@ public class CajaFacade {
     // ------------------------------------------------------------------ Summary
 
     /**
-     * Builds a payment summary model for the selected order.
+     * Construye un modelo de resumen de pago para la orden seleccionada.
+     *
+     * @param venta entidad {@link VentaOptica} seleccionada
+     * @return {@link CajaSummaryModel} con datos de la venta, o demo seed si es nula
      */
     public CajaSummaryModel buildSummary(VentaOptica venta) {
         if (venta == null) {
@@ -160,7 +218,9 @@ public class CajaFacade {
     // ------------------------------------------------------------------ Filter combos
 
     /**
-     * Returns all distinct estado values for cobros.
+     * Retorna los estados distinct de cobros para el combo de filtro.
+     *
+     * @return lista ordenada de estados de cobro
      */
     public List<String> getEstadosCobro() {
         return store.cobros.stream()
@@ -171,7 +231,9 @@ public class CajaFacade {
     }
 
     /**
-     * Returns all distinct payment method values.
+     * Retorna los metodos de pago distinct para el combo de filtro.
+     *
+     * @return lista ordenada de metodos de pago
      */
     public List<String> getMetodosPago() {
         return store.cobros.stream()
@@ -222,7 +284,10 @@ public class CajaFacade {
     }
 
     /**
-     * Finds a VentaOptica by its referencia (e.g. "OV-124").
+     * Busca una venta optica por su referencia (e.g. "OV-124").
+     *
+     * @param referencia referencia de la venta
+     * @return {@link VentaOptica} encontrada o {@code null}
      */
     public VentaOptica findVentaByReferencia(String referencia) {
         return store.ventas.stream()
@@ -232,7 +297,10 @@ public class CajaFacade {
     }
 
     /**
-     * Finds a VentaOptica by client name (partial match).
+     * Busca una venta optica por nombre del cliente (coincidencia parcial).
+     *
+     * @param nombreCliente nombre del cliente a buscar
+     * @return {@link VentaOptica} encontrada o {@code null}
      */
     public VentaOptica findVentaByCliente(String nombreCliente) {
         return store.ventas.stream()

@@ -4,7 +4,18 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- * Row models for the Seguimiento module TableView entries.
+ * Modelos de fila para las vistas del modulo Seguimiento (gestion de seguimiento
+ * y retencion de clientes).
+ * <p>
+ * Estos registros alimentan los {@code TableView} del modulo: bandeja de seguimiento,
+ * recalls (recordatorios de revision), no retirados, cobros pendientes, mensajes
+ * enviados e historico. La fachada crea estas instancias para dar trazabilidad a
+ * las interacciones post-venta con los clientes.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see com.marcosmoreira.opticademo.modules.seguimiento.SeguimientoFacade
  */
 public final class SeguimientoRowModel {
 
@@ -13,6 +24,22 @@ public final class SeguimientoRowModel {
 
     // ------------------------------------------------------------------ BandejaRow
 
+    /**
+     * Modelo de fila para la bandeja principal de seguimiento.
+     * <p>
+     * Vista central que lista todos los casos activos que requieren seguimiento.
+     * El campo {@code prioridad} determina el color de la fila en la UI.
+     * </p>
+     *
+     * @param referencia    identificador del caso (columna "Referencia")
+     * @param cliente       nombre del paciente (columna "Cliente")
+     * @param tipo          tipo: "Recall", "No retirado", "Cobro", "Garantia" (columna "Tipo")
+     * @param estado        estado del seguimiento (columna "Estado")
+     * @param fechaObjetivo fecha limite para la accion (columna "Fecha Objetivo")
+     * @param prioridad     prioridad: "Alta", "Media", "Baja" (columna "Prioridad")
+     * @param sucursal      sede responsable (columna "Sucursal")
+     * @param responsable   asignado al caso (columna "Responsable")
+     */
     public record BandejaRow(
             String referencia,
             String cliente,
@@ -66,6 +93,19 @@ public final class SeguimientoRowModel {
 
     // ------------------------------------------------------------------ RecallRow
 
+    /**
+     * Modelo de fila para la tabla de recalls (recordatorios de revision).
+     * <p>
+     * Lista pacientes que deben ser contactados para una revision periodica.
+     * </p>
+     *
+     * @param cliente        nombre del paciente (columna "Cliente")
+     * @param ultimaVisita   fecha de la ultima visita (columna "Ultima Visita")
+     * @param motivo         motivo del recall: "Revision anual", "Control" (columna "Motivo")
+     * @param fechaSugerida  fecha sugerida para la cita (columna "Fecha Sugerida")
+     * @param estado         estado: "Pendiente", "Contactado", "Agendado" (columna "Estado")
+     * @param sucursal       sede de seguimiento (columna "Sucursal")
+     */
     public record RecallRow(
             String cliente,
             String ultimaVisita,
@@ -107,6 +147,21 @@ public final class SeguimientoRowModel {
 
     // ------------------------------------------------------------------ NoRetiradoRow
 
+    /**
+     * Modelo de fila para la tabla de trabajos no retirados.
+     * <p>
+     * Muestra ordenes completadas que el cliente no ha retirado. El campo
+     * {@code notificacion} indica el estado del aviso al cliente.
+     * </p>
+     *
+     * @param orden          numero de orden (columna "Orden")
+     * @param cliente        nombre del paciente (columna "Cliente")
+     * @param diasEsperando  dias transcurridos desde que esta listo (columna "Dias")
+     * @param notificacion   estado de notificacion (columna "Notificacion")
+     * @param saldo          saldo pendiente (columna "Saldo")
+     * @param estado         estado del retiro (columna "Estado")
+     * @param sucursal       sede del trabajo (columna "Sucursal")
+     */
     public record NoRetiradoRow(
             String orden,
             String cliente,
@@ -154,6 +209,20 @@ public final class SeguimientoRowModel {
 
     // ------------------------------------------------------------------ CobroPendienteRow
 
+    /**
+     * Modelo de fila para la tabla de cobros pendientes de seguimiento.
+     * <p>
+     * Lista ordenes con saldo pendiente y la proxima accion de cobro planificada.
+     * </p>
+     *
+     * @param orden         numero de orden (columna "Orden")
+     * @param cliente       nombre del paciente (columna "Cliente")
+     * @param saldo         monto pendiente (columna "Saldo")
+     * @param ultimoPago    fecha del ultimo pago (columna "Ultimo Pago")
+     * @param estado        estado del cobro (columna "Estado")
+     * @param proximaAccion proxima gestion planificada (columna "Proxima Accion")
+     * @param sucursal      sede de la orden (columna "Sucursal")
+     */
     public record CobroPendienteRow(
             String orden,
             String cliente,
@@ -201,6 +270,21 @@ public final class SeguimientoRowModel {
 
     // ------------------------------------------------------------------ MensajeRow
 
+    /**
+     * Modelo de fila para el registro de mensajes enviados al cliente.
+     * <p>
+     * Historial de comunicaciones: SMS, emails, llamadas realizadas como parte
+     * del seguimiento. El campo {@code resultado} indica si el mensaje fue
+     * entregado exitosamente.
+     * </p>
+     *
+     * @param fecha     fecha de envio (columna "Fecha")
+     * @param cliente   nombre del paciente (columna "Cliente")
+     * @param tipo      tipo: "SMS", "Email", "Llamada" (columna "Tipo")
+     * @param canal     canal utilizado (columna "Canal")
+     * @param estado    estado del envio (columna "Estado")
+     * @param resultado resultado: "Entregado", "Fallido", "Sin respuesta" (columna "Resultado")
+     */
     public record MensajeRow(
             String fecha,
             String cliente,
@@ -242,6 +326,20 @@ public final class SeguimientoRowModel {
 
     // ------------------------------------------------------------------ HistoricoRow
 
+    /**
+     * Modelo de fila para el historico de seguimiento.
+     * <p>
+     * Archivo de todos los casos de seguimiento completados con su resultado final.
+     * </p>
+     *
+     * @param fecha        fecha del caso (columna "Fecha")
+     * @param referencia   identificador (columna "Referencia")
+     * @param cliente      nombre del paciente (columna "Cliente")
+     * @param tipo         tipo de caso (columna "Tipo")
+     * @param estadoFinal  resultado final (columna "Estado Final")
+     * @param resultado    descripcion del resultado (columna "Resultado")
+     * @param sucursal     sede responsable (columna "Sucursal")
+     */
     public record HistoricoRow(
             String fecha,
             String referencia,

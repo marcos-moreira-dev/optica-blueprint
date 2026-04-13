@@ -1,21 +1,41 @@
 package com.marcosmoreira.opticademo.modules.seguimiento;
 
 /**
- * Summary model for the right-hand case summary panel in the Seguimiento module.
+ * Modelo resumen para el panel lateral derecho persistente del modulo Seguimiento.
+ * Contiene la informacion de un caso de seguimiento seleccionado, incluyendo tipo
+ * (recall, queja, post-venta), estado actual, canal de contacto y accion sugerida.
+ * La fachada (SeguimientoFacade) actualiza este modelo al seleccionar un caso en la
+ * bandeja principal, utilizando los metodos estaticos {@code fromBandeja} o {@code demoSeed}.
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
  */
 public record SeguimientoSummaryModel(
+        /** Referencia unica del caso de seguimiento. */
         String referencia,
+        /** Tipo de seguimiento (recall, queja, post-venta, etc.). */
         String tipoSeguimiento,
+        /** Prioridad asignada al caso (alta, media, baja). */
         String prioridad,
+        /** Nombre del cliente asociado al caso. */
         String cliente,
+        /** Codigo interno del cliente. */
         String codigoCliente,
+        /** Fecha de la ultima visita del cliente. */
         String ultimaVisita,
+        /** Sucursal donde se gestiona el caso. */
         String sucursal,
+        /** Estado actual del seguimiento. */
         String estadoActual,
+        /** Canal de contacto utilizado (WhatsApp, llamada, email, presencial). */
         String canalContacto,
+        /** Fecha de la ultima interaccion registrada. */
         String ultimaInteraccion,
+        /** Accion sugerida para dar continuidad al caso. */
         String accionSugerida,
+        /** Fecha objetivo para la proxima accion. */
         String fechaObjetivo,
+        /** Observacion clave o resumen del caso. */
         String observacionClave
 ) {
 

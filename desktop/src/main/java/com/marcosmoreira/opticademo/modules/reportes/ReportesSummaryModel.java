@@ -1,17 +1,34 @@
 package com.marcosmoreira.opticademo.modules.reportes;
 
 /**
- * Summary model for the right-hand KPI/report summary panel in the Reportes module.
+ * Modelo resumen para el panel lateral derecho persistente del modulo Reportes.
+ * Presenta el resumen de un indicador KPI seleccionado, incluyendo valor principal,
+ * variacion respecto al periodo anterior, observacion gerencial y accion sugerida.
+ * La fachada (ReportesFacade) actualiza este modelo al seleccionar un KPI en la vista
+ * de reportes, invocando los metodos estaticos de inicializacion segun la sub-vista activa
+ * (resumen, ventas, inventario, agenda, laboratorio, cobros, retencion).
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
  */
 public record ReportesSummaryModel(
+        /** Nombre del indicador o KPI visualizado. */
         String indicador,
+        /** Categoria del reporte (general, ventas, inventario, agenda, etc.). */
         String categoria,
+        /** Sucursal o alcance del indicador (todas, matriz centro, etc.). */
         String sucursal,
+        /** Valor principal del indicador. */
         String valorPrincipal,
+        /** Variacion respecto al periodo anterior (porcentaje o valor absoluto). */
         String variacionBreve,
+        /** Periodo de tiempo del reporte. */
         String periodo,
+        /** Fecha y hora de la ultima actualizacion del dato. */
         String ultimaActualizacion,
+        /** Observacion gerencial sobre el resultado del indicador. */
         String observacionGerencial,
+        /** Accion sugerida derivada del analisis del indicador. */
         String accionSugerida
 ) {
 

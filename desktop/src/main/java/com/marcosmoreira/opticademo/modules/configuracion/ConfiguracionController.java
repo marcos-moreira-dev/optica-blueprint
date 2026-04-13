@@ -18,19 +18,46 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Controller for the Configuracion module.
- * Three-panel layout: left category navigation, center settings, right summary/help.
+ * Controller del modulo de Configuracion del sistema optico.
+ * <p>
+ * Proporciona una interfaz de tres paneles para la administracion de todos los parametros
+ * del sistema: navegacion de categorias en el panel izquierdo, formulario de configuracion
+ * en el panel central, y panel derecho con resumen del impacto operativo y recomendaciones.
+ * </p>
+ * <p>
+ * Gestiona nueve categorias de configuracion: General del negocio, Sucursales y operacion,
+ * Usuarios roles y permisos, Catalogos maestros, Inventario y abastecimiento,
+ * Venta caja y comprobantes, Agenda seguimiento y comunicacion, Laboratorio y entregas,
+ * y Apariencia y experiencia de uso. Cada categoria presenta un formulario especializado
+ * con campos relevantes y botones de accion propios.
+ * </p>
+ * <p>
+ * La fachada {@link ConfiguracionFacade} proporciona acceso a los datos de configuracion
+ * y genera resumenes del impacto operativo de cada cambio propuesto.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see ConfiguracionFacade
+ * @see ConfiguracionFilters
+ * @see ConfiguracionSummaryModel
  */
 public class ConfiguracionController {
 
     // ===== TOP BAR =====
+    /** Boton para guardar los cambios realizados en la categoria actual. */
     @FXML private Button guardarCambiosBtn;
+    /** Boton para restablecer los valores originales de la vista. */
     @FXML private Button restablecerVistaBtn;
+    /** Boton para exportar los parametros de configuracion a un archivo. */
     @FXML private Button exportarParametrosBtn;
+    /** Campo de busqueda para filtrar categorias de configuracion. */
     @FXML private TextField searchField;
+    /** Boton para limpiar el campo de busqueda. */
     @FXML private Button limpiarBusquedaBtn;
 
     // ===== LEFT PANEL =====
+    /** Lista de categorias de configuracion en el panel izquierdo. */
     @FXML private ListView<String> categoriasListView;
 
     // ===== CENTER PANEL - host =====
@@ -176,9 +203,11 @@ public class ConfiguracionController {
     @FXML private Button summaryIrModuloBtn;
 
     // ===== Facade =====
+    /** Fachada que proporciona acceso a los datos de configuracion y resumenes de impacto. */
     private ConfiguracionFacade facade;
     private ConfiguracionFilters currentFilters;
 
+    /** Nombres de las nueve categorias de configuracion disponibles. */
     private static final String[] CATEGORIAS = {
             "General del negocio",
             "Sucursales y operacion",
@@ -193,6 +222,14 @@ public class ConfiguracionController {
 
     private final VBox[] categorySections = new VBox[9];
 
+    /**
+     * Metodo de inicializacion invocado por JavaFX al cargar el FXML.
+     * <p>
+     * Instancia {@link ConfiguracionFacade}, configura la lista de categorias del panel izquierdo,
+     * los botones de la barra superior, los formularios de cada categoria, y selecciona
+     * la primera categoria por defecto cargando sus datos.
+     * </p>
+     */
     public void initialize() {
         DemoStore store = App.getDemoStore();
         this.facade = new ConfiguracionFacade(store);

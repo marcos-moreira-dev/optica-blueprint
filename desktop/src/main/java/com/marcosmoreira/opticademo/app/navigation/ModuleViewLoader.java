@@ -8,8 +8,22 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Loads module FXML views by convention.
- * Each ModuleId maps to a specific fxml path.
+ * Cargador de vistas FXML para los módulos de la aplicación, basado en una convención
+ * de mapeo entre {@link ModuleId} y rutas de recursos FXML.
+ * <p>
+ * La clase mantiene un mapa explícito ({@code FXML_PATHS}) que asocia cada identificador
+ * de módulo con su correspondiente archivo FXML ubicado en el classpath bajo
+ * {@code /fxml/modules/}. El método {@link #loadView(ModuleId)} intenta cargar la vista
+ * y, en caso de error (ruta no mapeada, recurso inexistente o {@link IOException}),
+ * retorna un marcador de posición generado por {@link #createPlaceholder(ModuleId)}
+ * en lugar de propagar la excepción, garantizando así que la navegación de la
+ * aplicación nunca falle catastróficamente.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see ModuleId
+ * @see FXMLLoader
  */
 public class ModuleViewLoader {
 
@@ -36,6 +50,24 @@ public class ModuleViewLoader {
             Map.entry(ModuleId.SUCURSALES, "/fxml/modules/sucursales/SucursalesView.fxml")
     );
 
+    /**
+     * Carga la vista FXML asociada al {@link ModuleId} especificado.
+     * <p>
+     * El proceso de carga sigue esta estrategia de manejo de errores:
+     * </p>
+     * <ul>
+     *   <li>Si el {@code moduleId} no tiene una entrada en {@code FXML_PATHS},
+     *       se registra un error y se devuelve un marcador de posición.</li>
+     *   <li>Si el recurso FXML no existe en el classpath (URL nula),
+     *       se registra un error y se devuelve un marcador de posición.</li>
+     *   <li>Si ocurre una {@link IOException} durante la carga, se captura,
+     *       se imprime el stack trace y se devuelve un marcador de posición.</li>
+     * </ul>
+     *
+     * @param moduleId el identificador del módulo cuya vista se desea cargar
+     * @return un {@link Node} con la vista cargada o un marcador de posición si falló la carga
+     * @see #createPlaceholder(ModuleId)
+     */
     public Node loadView(ModuleId moduleId) {
         String fxmlPath = FXML_PATHS.get(moduleId);
         System.out.println("[ModuleViewLoader] Loading module: " + moduleId + " -> path: " + fxmlPath);
@@ -62,6 +94,14 @@ public class ModuleViewLoader {
         }
     }
 
+    /**
+     * Crea un nodo marcador de posición para cuando una vista no puede ser cargada.
+     * El marcador es un {@link StackPane} con la clase CSS {@code "module-placeholder"}
+     * y dimensiones mínimas de 400x300 píxeles.
+     *
+     * @param moduleId el identificador del módulo para el cual se genera el placeholder
+     * @return un {@link Node} que actúa como vista temporal del módulo
+     */
     private Node createPlaceholder(ModuleId moduleId) {
         StackPane placeholder = new StackPane();
         placeholder.getStyleClass().add("module-placeholder");

@@ -26,107 +26,178 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Controller for the Clientes module.
- * Wires FXML elements to the facade and populates the view on initialize.
+ * Controlador para el modulo de Clientes del sistema Optica.
+ * <p>
+ * Administra el catalogo completo de clientes del sistema, presentando los datos
+ * en una tabla paginada con filtros por estado, ultima visita y estado de receta.
+ * Incluye un panel de resumen lateral que muestra informacion detallada del cliente
+ * seleccionado, asi como botones de accion rapida para crear recetas, ventas y citas.
+ * </p>
+ * <p>
+ * Delega toda la logica de negocio a {@link ClientesFacade}, quien utiliza el
+ * {@link DemoStore} como fuente de datos. La tabla utiliza paginacion mediante
+ * {@link PageRequest} y {@link PageResult}, y la columna de estado renderiza
+ * badges mediante {@link StatusBadgeController}.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see ClientesFacade
+ * @see ClientesRowModel
+ * @see ClientesFilters
+ * @see PageRequest
+ * @see PageResult
  */
 public class ClientesController {
 
-    // ---- Top bar ----
+    /**
+     * Selector de sucursal para filtrar clientes por ubicacion.
+     * Permite seleccionar una sucursal especifica o visualizar todas.
+     */
     @FXML
     private ComboBox<String> sucursalCombo;
 
-    // ---- Filters ----
+    /** Campo de texto para busqueda de clientes por nombre o codigo. */
     @FXML
     private TextField searchField;
 
+    /** Combo filtrable para filtrar clientes por estado (activo, inactivo, etc.). */
     @FXML
     private ComboBox<String> estadoCombo;
 
+    /** Combo filtrable para filtrar por fecha de ultima visita. */
     @FXML
     private ComboBox<String> ultimaVisitaCombo;
 
+    /** Combo filtrable para filtrar por estado de receta del cliente. */
     @FXML
     private ComboBox<String> recetaCombo;
 
-    // ---- Buttons ----
+    /** Boton para abrir el formulario de nuevo cliente. */
     @FXML
     private Button nuevoClienteBtn;
 
+    /** Boton para refrescar el listado de clientes. */
     @FXML
     private Button actualizarListadoBtn;
 
+    /** Boton para limpiar todos los filtros aplicados. */
     @FXML
     private Button limpiarFiltrosBtn;
 
-    // ---- Table ----
+    /**
+     * Tabla principal que lista los clientes con paginacion.
+     * Muestra columnas de nombre, codigo, telefono, ultima visita, receta, estado y sucursal.
+     */
     @FXML
     private TableView<ClientesRowModel> clientesTable;
 
+    /** Columna de nombre del cliente. */
     @FXML
     private TableColumn<ClientesRowModel, String> colNombre;
 
+    /** Columna de codigo interno del cliente. */
     @FXML
     private TableColumn<ClientesRowModel, String> colCodigo;
 
+    /** Columna de telefono del cliente. */
     @FXML
     private TableColumn<ClientesRowModel, String> colTelefono;
 
+    /** Columna de fecha de ultima visita. */
     @FXML
     private TableColumn<ClientesRowModel, String> colUltimaVisita;
 
+    /** Columna de estado de receta del cliente. */
     @FXML
     private TableColumn<ClientesRowModel, String> colReceta;
 
+    /** Columna de estado del cliente, renderizada con {@link StatusBadgeController}. */
     @FXML
     private TableColumn<ClientesRowModel, String> colEstado;
 
+    /** Columna de sucursal asignada al cliente. */
     @FXML
     private TableColumn<ClientesRowModel, String> colSucursal;
 
-    // ---- Pagination ----
+    /** Etiqueta de pie de tabla que muestra el conteo de registros. */
     @FXML
     private Label footerLabel;
 
+    /**
+     * Componente de paginacion reutilizable para navegar entre paginas de resultados.
+     */
     @FXML
     private com.marcosmoreira.opticademo.shared.ui.components.PaginationBarController paginationBarController;
 
-    // ---- Summary panel ----
+    /** Label del nombre en el panel de resumen lateral. */
     @FXML
     private Label summaryNombre;
 
+    /** Label del codigo en el panel de resumen lateral. */
     @FXML
     private Label summaryCodigo;
 
+    /** Label del estado en el panel de resumen lateral. */
     @FXML
     private Label summaryEstado;
 
+    /** Label de la sucursal en el panel de resumen lateral. */
     @FXML
     private Label summarySucursal;
 
+    /** Contenedor de campos adicionales en el panel de resumen. */
     @FXML
     private VBox summaryFieldsContainer;
 
-    // ---- Action buttons ----
+    /** Boton para editar el cliente seleccionado. */
     @FXML
     private Button editarBtn;
 
+    /** Boton para crear una nueva receta asociada al cliente. */
     @FXML
     private Button nuevaRecetaBtn;
 
+    /** Boton para crear una nueva venta optica para el cliente. */
     @FXML
     private Button nuevaVentaBtn;
 
+    /** Boton para agendar una cita para el cliente. */
     @FXML
     private Button agendarCitaBtn;
 
-    // ---- Facade ----
+    /**
+     * Fachada que centraliza la logica de negocio del modulo Clientes.
+     * Proporciona metodos de consulta paginada y construccion de resumenes.
+     */
     private ClientesFacade facade;
 
+    /** Filtros actualmente aplicados en la busqueda de clientes. */
     private ClientesFilters currentFilters;
+
+    /** Solicitud de paginacion actual. */
     private PageRequest currentPageRequest;
+
+    /** Indice de la pagina actual (base cero). */
     private int currentPageIndex = 0;
+
+    /** Tamano de pagina para la paginacion de resultados. */
     private int pageSize = 10;
 
+    /**
+     * Inicializa el controlador y configura todos los componentes de la interfaz.
+     * <p>
+     * Instancia {@link ClientesFacade} con el {@link DemoStore} global, configura
+     * las columnas de la tabla con sus respectivas {@code cellValueFactory},
+     * inicializa los combos filtrables mediante {@link ComboBoxFactory}, establece
+     * los listeners de eventos para botones y filtros, y carga la primera pagina
+     * de datos de clientes.
+     * </p>
+     *
+     * @see ClientesFacade
+     * @see ComboBoxFactory
+     * @see App#getDemoStore()
+     */
     public void initialize() {
         DemoStore store = App.getDemoStore();
 
@@ -405,22 +476,43 @@ public class ClientesController {
     }
 
     // ---- Placeholder actions ----
+
+    /**
+     * Maneja la accion de crear un nuevo cliente.
+     * Metodo placeholder para futura implementacion del formulario de registro.
+     */
     private void onNuevoCliente() {
         // Placeholder: open new client form
     }
 
+    /**
+     * Maneja la accion de editar el cliente seleccionado.
+     * Metodo placeholder para futura implementacion del formulario de edicion.
+     */
     private void onEditar() {
         // Placeholder: open edit client form
     }
 
+    /**
+     * Maneja la accion de crear una nueva receta para el cliente seleccionado.
+     * Metodo placeholder para futura integracion con el modulo de Recetas.
+     */
     private void onNuevaReceta() {
         // Placeholder: open new receta form
     }
 
+    /**
+     * Maneja la accion de crear una nueva venta optica para el cliente seleccionado.
+     * Metodo placeholder para futura integracion con el modulo de Venta Optica.
+     */
     private void onNuevaVenta() {
         // Placeholder: open new venta optica form
     }
 
+    /**
+     * Maneja la accion de agendar una cita para el cliente seleccionado.
+     * Metodo placeholder para futura integracion con el modulo de Agenda.
+     */
     private void onAgendarCita() {
         // Placeholder: open agenda cita form
     }

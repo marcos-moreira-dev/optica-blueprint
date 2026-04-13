@@ -4,7 +4,19 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- * Row models for the Agenda module TableView and timeline entries.
+ * Modelos de fila para las vistas del modulo Agenda (gestion de citas).
+ * <p>
+ * Estos registros alimentan los distintos {@code TableView} del modulo: agenda del dia
+ * (timeline semanal), lista detallada de citas, lista de espera, confirmaciones y
+ * horarios. La fachada del modulo crea estas instancias a partir de las entidades
+ * {@code Cita} y {@code Profesional}, aplicando los filtros seleccionados por el
+ * usuario (fecha, profesional, estado, tipo de atencion).
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see com.marcosmoreira.opticademo.modules.agenda.AgendaFacade
+ * @see com.marcosmoreira.opticademo.modules.agenda.AgendaSummaryModel
  */
 public final class AgendaRowModel {
 
@@ -13,6 +25,24 @@ public final class AgendaRowModel {
 
     // ------------------------------------------------------------------ CitaDiaRow
 
+    /**
+     * Modelo de fila para la tabla de citas del dia (vista principal de la agenda).
+     * <p>
+     * Cada registro representa una cita programada para el dia seleccionado. Los campos
+     * se mapean directamente a las columnas del timeline de la agenda. El campo
+     * {@code estado} determina el color de fondo de la celda en la UI: "Confirmada"
+     * (verde #4CAF50), "Pendiente" (amarillo #FFC107), "Cancelada" (rojo #F44336),
+     * "En curso" (azul #2196F3).
+     * </p>
+     *
+     * @param hora           hora de la cita, formato HH:mm (columna "Hora")
+     * @param cliente        nombre del paciente (columna "Cliente")
+     * @param tipoAtencion   tipo de servicio: "Examen visual", "Entrega", "Control" (columna "Tipo")
+     * @param estado         estado de la cita, controla el color de la fila (columna "Estado")
+     * @param profesional    nombre del profesional asignado (columna "Profesional")
+     * @param sucursal       sede donde se realiza la atencion (columna "Sucursal")
+     * @param tooltip        texto informativo para mostrar como tooltip al hover
+     */
     public record CitaDiaRow(
             String hora,
             String cliente,
@@ -60,6 +90,19 @@ public final class AgendaRowModel {
 
     // ------------------------------------------------------------------ SemanaRow
 
+    /**
+     * Modelo de fila para el resumen semanal de la agenda.
+     * <p>
+     * Presenta un conteo agregado de citas por dia de la semana, mostrando totales
+     * y desglose por estado. Utilizado en el panel de resumen semanal del modulo.
+     * </p>
+     *
+     * @param dia           dia de la semana, ej. "Lunes 12/04" (columna "Dia")
+     * @param totalCitas    numero total de citas programadas (columna "Total")
+     * @param confirmadas   citas con estado "Confirmada" (columna "Confirmadas")
+     * @param pendientes    citas con estado "Pendiente" (columna "Pendientes")
+     * @param canceladas    citas con estado "Cancelada" (columna "Canceladas")
+     */
     public record SemanaRow(
             String dia,
             String totalCitas,
@@ -96,6 +139,22 @@ public final class AgendaRowModel {
 
     // ------------------------------------------------------------------ ListaDiaRow
 
+    /**
+     * Modelo de fila para la lista detallada de citas del dia.
+     * <p>
+     * Vista alternativa al timeline que muestra todas las citas en formato tabular con
+     * informacion completa incluyendo observaciones. La fachada genera estos registros
+     * a partir de las entidades {@code Cita} ordenadas por hora.
+     * </p>
+     *
+     * @param hora        hora de la cita (columna "Hora")
+     * @param cliente     nombre del paciente (columna "Cliente")
+     * @param atencion    tipo de servicio solicitado (columna "Atencion")
+     * @param estado      estado de la cita (columna "Estado")
+     * @param profesional profesional asignado (columna "Profesional")
+     * @param sucursal    sede de atencion (columna "Sucursal")
+     * @param observacion notas adicionales sobre la cita (columna "Observacion")
+     */
     public record ListaDiaRow(
             String hora,
             String cliente,
@@ -143,6 +202,22 @@ public final class AgendaRowModel {
 
     // ------------------------------------------------------------------ EsperaRow
 
+    /**
+     * Modelo de fila para la lista de espera de citas.
+     * <p>
+     * Registra pacientes que solicitaron cita pero no encontraron disponibilidad.
+     * El campo {@code prioridad} indica la urgencia del reagendamiento y
+     * {@code estadoContacto} muestra el estado de la gestion ("Contactado",
+     * "Pendiente", "Reagendado").
+     * </p>
+     *
+     * @param cliente            nombre del paciente en lista de espera (columna "Cliente")
+     * @param atencionSolicitada tipo de servicio que requiere (columna "Atencion")
+     * @param franjaPreferida    horario preferido del paciente (columna "Franja")
+     * @param sucursal           sede solicitada (columna "Sucursal")
+     * @param prioridad          nivel de prioridad: "Alta", "Media", "Baja" (columna "Prioridad")
+     * @param estadoContacto     estado de la gestion de contacto (columna "Estado Contacto")
+     */
     public record EsperaRow(
             String cliente,
             String atencionSolicitada,
@@ -184,6 +259,22 @@ public final class AgendaRowModel {
 
     // ------------------------------------------------------------------ ConfirmacionRow
 
+    /**
+     * Modelo de fila para la tabla de confirmaciones de citas.
+     * <p>
+     * Muestra el historial de confirmaciones y recordatorios enviados a los pacientes.
+     * El campo {@code estadoConfirmacion} indica si el paciente confirmo asistencia
+     * ("Confirmado", "No respondio", "Cancelo").
+     * </p>
+     *
+     * @param fecha                fecha de la cita (columna "Fecha")
+     * @param hora                 hora de la cita (columna "Hora")
+     * @param cliente              nombre del paciente (columna "Cliente")
+     * @param atencion             tipo de servicio (columna "Atencion")
+     * @param estadoConfirmacion   resultado de la confirmacion (columna "Confirmacion")
+     * @param ultimoRecordatorio   fecha del ultimo recordatorio enviado (columna "Ultimo Recordatorio")
+     * @param sucursal             sede de la cita (columna "Sucursal")
+     */
     public record ConfirmacionRow(
             String fecha,
             String hora,
@@ -231,6 +322,19 @@ public final class AgendaRowModel {
 
     // ------------------------------------------------------------------ HorarioRow
 
+    /**
+     * Modelo de fila para la tabla de disponibilidad horaria.
+     * <p>
+     * Muestra las franjas horarias del equipo profesional, indicando si estan
+     * ocupadas, libres o bloqueadas. El campo {@code estado} controla el color
+     * de la fila: "Disponible" (verde), "Ocupado" (rojo), "Bloqueado" (gris).
+     * </p>
+     *
+     * @param franja      rango horario, ej. "08:00-09:00" (columna "Franja")
+     * @param tipo        tipo de disponibilidad: "Cita", "Bloqueo", "Libre" (columna "Tipo")
+     * @param estado      estado de la franja (columna "Estado")
+     * @param responsable profesional asignado a esa franja (columna "Responsable")
+     */
     public record HorarioRow(
             String franja,
             String tipo,

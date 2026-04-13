@@ -19,57 +19,93 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Controller for the Sucursales module.
- * Manages 7 sub-views with a persistent right summary panel.
+ * Controller del modulo de Sucursales del sistema optico.
+ * <p>
+ * Gestiona siete sub-vistas para la administracion y monitoreo de las sucursales
+ * de la optica: Directorio de sucursales, Perfil operativo de cada sede, Personal
+ * asignado, Inventario local, Agenda de citas local, Indicadores de caja,
+ * y Vista comparativa entre sucursales.
+ * </p>
+ * <p>
+ * La seleccion de una sucursal en el directorio actualiza todas las sub-vistas
+ * y el panel de resumen con la informacion operativa detallada de esa sede.
+ * La fachada {@link SucursalesFacade} proporciona acceso a los datos de sucursales
+ * almacenados en el {@link DemoStore}.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see SucursalesFacade
+ * @see SucursalesFilters
+ * @see SucursalesSummaryModel
  */
 public class SucursalesController {
 
     // ---- Top bar ----
+
+    /** ComboBox para seleccionar la sucursal activa en el modulo. */
     @FXML
     private ComboBox<String> sucursalCombo;
 
     // ---- Filters ----
+
+    /** Campo de busqueda por nombre de sucursal o ciudad. */
     @FXML
     private TextField searchField;
 
+    /** ComboBox para filtrar por estado operativo de la sucursal. */
     @FXML
     private ComboBox<String> estadoCombo;
 
+    /** ComboBox para filtrar por servicios habilitados. */
     @FXML
     private ComboBox<String> servicioCombo;
 
+    /** ComboBox para filtrar por ciudad. */
     @FXML
     private ComboBox<String> ciudadCombo;
 
+    /** CheckBox para mostrar solo sucursales con alertas activas. */
     @FXML
     private CheckBox soloAlertasCheck;
 
     // ---- Buttons ----
+
+    /** Boton para limpiar todos los filtros aplicados. */
     @FXML
     private Button limpiarFiltrosBtn;
 
+    /** Boton para actualizar la vista actual. */
     @FXML
     private Button actualizarBtn;
 
     // ---- Sub-view ToggleButtons ----
+
+    /** Toggle button para la sub-vista Directorio de sucursales. */
     @FXML
     private ToggleButton btnDirectorio;
 
+    /** Toggle button para la sub-vista Perfil operativo. */
     @FXML
     private ToggleButton btnPerfil;
 
+    /** Toggle button para la sub-vista Personal asignado. */
     @FXML
     private ToggleButton btnPersonal;
 
+    /** Toggle button para la sub-vista Inventario local. */
     @FXML
     private ToggleButton btnInventario;
 
+    /** Toggle button para la sub-vista Agenda de citas. */
     @FXML
     private ToggleButton btnAgenda;
 
+    /** Toggle button para la sub-vista Indicadores de caja. */
     @FXML
     private ToggleButton btnCaja;
 
+    /** Toggle button para la sub-vista Comparativo entre sucursales. */
     @FXML
     private ToggleButton btnComparativo;
 
@@ -253,12 +289,24 @@ public class SucursalesController {
     private VBox summaryFieldsContainer;
 
     // ---- Facade ----
+
+    /** Fachada que proporciona acceso a los datos operativos de las sucursales. */
     private SucursalesFacade facade;
 
     private SucursalesFilters currentFilters;
+    /** Sucursal actualmente seleccionada por el usuario. */
     private Sucursal selectedSucursal;
     private ToggleGroup subViewToggleGroup;
 
+    /**
+     * Metodo de inicializacion invocado por JavaFX al cargar el FXML.
+     * <p>
+     * Instancia {@link SucursalesFacade} con el {@link DemoStore} global, configura
+     * el grupo de toggle buttons para las sub-vistas, las columnas de cada tabla
+     * con sus cell factories y status badges, los combos de filtrado, y carga
+     * el directorio de sucursales.
+     * </p>
+     */
     public void initialize() {
         DemoStore store = App.getDemoStore();
 

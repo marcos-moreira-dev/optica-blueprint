@@ -19,62 +19,98 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Controller for the Proveedores module.
- * Manages 7 sub-views with a persistent right panel for provider summary.
+ * Controller del modulo de Proveedores del sistema optico.
+ * <p>
+ * Gestiona siete sub-vistas para la administracion integral de proveedores:
+ * Directorio de proveedores, Perfil comercial, Catalogo vinculado, Ordenes y abastecimiento,
+ * Recepciones e incidencias, Desempeno del proveedor, e Historico de operaciones.
+ * </p>
+ * <p>
+ * La seleccion de un proveedor en el directorio actualiza automaticamente todas las demas
+ * sub-vistas y el panel de resumen derecho con la informacion comercial detallada.
+ * La fachada {@link ProveedoresFacade} proporciona acceso a los datos de proveedores
+ * almacenados en el {@link DemoStore}.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see ProveedoresFacade
+ * @see ProveedoresFilters
+ * @see ProveedoresSummaryModel
  */
 public class ProveedoresController {
 
     // ---- Top bar ----
+
+    /** Boton para registrar un nuevo proveedor en el sistema. */
     @FXML
     private Button nuevoProveedorBtn;
 
+    /** Boton para actualizar la lista de proveedores. */
     @FXML
     private Button actualizarProveedoresBtn;
 
+    /** Boton para exportar el directorio de proveedores. */
     @FXML
     private Button exportarDirectorioBtn;
 
     // ---- Filters ----
+
+    /** Campo de busqueda por nombre o razon social del proveedor. */
     @FXML
     private TextField searchField;
 
+    /** ComboBox para filtrar por tipo de proveedor (laboratorio, monturas, lentes, etc.). */
     @FXML
     private ComboBox<String> tipoCombo;
 
+    /** ComboBox para filtrar por estado del proveedor. */
     @FXML
     private ComboBox<String> estadoCombo;
 
+    /** ComboBox para filtrar por categoria de productos abastecidos. */
     @FXML
     private ComboBox<String> categoriaCombo;
 
+    /** ComboBox para filtrar por sucursal atendida. */
     @FXML
     private ComboBox<String> sucursalCombo;
 
+    /** CheckBox para mostrar solo proveedores con incidencias recientes. */
     @FXML
     private CheckBox soloConIncidenciasCheck;
 
+    /** Boton para limpiar todos los filtros aplicados. */
     @FXML
     private Button limpiarFiltrosBtn;
 
     // ---- Sub-view toggle buttons ----
+
+    /** Toggle button para la sub-vista Directorio de proveedores. */
     @FXML
     private ToggleButton subViewDirectorioBtn;
 
+    /** Toggle button para la sub-vista Perfil comercial. */
     @FXML
     private ToggleButton subViewPerfilBtn;
 
+    /** Toggle button para la sub-vista Catalogo vinculado. */
     @FXML
     private ToggleButton subViewCatalogoBtn;
 
+    /** Toggle button para la sub-vista Ordenes y abastecimiento. */
     @FXML
     private ToggleButton subViewOrdenesBtn;
 
+    /** Toggle button para la sub-vista Recepciones e incidencias. */
     @FXML
     private ToggleButton subViewRecepcionesBtn;
 
+    /** Toggle button para la sub-vista Desempeno del proveedor. */
     @FXML
     private ToggleButton subViewDesempenoBtn;
 
+    /** Toggle button para la sub-vista Historico. */
     @FXML
     private ToggleButton subViewHistoricoBtn;
 
@@ -274,13 +310,23 @@ public class ProveedoresController {
     private VBox summaryFieldsContainer;
 
     // ---- Facade ----
+    /** Fachada que proporciona acceso a los datos de proveedores del sistema. */
     private ProveedoresFacade facade;
     private ProveedoresFilters currentFilters;
     private com.marcosmoreira.opticademo.shared.query.PageRequest currentPageRequest;
     private int currentPageIndex = 0;
     private int pageSize = 20;
+    /** Referencia al proveedor actualmente seleccionado. */
     private Proveedor selectedProveedor;
 
+    /**
+     * Metodo de inicializacion invocado por JavaFX al cargar el FXML.
+     * <p>
+     * Instancia {@link ProveedoresFacade} con el {@link DemoStore} global, configura
+     * los combos de filtrado, el sistema de toggle entre sub-vistas, las columnas
+     * de cada tabla con sus cell factories, y carga el directorio de proveedores.
+     * </p>
+     */
     public void initialize() {
         DemoStore store = App.getDemoStore();
         this.facade = new ProveedoresFacade(store);

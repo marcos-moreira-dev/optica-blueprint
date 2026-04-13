@@ -10,19 +10,52 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Facade that queries the DemoStore and returns data for the Recetas module.
- * No business logic -- just view-facing data assembly.
+ * Facade para el modulo de Recetas (gestion de recetas oftalmologicas).
+ * <p>
+ * Este facade proporciona datos de demostracion para todas las sub-vistas del modulo
+ * de Recetas, el cual gestiona las recetas oftalmologicas de los clientes, su historial,
+ * medidas asociadas y vinculaciones con ordenes opticas. Utiliza seed data estatico
+ * para el cliente {@code CLI-001} (Sofia Ramirez) y datos genericos para el resto.
+ * </p>
+ * <p>
+ * Sub-vistas que alimenta:
+ * <ul>
+ *   <li><b>Receta Actual:</b> resumen de la receta vigente con valores OD/OI, ADD, DP.</li>
+ *   <li><b>Historial de Recetas:</b> lista cronologica de recetas anteriores.</li>
+ *   <li><b>Medidas y Parametros:</b> tabla con DP, altura de montaje, uso principal, preferencias.</li>
+ *   <li><b>Vinculaciones con Ordenes:</b> ordenes opticas asociadas a la receta.</li>
+ *   <li><b>Recomendaciones:</b> lista de sugerencias para el cliente.</li>
+ *   <li><b>Contexto del Cliente:</b> panel lateral con datos clave del cliente.</li>
+ *   <li><b>Buscador de Clientes:</b> busqueda por nombre, codigo o telefono.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see DemoStore
+ * @see Cliente
+ * @see MoneyUtils
  */
 public class RecetasFacade {
 
     private final DemoStore store;
 
+    /**
+     * Construye el facade con referencia al almacén de datos de demostración.
+     *
+     * @param store instancia del {@link DemoStore}
+     */
     public RecetasFacade(DemoStore store) {
         this.store = store;
     }
 
     /**
-     * Returns the current (active) recipe summary for the given client.
+     * Retorna el resumen de la receta activa (vigente) para el cliente indicado.
+     * Incluye valores de ojo derecho (OD), ojo izquierdo (OI), adicion (ADD),
+     * distancia pupilar (DP), tratamiento sugerido y uso principal.
+     *
+     * @param clienteId identificador del cliente (e.g. "CLI-001")
+     * @return {@link RecetasSummaryModel} con datos de la receta actual, o {@code null} si no existe
      */
     public RecetasSummaryModel getCurrentRecipe(String clienteId) {
         Cliente cliente = store.clientes.stream()
@@ -70,7 +103,11 @@ public class RecetasFacade {
     }
 
     /**
-     * Returns the recipe history for the given client.
+     * Retorna el historial de recetas del cliente en orden cronologico,
+     * con fecha, profesional emisor, estado, valores OD/OI resumidos, DP y observaciones.
+     *
+     * @param clienteId identificador del cliente
+     * @return lista de {@link RecetasRowModel.HistorialRow} con recetas anteriores
      */
     public List<RecetasRowModel.HistorialRow> getHistorial(String clienteId) {
         List<RecetasRowModel.HistorialRow> rows = new ArrayList<>();
@@ -112,7 +149,12 @@ public class RecetasFacade {
     }
 
     /**
-     * Returns medidas y parametros for the given client.
+     * Retorna las medidas y parametros optometricos del cliente, incluyendo
+     * distancia pupilar, altura de montaje, uso principal, actividad laboral
+     * y preferencias de material y tratamiento.
+     *
+     * @param clienteId identificador del cliente
+     * @return lista de {@link RecetasRowModel.MedicionRow} con parametros del cliente
      */
     public List<RecetasRowModel.MedicionRow> getMedidas(String clienteId) {
         List<RecetasRowModel.MedicionRow> rows = new ArrayList<>();
@@ -136,7 +178,11 @@ public class RecetasFacade {
     }
 
     /**
-     * Returns vinculaciones con orden optica for the given client.
+     * Retorna las vinculaciones de la receta con ordenes opticas asociadas,
+     * mostrando referencia, estado, fecha, monto y fecha estimada de entrega.
+     *
+     * @param clienteId identificador del cliente
+     * @return lista de {@link RecetasRowModel.VinculacionRow} con ordenes vinculadas
      */
     public List<RecetasRowModel.VinculacionRow> getVinculaciones(String clienteId) {
         List<RecetasRowModel.VinculacionRow> rows = new ArrayList<>();
@@ -162,7 +208,11 @@ public class RecetasFacade {
     }
 
     /**
-     * Returns recommendations for the given client.
+     * Retorna las recomendaciones optometricas para el cliente, basadas en
+     * su historial y perfil visual.
+     *
+     * @param clienteId identificador del cliente
+     * @return lista de recomendaciones como cadenas de texto
      */
     public List<String> getRecomendaciones(String clienteId) {
         List<String> recs = new ArrayList<>();
@@ -178,7 +228,9 @@ public class RecetasFacade {
     }
 
     /**
-     * Returns all distinct receta estado values for the filter combo.
+     * Retorna los estados de receta distinct para el combo de filtro.
+     *
+     * @return lista ordenada de estados de receta
      */
     public List<String> getEstadosReceta() {
         return store.clientes.stream()
@@ -190,14 +242,21 @@ public class RecetasFacade {
     }
 
     /**
-     * Returns all distinct professional names from recipes.
+     * Retorna los nombres de profesionales que han emitido recetas.
+     *
+     * @return lista de nombres de profesionales
      */
     public List<String> getProfesionales() {
         return List.of("Dra. Salazar", "Dr. Paredes");
     }
 
     /**
-     * Builds a client context summary for the right panel.
+     * Construye un modelo de contexto del cliente para el panel derecho,
+     * consolidando datos personales, estadisticas de ordenes activas, entregas
+     * pendientes y saldo pendiente calculado desde el {@link DemoStore}.
+     *
+     * @param cliente entidad {@link Cliente} seleccionada
+     * @return {@link ClientContextModel} con datos consolidados, o {@code null} si el cliente es nulo
      */
     public ClientContextModel buildClientContext(Cliente cliente) {
         if (cliente == null) {
@@ -238,7 +297,11 @@ public class RecetasFacade {
     }
 
     /**
-     * Finds a client by search text (name, code, or phone).
+     * Busca clientes por texto (nombre, codigo o telefono) para el selector
+     * de clientes del modulo de recetas.
+     *
+     * @param searchText texto de busqueda
+     * @return lista de {@link Cliente} que coinciden con el texto
      */
     public List<Cliente> findClients(String searchText) {
         return store.clientes.stream()
@@ -250,7 +313,21 @@ public class RecetasFacade {
     }
 
     /**
-     * Client context model for the right panel.
+     * Modelo de contexto del cliente para el panel derecho del modulo de recetas.
+     * Contiene datos personales, estado de receta, distancia pupilar, profesional
+     * asignado, ordenes activas, entregas pendientes y saldo pendiente.
+     *
+     * @param nombre          nombre completo del cliente
+     * @param codigo          codigo interno del cliente
+     * @param telefono        telefono de contacto
+     * @param ultimaVisita    fecha de ultima visita
+     * @param sucursal        sucursal habitual
+     * @param estadoReceta    estado actual de la receta
+     * @param pd              distancia pupilar
+     * @param profesional     profesional asignado
+     * @param ordenesActivas  cantidad de ordenes activas
+     * @param entregasPendientes cantidad de entregas pendientes
+     * @param saldoPendiente  monto total pendiente
      */
     public record ClientContextModel(
             String nombre,

@@ -10,13 +10,40 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Facade that queries the DemoStore and returns data for the Venta Optica wizard.
- * No business logic -- just view-facing data assembly.
+ * Facade para el modulo de Venta Optica (wizard de venta).
+ * <p>
+ * Este facade gestiona el flujo de datos del wizard de venta optica, un proceso
+ * multi-etapa que abarca desde la busqueda del cliente hasta la confirmacion
+ * de la orden. Los datos de monturas y lentes provienen de seed data estatico,
+ * mientras que las ventas historicas se obtienen del {@link DemoStore}.
+ * </p>
+ * <p>
+ * Etapas del wizard que alimenta:
+ * <ul>
+ *   <li><b>Etapa 1 - Busqueda de Cliente:</b> busqueda por nombre, codigo o telefono.</li>
+ *   <li><b>Etapa 2 - Seleccion de Receta:</b> recetas disponibles para el cliente.</li>
+ *   <li><b>Etapa 3 - Catalogo de Monturas:</b> monturas filtrables por marca y material.</li>
+ *   <li><b>Etapa 4 - Lentes Disponibles:</b> tipos de lente desde {@link SharedSeedSupport}.</li>
+ *   <li><b>Etapa 7 - Ventas Historicas:</b> historial de ventas del cliente.</li>
+ *   <li><b>Resumen de Orden:</b> modelo consolidado de la orden en construccion.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see DemoStore
+ * @see SharedSeedSupport
+ * @see VentaOptica
  */
 public class VentaOpticaFacade {
 
     private final DemoStore store;
 
+    /**
+     * Construye el facade con referencia al almacén de datos de demostración.
+     *
+     * @param store instancia del {@link DemoStore}
+     */
     public VentaOpticaFacade(DemoStore store) {
         this.store = store;
     }
@@ -136,7 +163,22 @@ public class VentaOpticaFacade {
     // ---- Order summary ----
 
     /**
-     * Builds the current order summary model.
+     * Construye el resumen de la orden actual con todos los parametros
+     * seleccionados en el wizard: cliente, receta, montura, lente, precios
+     * y fecha estimada de entrega. Calcula automaticamente el saldo pendiente.
+     *
+     * @param cliente         nombre del cliente
+     * @param codigo          codigo del cliente
+     * @param receta          fecha de la receta seleccionada
+     * @param montura         descripcion de la montura
+     * @param lente           tipo de lente
+     * @param pd              distancia pupilar
+     * @param subtotal        subtotal de la orden
+     * @param descuento       monto de descuento aplicado
+     * @param abono           monto del abono inicial
+     * @param entregaEstimada fecha estimada de entrega
+     * @param laboratorio     laboratorio asignado
+     * @return {@link VentaOpticaSummaryModel} con datos consolidados de la orden
      */
     public VentaOpticaSummaryModel buildOrderSummary(
             String cliente, String codigo, String receta, String montura,

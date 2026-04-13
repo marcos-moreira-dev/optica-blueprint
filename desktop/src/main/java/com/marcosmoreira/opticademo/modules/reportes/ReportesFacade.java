@@ -4,13 +4,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Facade that provides all report data for the Reportes module.
- * Demo/static data for now -- no business logic.
+ * Facade para el modulo de Reportes (panel de indicadores y analisis).
+ * <p>
+ * Este facade proporciona todos los datos de demostracion para el modulo de Reportes,
+ * un panel ejecutivo que consolida indicadores de ventas, inventario, agenda, laboratorio,
+ * cobros y retencion. Todos los datos provienen de seed data estatico embebido.
+ * </p>
+ * <p>
+ * Sub-vistas que alimenta:
+ * <ul>
+ *   <li><b>Resumen Ejecutivo:</b> KPIs generales del negocio (ventas, operaciones, inventario).</li>
+ *   <li><b>Ventas y Desempeno:</b> analisis por categoria de producto.</li>
+ *   <li><b>Inventario y Rotacion:</b> rotacion de productos por referencia.</li>
+ *   <li><b>Agenda y Atencion:</b> metricas de citas, utilizacion y conversion.</li>
+ *   <li><b>Laboratorio y Cumplimiento:</b> ordenes creadas, entregas a tiempo, retrasos.</li>
+ *   <li><b>Cobros y Cartera:</b> cartera vencida y saldos pendientes.</li>
+ *   <li><b>Seguimiento y Retencion:</b> recalls, revisiones y estado de retencion.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see ReportesSummaryModel
  */
 public class ReportesFacade {
 
     // ------------------------------------------------------------------ Periodos y categorias
 
+    /**
+     * Retorna los periodos disponibles para el selector de reportes.
+     *
+     * @return lista de periodos (meses/anos disponibles)
+     */
     public List<String> getPeriodos() {
         return List.of(
                 "Abril 2026",
@@ -22,6 +47,11 @@ public class ReportesFacade {
         );
     }
 
+    /**
+     * Retorna las categorias de producto para el filtro de reportes.
+     *
+     * @return lista de categorias (Todas, Lentes oftalmicos, Monturas, etc.)
+     */
     public List<String> getCategorias() {
         return List.of(
                 "Todas",
@@ -241,6 +271,13 @@ public class ReportesFacade {
 
     // ------------------------------------------------------------------ Build summary by indicator
 
+    /**
+     * Construye un modelo de resumen segun el indicador seleccionado.
+     * Retorna datos seed especificos para cada tipo de indicador.
+     *
+     * @param indicador nombre del indicador (ventas, inventario, agenda, etc.)
+     * @return {@link ReportesSummaryModel} con datos del indicador seleccionado
+     */
     public ReportesSummaryModel buildSummary(String indicador) {
         return switch (indicador != null ? indicador : "") {
             case "ventas", "comercial" -> ReportesSummaryModel.comercialSeed();

@@ -19,69 +19,105 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
- * Controller for the Seguros module.
- * Manages 7 sub-views, filter bar, and persistent right panel with coverage case summary.
- * Clean separation: no business logic.
+ * Controller del modulo de Seguros del sistema optico.
+ * <p>
+ * Gestiona siete sub-vistas especializadas en la gestion de convenios y seguros medicos:
+ * Verificacion de cobertura, Planes de convenio, Autorizaciones, Reclamos, Respuestas,
+ * Cobertura en ventas, e Historico de casos de seguros.
+ * </p>
+ * <p>
+ * Implementa una arquitectura de tres paneles con barra de filtros, sub-vistas intercambiables
+ * mediante toggle buttons, y panel derecho persistente con resumen del caso de cobertura
+ * seleccionado. Toda la logica de negocio esta delegada en {@link SegurosFacade}.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see SegurosFacade
+ * @see SegurosFilters
+ * @see SegurosSummaryModel
  */
 public class SegurosController {
 
     // ---- Top bar ----
+
+    /** Boton para iniciar una nueva verificacion de cobertura. */
     @FXML
     private Button nuevaVerificacionBtn;
 
+    /** Boton para actualizar los datos del modulo de seguros. */
     @FXML
     private Button actualizarSegurosBtn;
 
+    /** Boton para exportar los datos de seguros. */
     @FXML
     private Button exportarSegurosBtn;
 
     // ---- Filters ----
+
+    /** Campo de busqueda por referencia o nombre de cliente. */
     @FXML
     private TextField searchField;
 
+    /** ComboBox para filtrar por estado del caso de seguro. */
     @FXML
     private ComboBox<String> estadoCombo;
 
+    /** ComboBox para filtrar por plan o convenio medico. */
     @FXML
     private ComboBox<String> planConvenioCombo;
 
+    /** ComboBox para filtrar por tipo de caso (verificacion, autorizacion, reclamo). */
     @FXML
     private ComboBox<String> tipoCasoCombo;
 
+    /** ComboBox para filtrar por sucursal. */
     @FXML
     private ComboBox<String> sucursalCombo;
 
+    /** DatePicker para fecha inicio del rango de filtrado. */
     @FXML
     private DatePicker desdePicker;
 
+    /** DatePicker para fecha fin del rango de filtrado. */
     @FXML
     private DatePicker hastaPicker;
 
+    /** CheckBox para mostrar solo casos pendientes. */
     @FXML
     private CheckBox soloCasosPendientesCheck;
 
+    /** Boton para limpiar todos los filtros aplicados. */
     @FXML
     private Button limpiarFiltrosBtn;
 
     // ---- Sub-view toggle buttons ----
+
+    /** Toggle button para la sub-vista Verificacion de cobertura. */
     @FXML
     private ToggleButton btnVerificacion;
 
+    /** Toggle button para la sub-vista Planes de convenio. */
     @FXML
     private ToggleButton btnPlanes;
 
+    /** Toggle button para la sub-vista Autorizaciones. */
     @FXML
     private ToggleButton btnAutorizaciones;
 
+    /** Toggle button para la sub-vista Reclamos. */
     @FXML
     private ToggleButton btnReclamos;
 
+    /** Toggle button para la sub-vista Respuestas. */
     @FXML
     private ToggleButton btnRespuestas;
 
+    /** Toggle button para la sub-vista Cobertura en ventas. */
     @FXML
     private ToggleButton btnCoberturaVenta;
 
+    /** Toggle button para la sub-vista Historico. */
     @FXML
     private ToggleButton btnHistorico;
 
@@ -326,6 +362,8 @@ public class SegurosController {
     private BorderPane rootPane;
 
     // ---- Facade ----
+
+    /** Fachada que centraliza la logica de gestion de seguros y convenios medicos. */
     private SegurosFacade facade;
 
     private SegurosFilters currentFilters;
@@ -333,6 +371,14 @@ public class SegurosController {
     private int currentPageIndex = 0;
     private int pageSize = 20;
 
+    /**
+     * Metodo de inicializacion invocado por JavaFX al cargar el FXML.
+     * <p>
+     * Instancia {@link SegurosFacade}, configura los combos de filtrado, el sistema de toggle
+     * entre las siete sub-vistas, las columnas de cada tabla, y carga los datos iniciales
+     * de verificacion de cobertura.
+     * </p>
+     */
     public void initialize() {
         this.facade = new SegurosFacade();
         this.currentFilters = new SegurosFilters();

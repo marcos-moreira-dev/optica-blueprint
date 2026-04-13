@@ -3,19 +3,38 @@ package com.marcosmoreira.opticademo.modules.caja;
 import com.marcosmoreira.opticademo.shared.domain.venta.VentaOptica;
 
 /**
- * Summary model for the right-hand payment summary panel in the Caja module.
+ * Modelo resumen para el panel lateral derecho persistente del modulo Caja.
+ * Contiene el resumen de cobro de una orden seleccionada, incluyendo montos
+ * (subtotal, descuento, abono, saldo), metodo de pago principal y referencia
+ * del comprobante. La fachada (CajaFacade) actualiza este modelo al seleccionar
+ * una orden pendiente de cobro, derivando los valores de la entidad {@link VentaOptica}
+ * mediante el metodo estatico {@code from}.
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
  */
 public record CajaSummaryModel(
+        /** Referencia de la orden de venta asociada al cobro. */
         String referenciaOrden,
+        /** Nombre del cliente que realiza el pago. */
         String cliente,
+        /** Codigo interno del cliente. */
         String codigoCliente,
+        /** Fecha promesa de la orden. */
         String fechaPromesa,
+        /** Subtotal de la venta antes de descuentos. */
         String subtotal,
+        /** Monto del descuento aplicado. */
         String descuento,
+        /** Abono acumulado hasta la fecha. */
         String abonoAcumulado,
+        /** Saldo restante por cobrar. */
         String saldo,
+        /** Estado del cobro (pagado, por cobrar, pendiente, etc.). */
         String estadoCobro,
+        /** Metodo de pago principal utilizado (efectivo, tarjeta, transferencia). */
         String metodoPrincipal,
+        /** Numero o referencia del comprobante generado. */
         String comprobante
 ) {
 

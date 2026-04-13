@@ -1,20 +1,40 @@
 package com.marcosmoreira.opticademo.modules.taller;
 
 /**
- * Summary model for the right-hand technical work summary panel in the Taller module.
+ * Modelo resumen para el panel lateral derecho persistente del modulo Taller.
+ * Contiene la informacion detallada de un trabajo tecnico seleccionado, incluyendo
+ * tipo de intervencion (reparacion, ajuste, diagnostico), prioridad, tecnico
+ * responsable, fechas de ingreso y promesa, y repuestos requeridos.
+ * La fachada (TallerFacade) actualiza este modelo al seleccionar un ingreso en la
+ * tabla principal, mediante el metodo estatico {@code from}.
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
  */
 public record TallerSummaryModel(
+        /** Referencia unica del trabajo de taller. */
         String referencia,
+        /** Tipo de intervencion tecnica (reparacion bisagra, ajuste, soldadura, etc.). */
         String tipoIntervencion,
+        /** Prioridad del trabajo (alta, media, baja). */
         String prioridad,
+        /** Nombre del cliente propietario de la montura. */
         String cliente,
+        /** Sucursal donde se recibe el trabajo. */
         String sucursal,
+        /** Fecha de ingreso del trabajo al taller. */
         String fechaIngreso,
+        /** Estado actual del trabajo tecnico. */
         String estadoActual,
+        /** Tecnico responsable de la intervencion. */
         String tecnicoResponsable,
+        /** Fecha prometida de finalizacion del trabajo. */
         String fechaPromesa,
+        /** Repuesto requerido para la reparacion. */
         String repuestoRequerido,
+        /** Indica si la montura fue enviada a un taller externo. */
         String envioExterno,
+        /** Observacion breve sobre el trabajo tecnico. */
         String observacionBreve
 ) {
 

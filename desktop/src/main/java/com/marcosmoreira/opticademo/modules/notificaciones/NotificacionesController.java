@@ -20,68 +20,107 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Controller for the Notificaciones module.
- * Manages 7 sub-views, filter bar, and persistent right panel with notification summary.
+ * Controller del modulo de Notificaciones del sistema optico.
+ * <p>
+ * Gestiona siete sub-vistas para la administracion de comunicaciones: Bandeja general
+ * de notificaciones, Notificaciones al cliente, Notificaciones operativas internas,
+ * Campanas y plantillas, Historial de envios y respuestas, Alertas criticas,
+ * y Preferencias de notificacion.
+ * </p>
+ * <p>
+ * Implementa una arquitectura de tres paneles con filtros, sub-vistas intercambiables
+ * mediante toggle buttons, y panel derecho con resumen de la notificacion seleccionada.
+ * La fachada {@link NotificacionesFacade} proporciona acceso a las notificaciones
+ * almacenadas en el {@link DemoStore}.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see NotificacionesFacade
+ * @see NotificacionesFilters
+ * @see NotificacionesSummaryModel
  */
 public class NotificacionesController {
 
     // ---- Top bar ----
+
+    /** Boton para enviar una nueva notificacion manualmente. */
     @FXML
     private Button enviarNotificacionBtn;
 
+    /** Boton para actualizar la lista de notificaciones. */
     @FXML
     private Button actualizarListadoBtn;
 
     // ---- Filters ----
+
+    /** Campo de busqueda por referencia o destinatario. */
     @FXML
     private TextField searchField;
 
+    /** ComboBox para filtrar por tipo de notificacion. */
     @FXML
     private ComboBox<String> tipoCombo;
 
+    /** ComboBox para filtrar por canal de envio (WhatsApp, SMS, email, llamada). */
     @FXML
     private ComboBox<String> canalCombo;
 
+    /** ComboBox para filtrar por estado de la notificacion. */
     @FXML
     private ComboBox<String> estadoCombo;
 
+    /** ComboBox para filtrar por prioridad. */
     @FXML
     private ComboBox<String> prioridadCombo;
 
+    /** ComboBox para filtrar por sucursal origen. */
     @FXML
     private ComboBox<String> sucursalCombo;
 
+    /** DatePicker para fecha inicio del rango de filtrado. */
     @FXML
     private DatePicker desdePicker;
 
+    /** DatePicker para fecha fin del rango de filtrado. */
     @FXML
     private DatePicker hastaPicker;
 
+    /** CheckBox para mostrar solo notificaciones pendientes y criticas. */
     @FXML
     private CheckBox soloPendientesYCriticasCheck;
 
+    /** Boton para limpiar todos los filtros aplicados. */
     @FXML
     private Button limpiarFiltrosBtn;
 
     // ---- Sub-view toggle buttons ----
+
+    /** Toggle button para la sub-vista Bandeja general. */
     @FXML
     private ToggleButton btnBandeja;
 
+    /** Toggle button para la sub-vista Notificaciones al cliente. */
     @FXML
     private ToggleButton btnNotifCliente;
 
+    /** Toggle button para la sub-vista Notificaciones operativas internas. */
     @FXML
     private ToggleButton btnNotifInterna;
 
+    /** Toggle button para la sub-vista Campanas y plantillas. */
     @FXML
     private ToggleButton btnPlantillas;
 
+    /** Toggle button para la sub-vista Historial de envios. */
     @FXML
     private ToggleButton btnHistorial;
 
+    /** Toggle button para la sub-vista Alertas criticas. */
     @FXML
     private ToggleButton btnAlertas;
 
+    /** Toggle button para la sub-vista Preferencias de notificacion. */
     @FXML
     private ToggleButton btnPreferencias;
 
@@ -311,6 +350,8 @@ public class NotificacionesController {
     private Button summaryBtnVerDetalle;
 
     // ---- Facade ----
+
+    /** Fachada que centraliza la logica de gestion de notificaciones y comunicaciones. */
     private NotificacionesFacade facade;
 
     private NotificacionesFilters currentFilters;
@@ -318,6 +359,14 @@ public class NotificacionesController {
     private int currentPageIndex = 0;
     private int pageSize = 20;
 
+    /**
+     * Metodo de inicializacion invocado por JavaFX al cargar el FXML.
+     * <p>
+     * Instancia {@link NotificacionesFacade} con el {@link DemoStore} global, configura
+     * los combos de filtrado, el sistema de toggle entre sub-vistas, las columnas
+     * de cada tabla con status badges, y carga la bandeja general de notificaciones.
+     * </p>
+     */
     public void initialize() {
         DemoStore store = App.getDemoStore();
         this.facade = new NotificacionesFacade(store);

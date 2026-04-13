@@ -4,7 +4,17 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- * Row models for the Reportes module TableView entries.
+ * Modelos de fila para las vistas del modulo Reportes (analitica y KPIs).
+ * <p>
+ * Estos registros alimentan los {@code TableView} del modulo: resumen de KPIs,
+ * analisis comercial, rotacion de inventario, metricas de agenda, rendimiento
+ * de laboratorio, cartera de cobros y retencion de clientes. La fachada crea
+ * estas instancias a partir de datos agregados de los distintos modulos del sistema.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see com.marcosmoreira.opticademo.modules.reportes.ReportesFacade
  */
 public final class ReportesRowModel {
 
@@ -13,6 +23,18 @@ public final class ReportesRowModel {
 
     // ------------------------------------------------------------------ KpiResumenRow
 
+    /**
+     * Modelo de fila para el resumen de KPIs del dashboard de reportes.
+     * <p>
+     * Cada registro es un indicador clave de rendimiento. El campo {@code estado}
+     * indica si el KPI cumple la meta ("Cumplido", "Parcial", "No cumplido").
+     * </p>
+     *
+     * @param area        area del negocio: "Ventas", "Agenda", "Inventario" (columna "Area")
+     * @param indicador   nombre del KPI (columna "Indicador")
+     * @param valor       valor actual del indicador (columna "Valor")
+     * @param estado      estado vs. la meta (columna "Estado")
+     */
     public record KpiResumenRow(
             String area,
             String indicador,
@@ -43,6 +65,18 @@ public final class ReportesRowModel {
 
     // ------------------------------------------------------------------ ComercialRow
 
+    /**
+     * Modelo de fila para el analisis comercial por categoria.
+     * <p>
+     * Desglose de ventas por tipo de producto con participacion porcentual.
+     * </p>
+     *
+     * @param categoria      categoria: "Monturas", "Lentes", "Accesorios" (columna "Categoria")
+     * @param ventas         monto total vendido (columna "Ventas")
+     * @param unidades       cantidad de unidades vendidas (columna "Unidades")
+     * @param participacion  porcentaje del total (columna "Participacion")
+     * @param observacion    nota analitica (columna "Observacion")
+     */
     public record ComercialRow(
             String categoria,
             String ventas,
@@ -79,6 +113,20 @@ public final class ReportesRowModel {
 
     // ------------------------------------------------------------------ RotacionRow
 
+    /**
+     * Modelo de fila para el reporte de rotacion de inventario.
+     * <p>
+     * Muestra la velocidad de rotacion de cada producto en el periodo analizado.
+     * </p>
+     *
+     * @param referencia    codigo SKU (columna "Referencia")
+     * @param nombre        nombre del producto (columna "Nombre")
+     * @param categoria     categoria (columna "Categoria")
+     * @param rotacion      indice de rotacion (columna "Rotacion")
+     * @param ultimaSalida  fecha de ultima venta (columna "Ultima Salida")
+     * @param estado        estado de rotacion (columna "Estado")
+     * @param observacion   nota analitica (columna "Observacion")
+     */
     public record RotacionRow(
             String referencia,
             String nombre,
@@ -126,6 +174,19 @@ public final class ReportesRowModel {
 
     // ------------------------------------------------------------------ AgendaRow
 
+    /**
+     * Modelo de fila para las metricas de rendimiento de la agenda.
+     * <p>
+     * KPIs de gestion de citas: tasa de asistencia, cancelaciones, etc.
+     * Incluye comparacion del valor actual vs. la meta establecida.
+     * </p>
+     *
+     * @param indicador   nombre de la metrica (columna "Indicador")
+     * @param valor       valor medido (columna "Valor")
+     * @param meta        objetivo establecido (columna "Meta")
+     * @param estado      cumplimiento: "Cumplido", "No cumplido" (columna "Estado")
+     * @param observacion nota analitica (columna "Observacion")
+     */
     public record AgendaRow(
             String indicador,
             String valor,
@@ -162,6 +223,18 @@ public final class ReportesRowModel {
 
     // ------------------------------------------------------------------ LaboratorioRow
 
+    /**
+     * Modelo de fila para las metricas de rendimiento del laboratorio.
+     * <p>
+     * KPIs de produccion: tiempo promedio de elaboracion, tasa de reclamos,
+     * ordenes a tiempo, etc.
+     * </p>
+     *
+     * @param indicador   nombre de la metrica (columna "Indicador")
+     * @param valor       valor medido (columna "Valor")
+     * @param estado      estado del indicador (columna "Estado")
+     * @param observacion nota analitica (columna "Observacion")
+     */
     public record LaboratorioRow(
             String indicador,
             String valor,
@@ -193,6 +266,19 @@ public final class ReportesRowModel {
 
     // ------------------------------------------------------------------ CarteraRow
 
+    /**
+     * Modelo de fila para el reporte de cartera (cobros pendientes).
+     * <p>
+     * Lista ordenes con saldo pendiente para analisis de cobranza.
+     * </p>
+     *
+     * @param orden      numero de orden (columna "Orden")
+     * @param cliente    nombre del paciente (columna "Cliente")
+     * @param saldo      monto pendiente (columna "Saldo")
+     * @param ultimoPago fecha del ultimo pago (columna "Ultimo Pago")
+     * @param estado     estado del cobro (columna "Estado")
+     * @param sucursal   sede de la orden (columna "Sucursal")
+     */
     public record CarteraRow(
             String orden,
             String cliente,
@@ -234,6 +320,21 @@ public final class ReportesRowModel {
 
     // ------------------------------------------------------------------ RetencionRow
 
+    /**
+     * Modelo de fila para el reporte de retencion de clientes.
+     * <p>
+     * Muestra acciones de retencion realizadas y su resultado: recalls,
+     * seguimientos, campanas. El campo {@code estado} indica el resultado
+     * de la gestion.
+     * </p>
+     *
+     * @param cliente        nombre del paciente (columna "Cliente")
+     * @param tipo           tipo de accion: "Recall", "Seguimiento" (columna "Tipo")
+     * @param estado         resultado de la gestion (columna "Estado")
+     * @param fechaObjetivo  fecha planificada (columna "Fecha Objetivo")
+     * @param resultado      resultado obtenido (columna "Resultado")
+     * @param sucursal       sede responsable (columna "Sucursal")
+     */
     public record RetencionRow(
             String cliente,
             String tipo,

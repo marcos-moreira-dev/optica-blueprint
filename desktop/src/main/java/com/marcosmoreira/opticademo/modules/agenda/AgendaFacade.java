@@ -8,19 +8,56 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Facade that queries the DemoStore and returns data for the Agenda module.
- * No business logic -- just view-facing data assembly.
+ * Facade para el modulo de Agenda (programacion de citas).
+ * <p>
+ * Este facade proporciona datos de demostracion para todas las sub-vistas del modulo
+ * de Agenda, el cual gestiona la programacion, seguimiento y control de citas en la optica.
+ * Los datos se generan mediante seed data estatico embebido, sin logica de negocio real.
+ * </p>
+ * <p>
+ * Sub-vistas que alimenta:
+ * <ul>
+ *   <li><b>Vista Dia:</b> citas del dia filtrables por profesional, estado y tipo de atencion.</li>
+ *   <li><b>Vista Semana:</b> resumen semanal con totales de citas por dia.</li>
+ *   <li><b>Lista del Dia:</b> listado detallado con observaciones y sucursal.</li>
+ *   <li><b>Lista de Espera:</b> clientes en espera con prioridad y rango horario preferido.</li>
+ *   <li><b>Confirmaciones:</b> estado de confirmacion de citas con fecha/hora de ultima gestion.</li>
+ *   <li><b>Horarios y Bloqueos:</b> franjas horarias con bloqueos programados.</li>
+ * </ul>
+ * </p>
+ * <p>
+ * Patron de flujo de datos: las vistas solicitan datos filtrados mediante {@link AgendaFilters};
+ * el facade aplica los criterios usando {@link FilterSupport} y retorna los modelos de fila
+ * correspondientes para enlace con tablas JavaFX.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see DemoStore
+ * @see FilterSupport
  */
 public class AgendaFacade {
 
     private final DemoStore store;
 
+    /**
+     * Construye el facade con referencia al almacén de datos de demostración.
+     *
+     * @param store instancia del {@link DemoStore}
+     */
     public AgendaFacade(DemoStore store) {
         this.store = store;
     }
 
     // ------------------------------------------------------------------ Sub-view 1: Dia
 
+    /**
+     * Retorna las citas del dia filtradas segun los criterios especificados.
+     *
+     * @param fecha   fecha del dia a consultar
+     * @param filters criterios de filtrado (texto libre, profesional, estado, tipo de atencion)
+     * @return lista de {@link AgendaRowModel.CitaDiaRow} que coinciden con los filtros
+     */
     public List<AgendaRowModel.CitaDiaRow> getCitasDia(String fecha, AgendaFilters filters) {
         return buildCitasDia(fecha).stream()
                 .filter(r -> matchesCitaFilters(r, filters))
@@ -29,6 +66,13 @@ public class AgendaFacade {
 
     // ------------------------------------------------------------------ Sub-view 2: Semana
 
+    /**
+     * Retorna el resumen semanal con totales de citas por dia de la semana,
+     * incluyendo cantidades totales, confirmadas, pendientes y canceladas.
+     *
+     * @param fecha fecha de referencia para determinar la semana
+     * @return lista de {@link AgendaRowModel.SemanaRow} con estadisticas por dia
+     */
     public List<AgendaRowModel.SemanaRow> getSemana(String fecha) {
         List<AgendaRowModel.SemanaRow> list = new ArrayList<>();
 
@@ -56,6 +100,13 @@ public class AgendaFacade {
 
     // ------------------------------------------------------------------ Sub-view 3: Lista del dia
 
+    /**
+     * Retorna el listado detallado de citas del dia con observaciones,
+     * sucursal de atencion y datos completos de cada cita.
+     *
+     * @param fecha fecha del dia a consultar
+     * @return lista de {@link AgendaRowModel.ListaDiaRow} con detalles extendidos
+     */
     public List<AgendaRowModel.ListaDiaRow> getListaDia(String fecha) {
         List<AgendaRowModel.ListaDiaRow> list = new ArrayList<>();
 
@@ -105,6 +156,12 @@ public class AgendaFacade {
 
     // ------------------------------------------------------------------ Sub-view 4: Lista de espera
 
+    /**
+     * Retorna la lista de clientes en espera con su tipo de cita preferido,
+     * rango horario, sucursal, nivel de prioridad y estado de contacto.
+     *
+     * @return lista de {@link AgendaRowModel.EsperaRow} con clientes en lista de espera
+     */
     public List<AgendaRowModel.EsperaRow> getListaEspera() {
         List<AgendaRowModel.EsperaRow> list = new ArrayList<>();
 
@@ -134,6 +191,12 @@ public class AgendaFacade {
 
     // ------------------------------------------------------------------ Sub-view 5: Confirmaciones
 
+    /**
+     * Retorna el estado de confirmacion de cada cita con fecha y hora de
+     * la ultima gestion de contacto realizada.
+     *
+     * @return lista de {@link AgendaRowModel.ConfirmacionRow} con datos de confirmacion
+     */
     public List<AgendaRowModel.ConfirmacionRow> getConfirmaciones() {
         List<AgendaRowModel.ConfirmacionRow> list = new ArrayList<>();
 
@@ -173,6 +236,13 @@ public class AgendaFacade {
 
     // ------------------------------------------------------------------ Sub-view 6: Horarios y bloqueos
 
+    /**
+     * Retorna las franjas horarias del dia con su estado (activo, bloqueado, programado)
+     * y el profesional o motivo asociado a cada bloqueo.
+     *
+     * @param fecha fecha del dia a consultar
+     * @return lista de {@link AgendaRowModel.HorarioRow} con horarios y bloqueos
+     */
     public List<AgendaRowModel.HorarioRow> getHorarios(String fecha) {
         List<AgendaRowModel.HorarioRow> list = new ArrayList<>();
 
@@ -206,6 +276,13 @@ public class AgendaFacade {
 
     // ------------------------------------------------------------------ Summary
 
+    /**
+     * Construye un modelo de resumen para la cita seleccionada, mostrando
+     * datos completos de la cita en el panel lateral derecho.
+     *
+     * @param cita objeto de cita (CitaDiaRow o ListaDiaRow) seleccionado en la vista
+     * @return {@link AgendaSummaryModel} con datos consolidados de la cita
+     */
     public AgendaSummaryModel buildSummary(Object cita) {
         if (cita instanceof AgendaRowModel.CitaDiaRow row) {
             return AgendaSummaryModel.fromCitaDia(row);
@@ -218,6 +295,11 @@ public class AgendaFacade {
 
     // ------------------------------------------------------------------ Filter combos
 
+    /**
+     * Retorna la lista de profesionales disponibles para el combo de filtro.
+     *
+     * @return lista de nombres de profesionales (doctores, tecnicos, asesores)
+     */
     public List<String> getProfesionales() {
         return List.of(
                 "Dra. Salazar",
@@ -228,6 +310,11 @@ public class AgendaFacade {
         );
     }
 
+    /**
+     * Retorna los estados posibles de una cita para el combo de filtro.
+     *
+     * @return lista de estados de cita (Confirmada, Pendiente, Reprogramada, etc.)
+     */
     public List<String> getEstadosCita() {
         return List.of(
                 "Confirmada",
@@ -240,6 +327,11 @@ public class AgendaFacade {
         );
     }
 
+    /**
+     * Retorna los tipos de atencion disponibles para el combo de filtro.
+     *
+     * @return lista de tipos de atencion (Examen visual, Ajuste, Entrega, etc.)
+     */
     public List<String> getTiposAtencion() {
         return List.of(
                 "Examen visual",

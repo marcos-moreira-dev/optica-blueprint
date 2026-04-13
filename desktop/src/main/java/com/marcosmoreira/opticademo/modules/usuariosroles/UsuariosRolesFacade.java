@@ -12,18 +12,55 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Facade that queries the DemoStore and returns data for the Usuarios y Roles module.
+ * Facade para el modulo de Usuarios y Roles (gestion de acceso y seguridad).
+ * <p>
+ * Este facade actua como capa de abstraccion entre el {@link DemoStore} (coleccion
+ * de {@link Usuario}) y las sub-vistas del modulo de Usuarios y Roles. Proporciona
+ * datos del directorio de usuarios, roles del sistema, permisos por modulo, sesiones,
+ * auditoria e historico de accesos.
+ * </p>
+ * <p>
+ * Sub-vistas que alimenta:
+ * <ul>
+ *   <li><b>Directorio de Usuarios:</b> tabla paginada de usuarios con rol y sucursal.</li>
+ *   <li><b>Roles del Sistema:</b> catalogo de roles con descripcion y alcance.</li>
+ *   <li><b>Permisos por Modulo:</b> matriz de permisos por rol y modulo.</li>
+ *   <li><b>Usuarios por Sucursal:</b> distribucion de personal por sede.</li>
+ *   <li><b>Sesiones y Accesos:</b> registro de sesiones activas y recientes.</li>
+ *   <li><b>Auditoria:</b> trazabilidad de acciones administrativas.</li>
+ *   <li><b>Historico:</b> historico de accesos y cambios de permisos.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see DemoStore
+ * @see Usuario
+ * @see FilterSupport
+ * @see PaginationHelper
  */
 public class UsuariosRolesFacade {
 
     private final DemoStore store;
 
+    /**
+     * Construye el facade con referencia al almacén de datos de demostración.
+     *
+     * @param store instancia del {@link DemoStore}
+     */
     public UsuariosRolesFacade(DemoStore store) {
         this.store = store;
     }
 
     // ---- Directorio de usuarios ----
 
+    /**
+     * Retorna una pagina del directorio de usuarios filtrada por rol, estado y sucursal.
+     *
+     * @param filters     criterios de filtrado
+     * @param pageRequest solicitud de paginacion
+     * @return {@link PageResult} con la pagina de {@link UsuariosRolesRowModel.UsuarioRow}
+     */
     public PageResult<UsuariosRolesRowModel.UsuarioRow> getDirectorio(UsuariosRolesFilters filters, PageRequest pageRequest) {
         List<UsuariosRolesRowModel.UsuarioRow> filtered = store.usuarios.stream()
                 .filter(u -> matchesDirectorioFilters(u, filters))
@@ -146,6 +183,13 @@ public class UsuariosRolesFacade {
 
     // ---- Summary builder ----
 
+    /**
+     * Construye un modelo de resumen para el usuario seleccionado, mostrando
+     * sus permisos por modulo y estado de sesion.
+     *
+     * @param usuario entidad {@link Usuario} seleccionada
+     * @return {@link UsuariosRolesSummaryModel} con datos del usuario, o vacio si es nulo
+     */
     public UsuariosRolesSummaryModel buildSummary(Usuario usuario) {
         if (usuario == null) return UsuariosRolesSummaryModel.empty();
         String rol = usuario.getRol() != null ? usuario.getRol().name() : "SIN_ROL";

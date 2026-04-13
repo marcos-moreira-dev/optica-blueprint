@@ -4,7 +4,18 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- * Row models for all 7 sub-views of the Proveedores module.
+ * Modelos de fila para las 7 sub-vistas del modulo Proveedores.
+ * <p>
+ * Estos registros alimentan los {@code TableView} del modulo: directorio de
+ * proveedores, perfil comercial, catalogo vinculado, ordenes de abastecimiento,
+ * recepciones e incidencias, desempeno del proveedor e historico. La fachada
+ * crea estas instancias a partir de las entidades {@code Proveedor} y
+ * {@code OrdenCompra} del dominio.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see com.marcosmoreira.opticademo.modules.proveedores.ProveedoresFacade
  */
 public final class ProveedoresRowModel {
 
@@ -13,6 +24,16 @@ public final class ProveedoresRowModel {
 
     // ==================== Sub-view 1: Directorio de proveedores ====================
 
+    /**
+     * Modelo de fila para el directorio de proveedores.
+     *
+     * @param proveedor       nombre del proveedor (columna "Proveedor")
+     * @param tipo            tipo: "Laboratorio", "Monturas", "Lentes" (columna "Tipo")
+     * @param contacto        datos de contacto (columna "Contacto")
+     * @param tiempoEstimado  tiempo estimado de entrega (columna "Tiempo Estimado")
+     * @param estado          estado: "Activo", "Inactivo" (columna "Estado")
+     * @param cobertura       area de cobertura (columna "Cobertura")
+     */
     public record DirectorioRow(
             String proveedor,
             String tipo,
@@ -48,6 +69,12 @@ public final class ProveedoresRowModel {
 
     // ==================== Sub-view 2: Perfil comercial ====================
 
+    /**
+     * Modelo de fila para el perfil comercial de un proveedor (vista clave-valor).
+     *
+     * @param campo  nombre del campo (columna "Campo")
+     * @param valor  valor del campo (columna "Valor")
+     */
     public record PerfilRow(
             String campo,
             String valor
@@ -63,6 +90,15 @@ public final class ProveedoresRowModel {
 
     // ==================== Sub-view 3: Catalogo vinculado ====================
 
+    /**
+     * Modelo de fila para el catalogo de productos vinculados al proveedor.
+     *
+     * @param referencia  codigo SKU (columna "Referencia")
+     * @param nombre      nombre del producto (columna "Nombre")
+     * @param categoria   categoria (columna "Categoria")
+     * @param marca       marca (columna "Marca")
+     * @param estado      estado del producto (columna "Estado")
+     */
     public record CatalogoRow(
             String referencia,
             String nombre,
@@ -93,6 +129,16 @@ public final class ProveedoresRowModel {
 
     // ==================== Sub-view 4: Ordenes y abastecimiento ====================
 
+    /**
+     * Modelo de fila para las ordenes de compra al proveedor.
+     *
+     * @param orden       numero de orden (columna "Orden")
+     * @param fecha       fecha de la orden (columna "Fecha")
+     * @param estado      estado de la orden (columna "Estado")
+     * @param totalItems  cantidad de items solicitados (columna "Total Items")
+     * @param recepcion   estado de la recepcion (columna "Recepcion")
+     * @param observacion notas sobre la orden (columna "Observacion")
+     */
     public record OrdenRow(
             String orden,
             String fecha,
@@ -128,6 +174,15 @@ public final class ProveedoresRowModel {
 
     // ==================== Sub-view 5: Recepciones e incidencias ====================
 
+    /**
+     * Modelo de fila para las recepciones e incidencias del proveedor.
+     *
+     * @param fecha       fecha del evento (columna "Fecha")
+     * @param tipo        tipo: "Recepcion", "Incidencia" (columna "Tipo")
+     * @param orden       orden asociada (columna "Orden")
+     * @param estado      estado (columna "Estado")
+     * @param responsable persona responsable (columna "Responsable")
+     */
     public record RecepcionRow(
             String fecha,
             String tipo,
@@ -158,6 +213,17 @@ public final class ProveedoresRowModel {
 
     // ==================== Sub-view 6: Desempeno del proveedor ====================
 
+    /**
+     * Modelo de fila para los indicadores de desempeno del proveedor.
+     * <p>
+     * Muestra KPIs como tiempo promedio de entrega, tasa de incidencias, etc.
+     * </p>
+     *
+     * @param indicador   nombre del KPI (columna "Indicador")
+     * @param valor       valor medido (columna "Valor")
+     * @param estado      estado vs. meta (columna "Estado")
+     * @param observacion nota analitica (columna "Observacion")
+     */
     public record DesempenoRow(
             String indicador,
             String valor,
@@ -183,6 +249,16 @@ public final class ProveedoresRowModel {
 
     // ==================== Sub-view 7: Historico ====================
 
+    /**
+     * Modelo de fila para el historico de interacciones con proveedores.
+     *
+     * @param fecha        fecha del registro (columna "Fecha")
+     * @param proveedor    nombre del proveedor (columna "Proveedor")
+     * @param tipoRegistro tipo: "Orden", "Recepcion", "Incidencia" (columna "Tipo")
+     * @param referencia   identificador del documento (columna "Referencia")
+     * @param estado       estado del registro (columna "Estado")
+     * @param observacion  nota sobre el evento (columna "Observacion")
+     */
     public record HistoricoRow(
             String fecha,
             String proveedor,

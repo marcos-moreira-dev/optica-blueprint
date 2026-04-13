@@ -6,19 +6,52 @@ import com.marcosmoreira.opticademo.shared.ui.model.KpiCardModel;
 import java.util.List;
 
 /**
- * Facade that queries the DemoStore and returns seed data for the Inicio dashboard.
- * No business logic — just view-facing data assembly.
+ * Facade para el modulo de Inicio (Dashboard principal).
+ * <p>
+ * Este facade actua como capa de abstraccion entre el {@link DemoStore} y las sub-vistas
+ * del panel de inicio, proporcionando datos de resumen operativo para la visualizacion
+ * inmediata del estado del negocio. Utiliza exclusivamente datos estaticos embebidos
+ * (seed data) para la demostracion del prototipo.
+ * </p>
+ * <p>
+ * Sub-vistas que alimenta:
+ * <ul>
+ *   <li><b>KPI Cards:</b> tarjetas de indicadores clave (citas, ventas, ordenes, entregas, cobros, stock).</li>
+ *   <li><b>Proximas Citas:</b> tabla de citas del dia con hora, cliente, tipo de atencion y profesional.</li>
+ *   <li><b>Alertas Pendientes:</b> listado de alertas operativas (retrasos, stock bajo, cobros).</li>
+ *   <li><b>Actividad Reciente:</b> log cronologico de acciones recientes del sistema.</li>
+ * </ul>
+ * </p>
+ * <p>
+ * Patron de flujo de datos: las sub-vistas invocan los metodos de consulta del facade,
+ * este construye los modelos de fila a partir de datos estaticos y los retorna directamente
+ * para su enlace con los controles JavaFX de la interfaz.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see DemoStore
+ * @see KpiCardModel
  */
 public class InicioFacade {
 
     private final DemoStore store;
 
+    /**
+     * Construye el facade con referencia al almacén de datos de demostración.
+     *
+     * @param store instancia del {@link DemoStore} que contiene los datos seed del sistema
+     */
     public InicioFacade(DemoStore store) {
         this.store = store;
     }
 
     /**
-     * Returns the six KPI cards for the dashboard.
+     * Retorna las seis tarjetas KPI del dashboard principal con indicadores
+     * clave del estado operativo: citas del dia, ventas, ordenes pendientes,
+     * trabajos listos para entregar, montos por cobrar y stock critico.
+     *
+     * @return lista de {@link KpiCardModel} con titulo, valor, subtexto e icono
      */
     public List<KpiCardModel> getKpiCards() {
         return List.of(
@@ -32,7 +65,11 @@ public class InicioFacade {
     }
 
     /**
-     * Returns upcoming appointments for today.
+     * Retorna la lista de citas proximas programadas para el dia actual,
+     * incluyendo hora, nombre del cliente, tipo de atencion, estado de
+     * confirmacion y profesional asignado.
+     *
+     * @return lista de {@link InicioRowModel.CitaRow} con las citas del dia
      */
     public List<InicioRowModel.CitaRow> getProximasCitas() {
         return List.of(
@@ -46,7 +83,11 @@ public class InicioFacade {
     }
 
     /**
-     * Returns pending alerts for the dashboard.
+     * Retorna las alertas pendientes del dashboard, que incluyen retrasos de
+     * ordenes de laboratorio, trabajos listos para notificar, saldos pendientes
+     * de cobro, stock critico y coberturas de seguros por vencer.
+     *
+     * @return lista de {@link InicioRowModel.AlertaRow} con tipo, texto descriptivo y nivel de severidad
      */
     public List<InicioRowModel.AlertaRow> getAlertas() {
         return List.of(
@@ -60,7 +101,11 @@ public class InicioFacade {
     }
 
     /**
-     * Returns recent activity log entries.
+     * Retorna el registro de actividad reciente del sistema, mostrando
+     * eventos como ventas registradas, ordenes completadas, recetas actualizadas,
+     * entregas completadas, ajustes de stock y nuevas citas agendadas.
+     *
+     * @return lista de {@link InicioRowModel.ActividadRow} con descripciones de eventos recientes
      */
     public List<InicioRowModel.ActividadRow> getActividadReciente() {
         return List.of(

@@ -15,20 +15,57 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Facade that queries the DemoStore and returns data for the Inventario module.
- * No business logic -- just view-facing data assembly.
+ * Facade para el modulo de Inventario (gestion de productos y stock).
+ * <p>
+ * Este facade actua como capa de abstraccion entre el {@link DemoStore} (colecciones
+ * de {@link Producto} y proveedores) y las siete sub-vistas del modulo de Inventario.
+ * Proporciona consultas paginadas, filtrado por categoria/marca/sucursal, y datos
+ * de movimientos, stock critico, recepciones y analisis de rotacion.
+ * </p>
+ * <p>
+ * Sub-vistas que alimenta:
+ * <ul>
+ *   <li><b>Catalogo General:</b> tabla paginada de todos los productos.</li>
+ *   <li><b>Monturas:</b> vista especifica con material, color y precio.</li>
+ *   <li><b>Lentes y Variantes:</b> tipo, indice, tratamiento y stock.</li>
+ *   <li><b>Movimientos:</b> entradas, salidas, ajustes y transferencias.</li>
+ *   <li><b>Stock Critico:</b> productos con stock bajo o agotado.</li>
+ *   <li><b>Recepcion:</b> ordenes de abastecimiento y su estado.</li>
+ *   <li><b>Historico y Analisis:</b> rotacion y observaciones de stock.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see DemoStore
+ * @see Producto
+ * @see DateGenerator
+ * @see MoneyUtils
  */
 public class InventarioFacade {
 
     private final DemoStore store;
     private final DateGenerator dates = new DateGenerator();
 
+    /**
+     * Construye el facade con referencia al almacén de datos de demostración.
+     *
+     * @param store instancia del {@link DemoStore}
+     */
     public InventarioFacade(DemoStore store) {
         this.store = store;
     }
 
     // ==================== Sub-view 1: Catalogo general ====================
 
+    /**
+     * Retorna una pagina del catalogo general de productos filtrada por
+     * categoria, marca, sucursal y opcion de stock critico.
+     *
+     * @param filters     criterios de filtrado
+     * @param pageRequest solicitud de paginacion
+     * @return {@link PageResult} con la pagina de {@link InventarioRowModel.CatalogoRow}
+     */
     public PageResult<InventarioRowModel.CatalogoRow> getCatalogo(InventarioFilters filters, PageRequest pageRequest) {
         List<InventarioRowModel.CatalogoRow> filtered = store.productos.stream()
                 .filter(p -> matchesCatalogFilters(p, filters))
@@ -288,14 +325,30 @@ public class InventarioFacade {
 
     // ==================== Summary and lookup helpers ====================
 
+    /**
+     * Construye un modelo de resumen para el producto seleccionado.
+     *
+     * @param producto entidad {@link Producto} seleccionada
+     * @return {@link InventarioSummaryModel} con datos del producto
+     */
     public InventarioSummaryModel buildSummary(Producto producto) {
         return InventarioSummaryModel.from(producto);
     }
 
+    /**
+     * Retorna los estados de stock disponibles para el combo de filtro.
+     *
+     * @return lista de estados (Activo, Bajo stock, Agotado)
+     */
     public List<String> getEstadosStock() {
         return List.of("Activo", "Bajo stock", "Agotado");
     }
 
+    /**
+     * Retorna las categorias distinct de productos desde el {@link DemoStore}.
+     *
+     * @return lista ordenada de categorias
+     */
     public List<String> getCategorias() {
         return store.productos.stream()
                 .map(p -> p.getCategoria() != null ? p.getCategoria() : "")
@@ -305,6 +358,11 @@ public class InventarioFacade {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retorna las marcas distinct de productos desde el {@link DemoStore}.
+     *
+     * @return lista ordenada de marcas
+     */
     public List<String> getMarcas() {
         return store.productos.stream()
                 .map(p -> p.getMarca() != null ? p.getMarca() : "")
@@ -314,6 +372,11 @@ public class InventarioFacade {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retorna los nombres de proveedores desde el {@link DemoStore}.
+     *
+     * @return lista ordenada de nombres comerciales de proveedores
+     */
     public List<String> getProveedores() {
         return store.proveedores.stream()
                 .map(p -> p.getNombreComercial())
@@ -322,6 +385,11 @@ public class InventarioFacade {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retorna las sucursales distinct desde el {@link DemoStore}.
+     *
+     * @return lista ordenada de nombres de sucursal
+     */
     public List<String> getSucursales() {
         return store.sucursales.stream()
                 .map(s -> s.getNombre())
@@ -330,6 +398,12 @@ public class InventarioFacade {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retorna estadisticas de stock critico: cantidad de productos agotados,
+     * con bajo stock y en proceso de reposicion.
+     *
+     * @return {@link StatsCritico} con contadores de estado de stock
+     */
     public StatsCritico getStatsCritico() {
         int agotados = 0;
         int bajoStock = 0;
@@ -349,6 +423,13 @@ public class InventarioFacade {
         return new StatsCritico(agotados, bajoStock, enReposicion);
     }
 
+    /**
+     * Record que encapsula las estadisticas de stock critico.
+     *
+     * @param agotados     cantidad de productos con stock cero
+     * @param bajoStock    cantidad de productos con stock bajo el minimo
+     * @param enReposicion cantidad de productos en proceso de reposicion
+     */
     public record StatsCritico(int agotados, int bajoStock, int enReposicion) {
     }
 }

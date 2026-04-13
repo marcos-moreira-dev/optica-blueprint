@@ -23,9 +23,31 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Controller for the Caja module.
- * Manages 6 sub-views, filter bar, and persistent right panel with payment summary.
- * Clean separation: no business logic.
+ * Controlador para el modulo de Caja del sistema Optica.
+ * <p>
+ * Gestiona todas las operaciones de cobro, pagos y cierre de caja del sistema.
+ * El modulo se organiza en 6 sub-vistas intercambiables: Cobro de orden,
+ * Abonos y saldos pendientes, Comprobantes de pago, Cierre de caja diario,
+ * Pagos pendientes con recordatorios e Historico de transacciones.
+ * </p>
+ * <p>
+ * La sub-vista de Cobro de orden permite buscar una orden por referencia o cliente
+ * y registrar el pago completo. Abonos y saldos muestra una tabla paginada de
+ * ordenes con saldo pendiente y permite registrar pagos parciales. El cierre de
+ * caja presenta un resumen diario agrupado por metodo de pago.
+ * </p>
+ * <p>
+ * El panel derecho muestra el resumen de pago de la orden seleccionada, incluyendo
+ * subtotal, descuento, abono acumulado, saldo y estado de cobro. Toda la logica
+ * de negocio se delega en {@link CajaFacade}.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see CajaFacade
+ * @see CajaRowModel
+ * @see CajaFilters
+ * @see CajaSummaryModel
  */
 public class CajaController {
 
@@ -303,6 +325,21 @@ public class CajaController {
     private int currentPageIndex = 0;
     private int pageSize = 20;
 
+    /**
+     * Inicializa el controlador y configura las 6 sub-vistas del modulo de caja.
+     * <p>
+     * Instancia {@link CajaFacade} con el {@link DemoStore} global, configura
+     * los combos filtrables mediante {@link ComboBoxFactory}, establece el grupo
+     * de toggles para las sub-vistas, inicializa todas las tablas con sus
+     * {@code cellValueFactory} (incluyendo badges de estado para cada tipo de
+     * registro), y configura el panel de resumen de pago. Por defecto se muestra
+     * la sub-vista de Cobro de orden.
+     * </p>
+     *
+     * @see CajaFacade
+     * @see ComboBoxFactory
+     * @see App#getDemoStore()
+     */
     public void initialize() {
         DemoStore store = App.getDemoStore();
         this.facade = new CajaFacade(store);
@@ -742,12 +779,17 @@ public class CajaController {
         showSubView(0);
     }
 
+    /**
+     * Maneja la accion de actualizar todos los datos del modulo de caja.
+     * Reaplica los filtros actuales y recarga el panel de resumen.
+     */
     private void onActualizarCaja() {
         // Reload all data
         applyFilters();
         loadSummaryPanel();
     }
 
+    /** Maneja la exportacion de cobros a CSV. Metodo placeholder. */
     private void onExportarCobros() {
         // Placeholder: export cobros to CSV
     }

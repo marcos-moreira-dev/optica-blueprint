@@ -12,18 +12,55 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Facade that queries the DemoStore and returns data for the Notificaciones module.
+ * Facade para el modulo de Notificaciones (gestion de comunicaciones).
+ * <p>
+ * Este facade actua como capa de abstraccion entre el {@link DemoStore} (coleccion
+ * de {@link Notificacion}) y las sub-vistas del modulo de Notificaciones. Proporciona
+ * datos de la bandeja general, notificaciones al cliente, notificaciones internas,
+ * plantillas, historial de envios y alertas criticas.
+ * </p>
+ * <p>
+ * Sub-vistas que alimenta:
+ * <ul>
+ *   <li><b>Bandeja General:</b> tabla paginada de todas las notificaciones.</li>
+ *   <li><b>Notificaciones al Cliente:</b> comunicaciones enviadas a clientes.</li>
+ *   <li><b>Notificaciones Internas:</b> alertas operativas entre modulos.</li>
+ *   <li><b>Campanas y Plantillas:</b> plantillas de mensajes configuradas.</li>
+ *   <li><b>Historial de Envios:</b> registro de envios y respuestas.</li>
+ *   <li><b>Alertas Criticas:</b> alertas de alta prioridad activas.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see DemoStore
+ * @see Notificacion
+ * @see FilterSupport
+ * @see PaginationHelper
  */
 public class NotificacionesFacade {
 
     private final DemoStore store;
 
+    /**
+     * Construye el facade con referencia al almacén de datos de demostración.
+     *
+     * @param store instancia del {@link DemoStore}
+     */
     public NotificacionesFacade(DemoStore store) {
         this.store = store;
     }
 
     // ---- Bandeja general ----
 
+    /**
+     * Retorna una pagina de la bandeja general de notificaciones filtrada
+     * segun los criterios de busqueda.
+     *
+     * @param filters     criterios de filtrado
+     * @param pageRequest solicitud de paginacion
+     * @return {@link PageResult} con la pagina de {@link NotificacionesRowModel.BandejaRow}
+     */
     public PageResult<NotificacionesRowModel.BandejaRow> getBandeja(NotificacionesFilters filters, PageRequest pageRequest) {
         List<NotificacionesRowModel.BandejaRow> filtered = store.notificaciones.stream()
                 .filter(n -> matchesBandejaFilters(n, filters))
@@ -109,6 +146,12 @@ public class NotificacionesFacade {
 
     // ---- Summary builder ----
 
+    /**
+     * Construye un modelo de resumen para la notificacion seleccionada.
+     *
+     * @param notif entidad {@link Notificacion} seleccionada
+     * @return {@link NotificacionesSummaryModel} con datos de la notificacion, o vacio si es nula
+     */
     public NotificacionesSummaryModel buildSummary(Notificacion notif) {
         if (notif == null) return NotificacionesSummaryModel.empty();
         return new NotificacionesSummaryModel(

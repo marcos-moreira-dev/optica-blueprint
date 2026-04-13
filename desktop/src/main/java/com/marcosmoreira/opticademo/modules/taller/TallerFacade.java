@@ -10,12 +10,35 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Facade that provides demo data for the Taller module.
- * No business logic -- just view-facing data assembly.
+ * Facade para el modulo de Taller (gestion de reparaciones y ajustes).
+ * <p>
+ * Este facade proporciona datos de demostracion para todas las sub-vistas del modulo
+ * de Taller, el cual gestiona los ingresos de reparaciones, diagnosticos, reparaciones
+ * en proceso, piezas utilizadas, envios a talleres externos, entregas e historico.
+ * Todos los datos provienen de seed data estatico embebido en constantes de clase.
+ * </p>
+ * <p>
+ * Sub-vistas que alimenta:
+ * <ul>
+ *   <li><b>Ingresos:</b> tabla paginada de ingresos al taller con estado y tecnico.</li>
+ *   <li><b>Diagnosticos:</b> resultados de diagnostico de cada ingreso.</li>
+ *   <li><b>Reparaciones:</b> tracking de reparaciones en proceso.</li>
+ *   <li><b>Piezas:</b> inventario de piezas utilizadas y disponibles.</li>
+ *   <li><b>Envios Externos:</b> trabajos enviados a talleres externos.</li>
+ *   <li><b>Entregas:</b> trabajos completados y entregados.</li>
+ *   <li><b>Historico:</b> registro historico de intervenciones.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see FilterSupport
+ * @see PaginationHelper
  */
 public class TallerFacade {
 
     // ---- Seed data: Ingresos ----
+    /** Seed data para ingresos al taller. */
     private static final List<TallerRowModel.IngresoRow> INGRESOS = List.of(
             new TallerRowModel.IngresoRow("TR-001", "Sofia Ramirez", "Reparacion bisagra", "En diagnostico", "Tecnico Rivera", "18/04/2026", "Matriz Centro"),
             new TallerRowModel.IngresoRow("TR-002", "Carlos Mendoza", "Cambio plaquetas", "En reparacion", "Laura Gomez", "17/04/2026", "Norte Mall"),
@@ -107,6 +130,12 @@ public class TallerFacade {
 
     // ------------------------------------------------------------------ Summary
 
+    /**
+     * Construye un modelo de resumen para el ingreso al taller seleccionado.
+     *
+     * @param ingreso fila de ingreso seleccionada
+     * @return {@link TallerSummaryModel} con datos del ingreso, o demo seed si es nulo
+     */
     public TallerSummaryModel buildSummary(TallerRowModel.IngresoRow ingreso) {
         if (ingreso == null) {
             return TallerSummaryModel.demoSeed();

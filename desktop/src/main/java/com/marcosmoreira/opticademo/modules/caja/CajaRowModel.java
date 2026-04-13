@@ -7,7 +7,20 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- * Row models for the Caja module TableView entries.
+ * Modelos de fila para las vistas del modulo Caja (gestion de cobros y pagos).
+ * <p>
+ * Estos registros alimentan los {@code TableView} del modulo: registro de cobros,
+ * saldos pendientes, comprobantes emitidos, cierres de caja y pagos pendientes.
+ * La fachada crea estas instancias a partir de las entidades {@code Cobro} y
+ * {@code VentaOptica} del dominio. El metodo auxiliar {@code formatMoney(double)}
+ * formatea los valores monetarios con el simbolo de dolar y dos decimales.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see com.marcosmoreira.opticademo.modules.caja.CajaFacade
+ * @see com.marcosmoreira.opticademo.shared.domain.caja.Cobro
+ * @see com.marcosmoreira.opticademo.shared.domain.venta.VentaOptica
  */
 public final class CajaRowModel {
 
@@ -16,6 +29,23 @@ public final class CajaRowModel {
 
     // ------------------------------------------------------------------ CobroRow
 
+    /**
+     * Modelo de fila para la tabla de cobros registrados.
+     * <p>
+     * Cada registro representa un cobro realizado. La fachada crea estos registros
+     * mediante el metodo estatico {@code from(Cobro)} que mapea una entidad de
+     * dominio al modelo de presentacion. El campo {@code estado} refleja el resultado
+     * del cobro: "COMPLETADO", "RECHAZADO", "ANULADO".
+     * </p>
+     *
+     * @param fecha        fecha y hora del cobro (columna "Fecha")
+     * @param orden        numero de orden asociada (columna "Orden")
+     * @param cliente      nombre del cliente (columna "Cliente")
+     * @param monto        monto cobrado formateado como "$XXX.XX" (columna "Monto")
+     * @param metodo       metodo de pago: "Efectivo", "Tarjeta", "Transferencia" (columna "Metodo")
+     * @param estado       estado del cobro (columna "Estado")
+     * @param comprobante  numero de comprobante emitido (columna "Comprobante")
+     */
     public record CobroRow(
             String fecha,
             String orden,
@@ -26,6 +56,17 @@ public final class CajaRowModel {
             String comprobante
     ) {
 
+        /**
+         * Crea un {@code CobroRow} a partir de una entidad {@code Cobro} del dominio.
+         * <p>
+         * Convierte los campos de la entidad en valores de presentacion, formateando
+         * el monto con {@code formatMoney(double)}. Los campos nulos se reemplazan
+         * por cadenas vacias para evitar errores en la UI.
+         * </p>
+         *
+         * @param cobro entidad de dominio a convertir
+         * @return modelo de fila para el {@code TableView}
+         */
         public static CobroRow from(Cobro cobro) {
             return new CobroRow(
                     cobro.getFecha() != null ? cobro.getFecha() : "",
@@ -69,6 +110,22 @@ public final class CajaRowModel {
 
     // ------------------------------------------------------------------ SaldoRow
 
+    /**
+     * Modelo de fila para la tabla de saldos pendientes por orden.
+     * <p>
+     * Muestra el estado financiero de cada venta: total, monto abonado y saldo
+     * restante. La fachada crea estos registros mediante {@code from(VentaOptica)},
+     * calculando el total como {@code precioMontura + precioLente - descuento}.
+     * </p>
+     *
+     * @param orden     numero de orden (columna "Orden")
+     * @param cliente   nombre del cliente (columna "Cliente")
+     * @param total     total de la venta formateado (columna "Total")
+     * @param abonado   monto ya pagado formateado (columna "Abonado")
+     * @param saldo     saldo pendiente formateado (columna "Saldo")
+     * @param ultimoPago fecha del ultimo pago registrado (columna "Ultimo Pago")
+     * @param estado    estado de la orden (columna "Estado")
+     */
     public record SaldoRow(
             String orden,
             String cliente,
@@ -79,6 +136,16 @@ public final class CajaRowModel {
             String estado
     ) {
 
+        /**
+         * Crea un {@code SaldoRow} a partir de una entidad {@code VentaOptica}.
+         * <p>
+         * Calcula el total como {@code precioMontura + precioLente - descuento} y
+         * formatea todos los valores monetarios.
+         * </p>
+         *
+         * @param venta entidad de dominio a convertir
+         * @return modelo de fila para el {@code TableView}
+         */
         public static SaldoRow from(VentaOptica venta) {
             double total = venta.getPrecioMontura() + venta.getPrecioLente() - venta.getDescuento();
             return new SaldoRow(
@@ -123,6 +190,20 @@ public final class CajaRowModel {
 
     // ------------------------------------------------------------------ ComprobanteRow
 
+    /**
+     * Modelo de fila para la tabla de comprobantes emitidos.
+     * <p>
+     * Permite consultar los comprobantes de pago generados. La fachada convierte
+     * entidades {@code Cobro} mediante {@code from(Cobro)}.
+     * </p>
+     *
+     * @param comprobante numero de comprobante (columna "Comprobante")
+     * @param fecha       fecha de emision (columna "Fecha")
+     * @param cliente     nombre del cliente (columna "Cliente")
+     * @param orden       orden asociada (columna "Orden")
+     * @param total       monto total facturado (columna "Total")
+     * @param estado      estado del comprobante (columna "Estado")
+     */
     public record ComprobanteRow(
             String comprobante,
             String fecha,
@@ -170,6 +251,17 @@ public final class CajaRowModel {
 
     // ------------------------------------------------------------------ CierreRow
 
+    /**
+     * Modelo de fila para la tabla de cierres de caja diarios.
+     * <p>
+     * Resume los cobros y el total recaudado por sucursal en cada jornada.
+     * </p>
+     *
+     * @param fecha     fecha del cierre (columna "Fecha")
+     * @param sucursal  sede del cierre (columna "Sucursal")
+     * @param cobros    cantidad de cobros procesados (columna "Cobros")
+     * @param totalDia  total recaudado en el dia (columna "Total Dia")
+     */
     public record CierreRow(
             String fecha,
             String sucursal,
@@ -196,6 +288,23 @@ public final class CajaRowModel {
 
     // ------------------------------------------------------------------ PendienteRow
 
+    /**
+     * Modelo de fila para la tabla de cobros pendientes.
+     * <p>
+     * Muestra las ordenes con saldo pendiente de pago. El campo {@code prioridad}
+     * se calcula automaticamente segun el estado de la venta: "ALTA" para
+     * {@code EN_PROCESO} o {@code POR_COBRAR}, "MEDIA" para {@code EN_ESPERA},
+     * "BAJA" para el resto.
+     * </p>
+     *
+     * @param orden      numero de orden (columna "Orden")
+     * @param cliente    nombre del cliente (columna "Cliente")
+     * @param saldo      saldo pendiente formateado (columna "Saldo")
+     * @param ultimoPago fecha del ultimo pago (columna "Ultimo Pago")
+     * @param estado     estado de la venta (columna "Estado")
+     * @param sucursal   sede de la orden (columna "Sucursal")
+     * @param prioridad  nivel de prioridad de cobro (columna "Prioridad")
+     */
     public record PendienteRow(
             String orden,
             String cliente,
@@ -206,6 +315,17 @@ public final class CajaRowModel {
             String prioridad
     ) {
 
+        /**
+         * Crea un {@code PendienteRow} a partir de una entidad {@code VentaOptica}.
+         * <p>
+         * Calcula la prioridad segun el estado de la venta usando un switch pattern:
+         * {@code EN_PROCESO} o {@code POR_COBRAR} → "ALTA", {@code EN_ESPERA} → "MEDIA",
+         * otro → "BAJA".
+         * </p>
+         *
+         * @param venta entidad de dominio a convertir
+         * @return modelo de fila para el {@code TableView}
+         */
         public static PendienteRow from(VentaOptica venta) {
             String prioridad = switch (venta.getEstado()) {
                 case EN_PROCESO, POR_COBRAR -> "ALTA";
@@ -254,6 +374,12 @@ public final class CajaRowModel {
 
     // ------------------------------------------------------------------ helpers
 
+    /**
+     * Formatea un valor monetario con simbolo de dolar y dos decimales.
+     *
+     * @param value valor numerico a formatear
+     * @return cadena formateada, ej. "$150.00"
+     */
     private static String formatMoney(double value) {
         return String.format("$%.2f", value);
     }

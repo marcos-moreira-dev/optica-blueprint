@@ -4,7 +4,17 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- * Row models for the Taller module TableView entries.
+ * Modelos de fila para las vistas del modulo Taller (reparacion y ajuste de lentes).
+ * <p>
+ * Estos registros alimentan los {@code TableView} del modulo: ingreso de trabajos,
+ * diagnostico tecnico, reparaciones, repuestos utilizados, envios externos,
+ * entregas e historico. La fachada crea estas instancias a partir de las entidades
+ * {@code TrabajoTaller} del dominio.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see com.marcosmoreira.opticademo.modules.taller.TallerFacade
  */
 public final class TallerRowModel {
 
@@ -13,6 +23,21 @@ public final class TallerRowModel {
 
     // ------------------------------------------------------------------ IngresoRow
 
+    /**
+     * Modelo de fila para la tabla de ingresos de trabajos al taller.
+     * <p>
+     * Cada registro es un trabajo ingresado al taller para reparacion o ajuste.
+     * El campo {@code estado} refleja la etapa actual del flujo.
+     * </p>
+     *
+     * @param referencia    identificador del trabajo (columna "Referencia")
+     * @param cliente       nombre del paciente (columna "Cliente")
+     * @param tipo          tipo: "Reparacion", "Ajuste", "Cambio repuesto" (columna "Tipo")
+     * @param estado        estado: "Ingresado", "En diagnostico", "En reparacion" (columna "Estado")
+     * @param tecnico       tecnico asignado (columna "Tecnico")
+     * @param fechaPromesa  fecha prometida de entrega (columna "Fecha Promesa")
+     * @param sucursal      sede del taller (columna "Sucursal")
+     */
     public record IngresoRow(
             String referencia,
             String cliente,
@@ -54,6 +79,22 @@ public final class TallerRowModel {
 
     // ------------------------------------------------------------------ DiagnosticoRow
 
+    /**
+     * Modelo de fila para el diagnostico tecnico de los trabajos.
+     * <p>
+     * Detalla el danio encontrado, la complejidad de la reparacion y si se
+     * requieren repuestos o envio a taller externo.
+     * </p>
+     *
+     * @param referencia           identificador del trabajo (columna "Referencia")
+     * @param cliente              nombre del paciente (columna "Cliente")
+     * @param tipoTrabajo          tipo de trabajo (columna "Tipo Trabajo")
+     * @param fechaIngreso         fecha de ingreso al taller (columna "Fecha Ingreso")
+     * @param danioPrincipal       danio encontrado (columna "Dano Principal")
+     * @param complejidad          nivel: "Simple", "Media", "Compleja" (columna "Complejidad")
+     * @param requiereRepuesto     si necesita repuestos: "Si", "No" (columna "Requiere Repuesto")
+     * @param requiereEnvioExterno si se envia a externo: "Si", "No" (columna "Envio Externo")
+     */
     public record DiagnosticoRow(
             String referencia,
             String cliente,
@@ -100,6 +141,15 @@ public final class TallerRowModel {
 
     // ------------------------------------------------------------------ ReparacionRow
 
+    /**
+     * Modelo de fila para el registro de intervenciones de reparacion.
+     *
+     * @param fecha        fecha de la intervencion (columna "Fecha")
+     * @param referencia   identificador del trabajo (columna "Referencia")
+     * @param intervencion descripcion del trabajo realizado (columna "Intervencion")
+     * @param tecnico      tecnico que realizo la reparacion (columna "Tecnico")
+     * @param estado       estado de la reparacion (columna "Estado")
+     */
     public record ReparacionRow(
             String fecha,
             String referencia,
@@ -131,6 +181,15 @@ public final class TallerRowModel {
 
     // ------------------------------------------------------------------ PiezaRow
 
+    /**
+     * Modelo de fila para las piezas y repuestos utilizados en el trabajo.
+     *
+     * @param refTrabajo  referencia del trabajo (columna "Ref Trabajo")
+     * @param pieza       nombre de la pieza utilizada (columna "Pieza")
+     * @param cantidad    cantidad utilizada (columna "Cantidad")
+     * @param estado      estado de la pieza: "En stock", "Solicitada" (columna "Estado")
+     * @param observacion nota sobre el repuesto (columna "Observacion")
+     */
     public record PiezaRow(
             String refTrabajo,
             String pieza,
@@ -162,6 +221,20 @@ public final class TallerRowModel {
 
     // ------------------------------------------------------------------ EnvioExternoRow
 
+    /**
+     * Modelo de fila para los trabajos enviados a taller externo.
+     * <p>
+     * Registra los trabajos que no pueden repararse internamente y se envian
+     * a un tercero especializado.
+     * </p>
+     *
+     * @param referencia     identificador del trabajo (columna "Referencia")
+     * @param tipoTrabajo    tipo de trabajo enviado (columna "Tipo Trabajo")
+     * @param tercero        nombre del tercero receptor (columna "Tercero")
+     * @param fechaEnvio     fecha de envio (columna "Fecha Envio")
+     * @param estado         estado del envio externo (columna "Estado")
+     * @param fechaEstimada  fecha estimada de retorno (columna "Fecha Estimada")
+     */
     public record EnvioExternoRow(
             String referencia,
             String tipoTrabajo,
@@ -198,6 +271,15 @@ public final class TallerRowModel {
 
     // ------------------------------------------------------------------ EntregaRow
 
+    /**
+     * Modelo de fila para las entregas de trabajos del taller.
+     *
+     * @param referencia        identificador del trabajo (columna "Referencia")
+     * @param fechaEntrega      fecha de entrega (columna "Fecha Entrega")
+     * @param responsableEntrega quien realizo la entrega (columna "Responsable Entrega")
+     * @param estadoFinal       estado final: "Entregado", "Pendiente" (columna "Estado Final")
+     * @param clienteConforme   si el cliente recibio conforme (columna "Cliente Conforme")
+     */
     public record EntregaRow(
             String referencia,
             String fechaEntrega,
@@ -229,6 +311,16 @@ public final class TallerRowModel {
 
     // ------------------------------------------------------------------ HistoricoRow
 
+    /**
+     * Modelo de fila para el historico de trabajos del taller.
+     *
+     * @param fecha        fecha del trabajo (columna "Fecha")
+     * @param referencia   identificador (columna "Referencia")
+     * @param cliente      nombre del paciente (columna "Cliente")
+     * @param tipo         tipo de trabajo (columna "Tipo")
+     * @param estadoFinal  resultado final (columna "Estado Final")
+     * @param observacion  nota sobre el trabajo (columna "Observacion")
+     */
     public record HistoricoRow(
             String fecha,
             String referencia,

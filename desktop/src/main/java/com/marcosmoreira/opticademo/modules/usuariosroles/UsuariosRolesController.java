@@ -18,65 +18,102 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Controller for the Usuarios y Roles module.
- * Manages 7 sub-views, filter bar, and persistent right panel with user/role summary.
+ * Controller del modulo de Usuarios y Roles del sistema optico.
+ * <p>
+ * Gestiona siete sub-vistas para la administracion de accesos y seguridad del sistema:
+ * Directorio de usuarios, Roles del sistema, Permisos por modulo, Usuarios por sucursal,
+ * Sesiones y accesos, Auditoria y trazabilidad, e Historico de accesos.
+ * </p>
+ * <p>
+ * Permite la gestion completa de usuarios, asignacion de roles, configuracion granular
+ * de permisos por modulo, y consulta de logs de auditoria. La fachada
+ * {@link UsuariosRolesFacade} proporciona acceso a los datos de usuarios y roles
+ * almacenados en el {@link DemoStore}.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see UsuariosRolesFacade
+ * @see UsuariosRolesFilters
+ * @see UsuariosRolesSummaryModel
  */
 public class UsuariosRolesController {
 
     // ---- Top bar ----
+
+    /** Boton para crear un nuevo usuario en el sistema. */
     @FXML
     private Button nuevoUsuarioBtn;
 
+    /** Boton para actualizar la lista de usuarios. */
     @FXML
     private Button actualizarListadoBtn;
 
     // ---- Filters ----
+
+    /** Campo de busqueda por nombre de usuario o correo. */
     @FXML
     private TextField searchField;
 
+    /** ComboBox para filtrar por rol del usuario. */
     @FXML
     private ComboBox<String> rolCombo;
 
+    /** ComboBox para filtrar por estado del usuario. */
     @FXML
     private ComboBox<String> estadoCombo;
 
+    /** ComboBox para filtrar por sucursal asignada. */
     @FXML
     private ComboBox<String> sucursalCombo;
 
+    /** ComboBox para filtrar por tipo de actividad. */
     @FXML
     private ComboBox<String> actividadCombo;
 
+    /** DatePicker para fecha inicio del rango de filtrado. */
     @FXML
     private DatePicker desdePicker;
 
+    /** DatePicker para fecha fin del rango de filtrado. */
     @FXML
     private DatePicker hastaPicker;
 
+    /** CheckBox para mostrar solo eventos sensibles de seguridad. */
     @FXML
     private CheckBox soloEventosSensiblesCheck;
 
+    /** Boton para limpiar todos los filtros aplicados. */
     @FXML
     private Button limpiarFiltrosBtn;
 
     // ---- Sub-view toggle buttons ----
+
+    /** Toggle button para la sub-vista Directorio de usuarios. */
     @FXML
     private ToggleButton btnDirectorio;
 
+    /** Toggle button para la sub-vista Roles del sistema. */
     @FXML
     private ToggleButton btnRoles;
 
+    /** Toggle button para la sub-vista Permisos por modulo. */
     @FXML
     private ToggleButton btnPermisos;
 
+    /** Toggle button para la sub-vista Usuarios por sucursal. */
     @FXML
     private ToggleButton btnSucursales;
 
+    /** Toggle button para la sub-vista Sesiones y accesos. */
     @FXML
     private ToggleButton btnSesiones;
 
+    /** Toggle button para la sub-vista Auditoria y trazabilidad. */
     @FXML
     private ToggleButton btnAuditoria;
 
+    /** Toggle button para la sub-vista Historico. */
     @FXML
     private ToggleButton btnHistorico;
 
@@ -294,6 +331,8 @@ public class UsuariosRolesController {
     private Button summaryBtnDesactivar;
 
     // ---- Facade ----
+
+    /** Fachada que centraliza la logica de gestion de usuarios, roles y permisos. */
     private UsuariosRolesFacade facade;
 
     private UsuariosRolesFilters currentFilters;
@@ -301,6 +340,14 @@ public class UsuariosRolesController {
     private int currentPageIndex = 0;
     private int pageSize = 20;
 
+    /**
+     * Metodo de inicializacion invocado por JavaFX al cargar el FXML.
+     * <p>
+     * Instancia {@link UsuariosRolesFacade} con el {@link DemoStore} global, configura
+     * los combos de filtrado, el sistema de toggle entre sub-vistas, las columnas
+     * de cada tabla con status badges, y carga el directorio de usuarios.
+     * </p>
+     */
     public void initialize() {
         DemoStore store = App.getDemoStore();
         this.facade = new UsuariosRolesFacade(store);

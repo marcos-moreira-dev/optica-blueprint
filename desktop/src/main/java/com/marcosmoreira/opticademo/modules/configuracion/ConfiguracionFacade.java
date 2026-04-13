@@ -7,8 +7,30 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Facade that supplies all configuration data for the Configuracion module.
- * No business logic — only seed data retrieval and summary construction.
+ * Facade para el modulo de Configuracion (parametros del sistema).
+ * <p>
+ * Este facade suministra todos los datos de configuracion para las nueve categorias
+ * del modulo de Configuracion. Los datos son seed data estatico que representan
+ * la configuracion inicial del sistema de la optica.
+ * </p>
+ * <p>
+ * Categorias que alimenta:
+ * <ul>
+ *   <li><b>General del Negocio:</b> datos institucionales, RUC, moneda, zona horaria.</li>
+ *   <li><b>Sucursales:</b> sedes fisicas con direccion, horario y responsable.</li>
+ *   <li><b>Usuarios:</b> cuentas de acceso con rol y sucursal.</li>
+ *   <li><b>Catalogos Maestros:</b> marcas, categorias, materiales, tratamientos, etc.</li>
+ *   <li><b>Inventario:</b> reglas de stock minimo y alertas.</li>
+ *   <li><b>Venta y Caja:</b> prefijos de orden, comprobantes, reglas de pago.</li>
+ *   <li><b>Agenda y Seguimiento:</b> duracion de citas, recall, canales.</li>
+ *   <li><b>Laboratorio:</b> laboratorios habilitados, tiempos promesa.</li>
+ *   <li><b>Apariencia:</b> tema visual, densidad, tooltips.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see DemoStore
  */
 public class ConfiguracionFacade {
 

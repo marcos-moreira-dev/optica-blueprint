@@ -17,63 +17,99 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 
 /**
- * Controller for the Reportes module.
- * Manages 7 sub-views, filter bar, and persistent right panel with KPI/report summary.
- * Clean separation: no business logic.
+ * Controller principal del modulo de Reportes del sistema optico.
+ * <p>
+ * Gestiona siete sub-vistas analiticas: Resumen ejecutivo, Ventas y desempeno comercial,
+ * Inventario y rotacion, Agenda y atencion, Laboratorio y cumplimiento, Cobros y cartera,
+ * y Seguimiento y retencion. Cada sub-vista presenta KPIs y tablas especializadas
+ * con indicadores de gestion para la toma de decisiones.
+ * </p>
+ * <p>
+ * La arquitectura sigue el patron de tres paneles: filtros superiores, area central
+ * con sub-vistas intercambiables, y panel derecho persistente con resumen del KPI
+ * o reporte seleccionado. Toda la logica de agregacion y calculo de indicadores
+ * esta delegada en {@link ReportesFacade}.
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see ReportesFacade
+ * @see ReportesFilters
+ * @see ReportesSummaryModel
  */
 public class ReportesController {
 
     // ---- Top bar ----
+
+    /** Boton para generar un resumen ejecutivo de los KPIs principales. */
     @FXML
     private Button generarResumenBtn;
 
+    /** Boton para actualizar todos los datos del modulo de reportes. */
     @FXML
     private Button actualizarReportesBtn;
 
+    /** Boton para exportar el reporte actualmente visible. */
     @FXML
     private Button exportarReporteBtn;
 
     // ---- Filters ----
+
+    /** ComboBox para filtrar por periodo (semanal, mensual, trimestral, etc.). */
     @FXML
     private ComboBox<String> periodoCombo;
 
+    /** ComboBox para filtrar por sucursal. */
     @FXML
     private ComboBox<String> sucursalCombo;
 
+    /** DatePicker para fecha inicio del rango de reportes. */
     @FXML
     private DatePicker desdePicker;
 
+    /** DatePicker para fecha fin del rango de reportes. */
     @FXML
     private DatePicker hastaPicker;
 
+    /** ComboBox para filtrar por categoria de producto o servicio. */
     @FXML
     private ComboBox<String> categoriaCombo;
 
+    /** CheckBox para mostrar solo datos criticos que requieren atencion. */
     @FXML
     private CheckBox soloDatosCriticosCheck;
 
+    /** Boton para limpiar todos los filtros aplicados. */
     @FXML
     private Button limpiarFiltrosBtn;
 
     // ---- Sub-view toggle buttons ----
+
+    /** Toggle button para la sub-vista Resumen ejecutivo. */
     @FXML
     private ToggleButton btnResumen;
 
+    /** Toggle button para la sub-vista Ventas y desempeno comercial. */
     @FXML
     private ToggleButton btnVentas;
 
+    /** Toggle button para la sub-vista Inventario y rotacion. */
     @FXML
     private ToggleButton btnInventario;
 
+    /** Toggle button para la sub-vista Agenda y atencion. */
     @FXML
     private ToggleButton btnAgenda;
 
+    /** Toggle button para la sub-vista Laboratorio y cumplimiento. */
     @FXML
     private ToggleButton btnLaboratorio;
 
+    /** Toggle button para la sub-vista Cobros y cartera. */
     @FXML
     private ToggleButton btnCobros;
 
+    /** Toggle button para la sub-vista Seguimiento y retencion. */
     @FXML
     private ToggleButton btnRetencion;
 
@@ -429,6 +465,8 @@ public class ReportesController {
     private Button summaryBtnExportar;
 
     // ---- Facade ----
+
+    /** Fachada que centraliza la logica de agregacion y calculo de indicadores del modulo. */
     private ReportesFacade facade;
 
     private ReportesFilters currentFilters;
@@ -437,6 +475,14 @@ public class ReportesController {
     private int pageSize = 20;
     private String currentSubview = "resumen";
 
+    /**
+     * Metodo de inicializacion invocado por JavaFX al cargar el FXML.
+     * <p>
+     * Instancia {@link ReportesFacade}, configura los combos de filtrado,
+     * establece el sistema de toggle entre las siete sub-vistas analiticas,
+     * configura las columnas de cada tabla, y carga el resumen ejecutivo inicial.
+     * </p>
+     */
     public void initialize() {
         this.facade = new ReportesFacade();
         this.currentFilters = new ReportesFilters();

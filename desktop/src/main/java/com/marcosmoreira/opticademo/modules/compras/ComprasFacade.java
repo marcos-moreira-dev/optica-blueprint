@@ -10,20 +10,55 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Facade that queries the DemoStore and returns data for the Compras module.
- * No business logic -- just view-facing data assembly.
+ * Facade para el modulo de Compras (gestion de compras y abastecimiento).
+ * <p>
+ * Este facade proporciona datos de demostracion para las siete sub-vistas del modulo
+ * de Compras, el cual gestiona solicitudes de compra, ordenes de compra, back-orders,
+ * recepciones vinculadas y analisis por proveedor y sucursal. Combina seed data estatico
+ * con datos del {@link DemoStore} para proveedores y sucursales.
+ * </p>
+ * <p>
+ * Sub-vistas que alimenta:
+ * <ul>
+ *   <li><b>Solicitudes de Compra:</b> solicitudes pendientes, aprobadas y completadas.</li>
+ *   <li><b>Ordenes de Compra:</b> ordenes enviadas y completadas con montos.</li>
+ *   <li><b>Compras por Proveedor:</b> resumen de actividad por proveedor.</li>
+ *   <li><b>Back-Orders:</b> items pendientes de entregas parciales.</li>
+ *   <li><b>Recepcion Vinculada:</b> recepciones asociadas a ordenes.</li>
+ *   <li><b>Compras por Sucursal:</b> analisis comparativo por sede.</li>
+ *   <li><b>Historico:</b> registro historico de compras y recepciones.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Marcos Moreira
+ * @version 1.0.0
+ * @see DemoStore
+ * @see DateGenerator
+ * @see MoneyUtils
+ * @see FilterSupport
  */
 public class ComprasFacade {
 
     private final DemoStore store;
     private final DateGenerator dates = new DateGenerator();
 
+    /**
+     * Construye el facade con referencia al almacén de datos de demostración.
+     *
+     * @param store instancia del {@link DemoStore}
+     */
     public ComprasFacade(DemoStore store) {
         this.store = store;
     }
 
     // ==================== Sub-view 1: Solicitudes de compra ====================
 
+    /**
+     * Retorna las solicitudes de compra filtradas por estado, proveedor, categoria y sucursal.
+     *
+     * @param filters criterios de filtrado
+     * @return lista de {@link ComprasRowModel.SolicitudRow}
+     */
     public List<ComprasRowModel.SolicitudRow> getSolicitudes(ComprasFilters filters) {
         List<ComprasRowModel.SolicitudRow> rows = new ArrayList<>();
 
@@ -385,14 +420,31 @@ public class ComprasFacade {
 
     // ==================== Summary and lookup helpers ====================
 
+    /**
+     * Construye un modelo de resumen para la orden de compra seleccionada.
+     *
+     * @param orden fila de orden de compra seleccionada
+     * @return {@link ComprasSummaryModel} con datos de la orden
+     */
     public ComprasSummaryModel buildSummary(ComprasRowModel.OrdenCompraRow orden) {
         return ComprasSummaryModel.fromOrden(orden);
     }
 
+    /**
+     * Construye un modelo de resumen para la solicitud de compra seleccionada.
+     *
+     * @param solicitud fila de solicitud seleccionada
+     * @return {@link ComprasSummaryModel} con datos de la solicitud
+     */
     public ComprasSummaryModel buildSummary(ComprasRowModel.SolicitudRow solicitud) {
         return ComprasSummaryModel.fromSolicitud(solicitud);
     }
 
+    /**
+     * Retorna los estados disponibles para el combo de filtro.
+     *
+     * @return lista de estados (Pendiente, Aprobada, En proceso, Enviada, Completada, Cancelada)
+     */
     public List<String> getEstados() {
         return List.of("Pendiente", "Aprobada", "En proceso", "Enviada", "Completada", "Cancelada");
     }
